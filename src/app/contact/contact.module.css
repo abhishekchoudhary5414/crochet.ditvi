@@ -1,0 +1,221 @@
+/* Contact Page Stylesheet */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--spacing-xxl) var(--spacing-lg);
+}
+
+.header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto var(--spacing-xxl) auto;
+}
+
+.title {
+  font-size: var(--text-4xl);
+  font-family: var(--font-serif);
+  color: var(--dark-text);
+  margin-bottom: var(--spacing-sm);
+}
+
+.desc {
+  font-size: var(--text-md);
+  color: var(--dark-text);
+  opacity: 0.85;
+  line-height: 1.6;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--spacing-xxl);
+  align-items: start;
+}
+
+/* Contact Form */
+.formCard {
+  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.formTitle {
+  font-size: var(--text-xl);
+  font-family: var(--font-serif);
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 2px solid var(--soft-pink);
+  padding-bottom: var(--spacing-sm);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-md);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--dark-text);
+}
+
+.input, .textarea {
+  padding: 10px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  background-color: var(--background);
+  transition: var(--transition-fast);
+}
+
+.input:focus, .textarea:focus {
+  border-color: var(--accent);
+  background-color: var(--white);
+}
+
+/* Info Column */
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+}
+
+.infoBlock {
+  background-color: var(--soft-pink);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-xl);
+  border: 1px solid var(--border-color);
+}
+
+.infoTitle {
+  font-size: var(--text-lg);
+  font-family: var(--font-serif);
+  color: var(--dark-text);
+  margin-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+.infoDetails {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+}
+
+.infoIcon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* WhatsApp Banner */
+.whatsappCard {
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.whatsappTitle {
+  font-size: var(--text-md);
+  font-weight: 600;
+  margin-bottom: var(--spacing-xs);
+}
+
+.whatsappDesc {
+  font-size: var(--text-xs);
+  opacity: 0.8;
+  margin-bottom: var(--spacing-md);
+}
+
+.whatsappBtn {
+  background-color: #25D366 !important;
+  color: var(--white) !important;
+  border: none !important;
+}
+
+.whatsappBtn:hover {
+  background-color: #128C7E !important;
+}
+
+/* Social links row */
+.socialsRow {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  margin-top: var(--spacing-sm);
+}
+
+.socialLink {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-bounce);
+}
+
+.socialLink:hover {
+  transform: scale(1.1);
+  background-color: var(--soft-pink);
+  border-color: var(--primary);
+}
+
+/* Mock Map Block */
+.mapPlaceholder {
+  height: 180px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background-color: var(--white);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.mapDesign {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 40% 60%, var(--soft-pink) 20%, transparent 21%),
+              radial-gradient(circle at 80% 30%, var(--light-gray) 10%, transparent 11%),
+              repeating-linear-gradient(45deg, var(--background) 0 10px, var(--border-color) 10px 11px);
+}
+
+.mapPin {
+  position: absolute;
+  top: 55%;
+  left: 38%;
+  font-size: 2rem;
+  transform: translate(-50%, -100%);
+  animation: pulse 2s infinite;
+}
+
+/* Responsiveness */
+@media (max-width: 992px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+}

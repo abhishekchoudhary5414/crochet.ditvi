@@ -1,0 +1,415 @@
+"use client";
+
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { products, Product } from "@/data/products";
+import { categories } from "@/data/categories";
+import { useApp } from "@/context/AppContext";
+import ProductCard from "@/components/ProductCard/ProductCard";
+import QuickViewModal from "@/components/QuickViewModal/QuickViewModal";
+import Button from "@/components/Button/Button";
+import styles from "./shop.module.css";
+
+function ShopContent() {
+  const { wishlist, searchQuery, setSearchQuery } = useApp();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  // State parameters
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [maxPrice, setMaxPrice] = useState<number>(100);
+  const [showInStock, setShowInStock] = useState<boolean>(true);
+  const [showOutStock, setShowOutStock] = useState<boolean>(true);
+  const [collectionFilter, setCollectionFilter] = useState<string>("all"); // 'all', 'best_sellers', 'new_arrivals', 'wishlist'
+  const [sortBy, setSortBy] = useState<string>("popular"); // 'popular', 'price_asc', 'price_desc', 'newest'
+  
+  // Mobile filter states
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // Sync category and search query from URL params on load/change
+  useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    const searchParam = searchParams.get("search");
+    const filterParam = searchParams.get("filter");
+
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    } else {
+      setSelectedCategory("all");
+    }
+
+    if (searchParam) {
+      setSearchQuery(searchParam);
+    }
+
+    if (filterParam === "wishlist") {
+      setCollectionFilter("wishlist");
+    } else {
+      setCollectionFilter("all");
+    }
+  }, [searchParams, setSearchQuery]);
+
+  // Filter products based on selections
+  const filteredProducts = products.filter((product) => {
+    // 1. Category Filter
+    if (selectedCategory !== "all" && product.category !== selectedCategory) {
+      return false;
+    }
+
+    // 2. Search Query Filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase().trim();
+      const matchName = product.name.toLowerCase().includes(query);
+      const matchDesc = product.description.toLowerCase().includes(query);
+      const matchCat = product.category.toLowerCase().includes(query);
+      if (!matchName && !matchDesc && !matchCat) {
+        return false;
+      }
+    }
+
+    // 3. Price Filter
+    if (product.price > maxPrice) {
+      return false;
+    }
+
+    // 4. Availability Filter
+    if (!showInStock && (product.stockStatus === "in_stock" || product.stockStatus === "low_stock")) {
+      return false;
+    }
+    if (!showOutStock && product.stockStatus === "out_of_stock") {
+      return false;
+    }
+
+    // 5. Collection Filter
+    if (collectionFilter === "best_sellers" && !product.isBestSeller) {
+      return false;
+    }
+    if (collectionFilter === "new_arrivals" && !product.isNewArrival) {
+      return false;
+    }
+    if (collectionFilter === "wishlist" && !wishlist.includes(product.id)) {
+      return false;
+    }
+
+    return true;
+  });
+
+  // Sort products
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    switch (sortBy) {
+      case "price_asc":
+        return a.price - b.price;
+      case "price_desc":
+        return b.price - a.price;
+      case "newest":
+        // New arrivals first, then sort by id
+        if (a.isNewArrival && !b.isNewArrival) return -1;
+        if (!a.isNewArrival && b.isNewArrival) return 1;
+        return a.id.localeCompare(b.id);
+      case "popular":
+      default:
+        // Sort by rating high-to-low, then by review count
+        if (b.rating !== a.rating) return b.rating - a.rating;
+        return b.reviewCount - a.reviewCount;
+    }
+  });
+
+  const handleResetFilters = () => {
+    setSelectedCategory("all");
+    setMaxPrice(100);
+    setShowInStock(true);
+    setShowOutStock(true);
+    setCollectionFilter("all");
+    setSearchQuery("");
+    setSortBy("popular");
+    router.push("/shop");
+  };
+
+  const handleRemoveCategory = () => {
+    setSelectedCategory("all");
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("category");
+    router.push(`/shop?${params.toString()}`);
+  };
+
+  const handleRemoveSearch = () => {
+    setSearchQuery("");
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("search");
+    router.push(`/shop?${params.toString()}`);
+  };
+
+  const handleRemoveCollection = () => {
+    setCollectionFilter("all");
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("filter");
+    router.push(`/shop?${params.toString()}`);
+  };
+
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Ditvi Crochet Shop</h1>
+        <p className={styles.subtitle}>
+          Browse our beautiful, premium handmade crochet catalog. Each piece is crafted stitch by stitch with warmth and love.
+        </p>
+
+        {/* Active badges row */}
+        {(selectedCategory !== "all" || searchQuery || collectionFilter !== "all" || maxPrice < 100) && (
+          <div className={styles.activeFiltersRow}>
+            {selectedCategory !== "all" && (
+              <span className={styles.filterBadge}>
+                Category: {selectedCategory.replace("-", " ")}
+                <button onClick={handleRemoveCategory} aria-label="Remove category filter">✕</button>
+              </span>
+            )}
+            {searchQuery && (
+              <span className={styles.filterBadge}>
+                Search: &ldquo;{searchQuery}&rdquo;
+                <button onClick={handleRemoveSearch} aria-label="Remove search filter">✕</button>
+              </span>
+            )}
+            {collectionFilter !== "all" && (
+              <span className={styles.filterBadge}>
+                Collection: {collectionFilter.replace("_", " ")}
+                <button onClick={handleRemoveCollection} aria-label="Remove collection filter">✕</button>
+              </span>
+            )}
+            {maxPrice < 100 && (
+              <span className={styles.filterBadge}>
+                Max Price: ${maxPrice}
+                <button onClick={() => setMaxPrice(100)} aria-label="Remove price filter">✕</button>
+              </span>
+            )}
+            <button onClick={handleResetFilters} className={styles.clearFilterBtn}>
+              Clear All Filters
+            </button>
+          </div>
+        )}
+      </header>
+
+      {/* Mobile filter trigger bar */}
+      <div className={styles.mobileFilterBar}>
+        <button
+          className={styles.mobileFilterToggle}
+          onClick={() => setIsMobileFilterOpen(true)}
+        >
+          ⚙️ Filter & Sort
+        </button>
+        {isMobileFilterOpen && (
+          <div
+            className={styles.sidebarOverlay}
+            onClick={() => setIsMobileFilterOpen(false)}
+          />
+        )}
+      </div>
+
+      <div className={styles.layout}>
+        {/* Filter Sidebar (Desktop and Mobile Drawer) */}
+        <aside
+          className={`${styles.sidebar} ${
+            isMobileFilterOpen ? styles.sidebarOpen : ""
+          }`}
+        >
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <h2 className={styles.sidebarTitle}>Filters</h2>
+            {isMobileFilterOpen && (
+              <button
+                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--dark-text)" }}
+                onClick={() => setIsMobileFilterOpen(false)}
+              >
+                &times;
+              </button>
+            )}
+          </div>
+
+          {/* Categories group */}
+          <div className={styles.filterGroup}>
+            <span className={styles.filterLabel}>Categories</span>
+            <div className={styles.categoryList}>
+              <button
+                className={`${styles.categoryBtn} ${
+                  selectedCategory === "all" ? styles.categoryBtnActive : ""
+                }`}
+                onClick={() => {
+                  setSelectedCategory("all");
+                  setIsMobileFilterOpen(false);
+                }}
+              >
+                All Categories ({products.length})
+              </button>
+              {categories.map((cat) => {
+                const count = products.filter((p) => p.category === cat.slug).length;
+                return (
+                  <button
+                    key={cat.id}
+                    className={`${styles.categoryBtn} ${
+                      selectedCategory === cat.slug ? styles.categoryBtnActive : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedCategory(cat.slug);
+                      setIsMobileFilterOpen(false);
+                    }}
+                  >
+                    {cat.name} ({count})
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Collection type group */}
+          <div className={styles.filterGroup}>
+            <span className={styles.filterLabel}>Collections</span>
+            <div className={styles.categoryList}>
+              <button
+                className={`${styles.categoryBtn} ${
+                  collectionFilter === "all" ? styles.categoryBtnActive : ""
+                }`}
+                onClick={() => setCollectionFilter("all")}
+              >
+                All Products
+              </button>
+              <button
+                className={`${styles.categoryBtn} ${
+                  collectionFilter === "best_sellers" ? styles.categoryBtnActive : ""
+                }`}
+                onClick={() => setCollectionFilter("best_sellers")}
+              >
+                Best Sellers
+              </button>
+              <button
+                className={`${styles.categoryBtn} ${
+                  collectionFilter === "new_arrivals" ? styles.categoryBtnActive : ""
+                }`}
+                onClick={() => setCollectionFilter("new_arrivals")}
+              >
+                New Arrivals
+              </button>
+              <button
+                className={`${styles.categoryBtn} ${
+                  collectionFilter === "wishlist" ? styles.categoryBtnActive : ""
+                }`}
+                onClick={() => setCollectionFilter("wishlist")}
+              >
+                My Wishlist ({wishlist.length})
+              </button>
+            </div>
+          </div>
+
+          {/* Price Range group */}
+          <div className={styles.filterGroup}>
+            <span className={styles.filterLabel}>Max Price: ${maxPrice}</span>
+            <div className={styles.priceSliderContainer}>
+              <input
+                type="range"
+                min="5"
+                max="100"
+                step="5"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className={styles.priceRangeInput}
+              />
+              <div className={styles.priceLabels}>
+                <span>$5</span>
+                <span>$100</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Availability group */}
+          <div className={styles.filterGroup}>
+            <span className={styles.filterLabel}>Availability</span>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={showInStock}
+                onChange={(e) => setShowInStock(e.target.checked)}
+                className={styles.checkboxInput}
+              />
+              In Stock / Low Stock
+            </label>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={showOutStock}
+                onChange={(e) => setShowOutStock(e.target.checked)}
+                className={styles.checkboxInput}
+              />
+              Out of Stock
+            </label>
+          </div>
+
+          <Button
+            variant="outline"
+            onClick={handleResetFilters}
+            fullWidth
+            size="sm"
+          >
+            Reset Filters
+          </Button>
+        </aside>
+
+        {/* Products section */}
+        <main className={styles.mainCol}>
+          <div className={styles.toolbar}>
+            <span className={styles.productCount}>
+              Showing <strong>{sortedProducts.length}</strong> products
+            </span>
+            <div className={styles.sortSelectWrapper}>
+              <span className={styles.sortLabel}>Sort By:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className={styles.sortSelect}
+              >
+                <option value="popular">Popularity (Best Match)</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="newest">Newest Arrivals</option>
+              </select>
+            </div>
+          </div>
+
+          {sortedProducts.length > 0 ? (
+            <div className={styles.productGrid}>
+              {sortedProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onQuickView={(p) => setSelectedProduct(p)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className={styles.emptyState}>
+              <span className={styles.emptyIcon}>🧶</span>
+              <h3 className={styles.emptyTitle}>No products found</h3>
+              <p className={styles.emptyDesc}>
+                We couldn't find any products that match your current search queries or filter choices.
+              </p>
+              <Button variant="primary" onClick={handleResetFilters}>
+                View All Products
+              </Button>
+            </div>
+          )}
+        </main>
+      </div>
+
+      {/* Quick View Modal Overlay */}
+      <QuickViewModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
+    </div>
+  );
+}
+
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div className={styles.container}>Loading Ditvi Crochet catalog...</div>}>
+      <ShopContent />
+    </Suspense>
+  );
+}

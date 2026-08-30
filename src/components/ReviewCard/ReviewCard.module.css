@@ -1,0 +1,108 @@
+.card {
+  background-color: var(--white);
+  padding: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  transition: var(--transition-normal);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  background-color: var(--soft-pink);
+  color: var(--dark-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--text-md);
+  overflow: hidden;
+  border: 2px solid var(--primary);
+  flex-shrink: 0;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarInitial {
+  font-family: var(--font-serif);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--dark-text);
+}
+
+.date {
+  font-size: var(--text-xs);
+  color: var(--medium-gray);
+}
+
+.starsRow {
+  display: flex;
+  gap: 2px;
+}
+
+.starFilled {
+  color: #FFB74D; /* Soft orange/gold stars */
+  font-size: var(--text-md);
+}
+
+.starEmpty {
+  color: var(--light-gray);
+  font-size: var(--text-md);
+}
+
+.comment {
+  font-size: var(--text-sm);
+  color: var(--dark-text);
+  font-style: italic;
+  line-height: 1.5;
+  opacity: 0.9;
+}
+
+.productTag {
+  margin-top: auto;
+  font-size: var(--text-xs);
+  color: var(--medium-gray);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  background-color: rgba(74, 58, 64, 0.03);
+  padding: 6px var(--spacing-sm);
+  border-radius: var(--radius-sm);
+}
+
+.tagIcon {
+  font-size: var(--text-sm);
+}
+
+.tagText {
+  color: var(--dark-text);
+}
