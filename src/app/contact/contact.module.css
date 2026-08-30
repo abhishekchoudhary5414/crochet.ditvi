@@ -147,13 +147,13 @@
 }
 
 .whatsappBtn {
-  background-color: #25D366 !important;
+  background-color: var(--whatsapp) !important;
   color: var(--white) !important;
   border: none !important;
 }
 
 .whatsappBtn:hover {
-  background-color: #128C7E !important;
+  background-color: var(--whatsapp-dark) !important;
 }
 
 /* Social links row */

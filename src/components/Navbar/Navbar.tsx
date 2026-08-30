@@ -2,18 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useApp } from "@/context/AppContext";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import siteConfig from "@/data/siteConfig.json";
 import styles from "./Navbar.module.css";
 
 export default function Navbar() {
-  const { cart, wishlist, searchQuery, setSearchQuery } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
   const pathname = usePathname();
-  const router = useRouter();
+  const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(siteConfig.whatsappMessage)}`;
 
   // Handle scroll to add background blur/shadow
   useEffect(() => {
@@ -33,13 +32,6 @@ export default function Navbar() {
     setIsOpen(false);
   }, [pathname]);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSearchQuery(searchInput);
-    router.push(`/shop?search=${encodeURIComponent(searchInput)}`);
-    setShowSearch(false);
-  };
-
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Shop", path: "/shop" },
@@ -48,8 +40,6 @@ export default function Navbar() {
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
-
-  const totalCartItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
@@ -66,8 +56,15 @@ export default function Navbar() {
         </button>
 
         {/* Brand Logo */}
-        <Link href="/" className={styles.logo}>
-          Ditvi Crochet
+        <Link href="/" className={styles.logo} aria-label="Ditvi Crochet home">
+          <Image
+            src="/logo/logo.svg"
+            alt="Ditvi Crochet logo"
+            width={120}
+            height={48}
+            priority
+            className={styles.logoImage}
+          />
         </Link>
 
         {/* Desktop Navigation Links */}
@@ -91,52 +88,10 @@ export default function Navbar() {
 
         {/* Action Icons & Utilities */}
         <div className={styles.actions}>
-          {/* Search Toggle */}
-          <div className={styles.searchContainer}>
-            {showSearch ? (
-              <form onSubmit={handleSearchSubmit} className={styles.searchForm}>
-                <input
-                  type="text"
-                  placeholder="Search cozy products..."
-                  className={styles.searchInput}
-                  value={searchInput}
-                  onChange={(e) => setSearchInput(e.target.value)}
-                  autoFocus
-                  onBlur={() => {
-                    // Slight delay to allow submit click
-                    setTimeout(() => setShowSearch(false), 200);
-                  }}
-                />
-              </form>
-            ) : (
-              <button
-                className={styles.actionBtn}
-                onClick={() => {
-                  setShowSearch(true);
-                  setSearchInput(searchQuery);
-                }}
-                aria-label="Search site"
-              >
-                🔍
-              </button>
-            )}
-          </div>
-
-          {/* Wishlist Link */}
-          <Link href="/shop?filter=wishlist" className={styles.actionBtn} aria-label="View Wishlist">
-            ❤️
-            {wishlist.length > 0 && (
-              <span className={styles.badge}>{wishlist.length}</span>
-            )}
-          </Link>
-
-          {/* Cart Link */}
-          <Link href="/cart" className={styles.actionBtn} aria-label="View Cart">
-            🛒
-            {totalCartItems > 0 && (
-              <span className={styles.badge}>{totalCartItems}</span>
-            )}
-          </Link>
+          <a href={whatsappUrl} target="_blank" rel="noreferrer" className={styles.whatsappButton} aria-label="Chat on WhatsApp">
+            <WhatsAppIcon fontSize="small" />
+            <span>WhatsApp</span>
+          </a>
         </div>
       </div>
     </header>

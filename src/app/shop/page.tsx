@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
 import { products, Product } from "@/data/products";
 import { categories } from "@/data/categories";
 import { useApp } from "@/context/AppContext";
@@ -11,7 +14,7 @@ import Button from "@/components/Button/Button";
 import styles from "./shop.module.css";
 
 function ShopContent() {
-  const { wishlist, searchQuery, setSearchQuery } = useApp();
+  const { searchQuery, setSearchQuery } = useApp();
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -43,8 +46,8 @@ function ShopContent() {
       setSearchQuery(searchParam);
     }
 
-    if (filterParam === "wishlist") {
-      setCollectionFilter("wishlist");
+    if (filterParam) {
+      setCollectionFilter("all");
     } else {
       setCollectionFilter("all");
     }
@@ -86,9 +89,6 @@ function ShopContent() {
       return false;
     }
     if (collectionFilter === "new_arrivals" && !product.isNewArrival) {
-      return false;
-    }
-    if (collectionFilter === "wishlist" && !wishlist.includes(product.id)) {
       return false;
     }
 
@@ -161,25 +161,25 @@ function ShopContent() {
             {selectedCategory !== "all" && (
               <span className={styles.filterBadge}>
                 Category: {selectedCategory.replace("-", " ")}
-                <button onClick={handleRemoveCategory} aria-label="Remove category filter">✕</button>
+                <button onClick={handleRemoveCategory} aria-label="Remove category filter"><CloseIcon fontSize="small" /></button>
               </span>
             )}
             {searchQuery && (
               <span className={styles.filterBadge}>
                 Search: &ldquo;{searchQuery}&rdquo;
-                <button onClick={handleRemoveSearch} aria-label="Remove search filter">✕</button>
+                <button onClick={handleRemoveSearch} aria-label="Remove search filter"><CloseIcon fontSize="small" /></button>
               </span>
             )}
             {collectionFilter !== "all" && (
               <span className={styles.filterBadge}>
                 Collection: {collectionFilter.replace("_", " ")}
-                <button onClick={handleRemoveCollection} aria-label="Remove collection filter">✕</button>
+                <button onClick={handleRemoveCollection} aria-label="Remove collection filter"><CloseIcon fontSize="small" /></button>
               </span>
             )}
             {maxPrice < 100 && (
               <span className={styles.filterBadge}>
-                Max Price: ${maxPrice}
-                <button onClick={() => setMaxPrice(100)} aria-label="Remove price filter">✕</button>
+                Max Price: ₹{maxPrice}
+                <button onClick={() => setMaxPrice(100)} aria-label="Remove price filter"><CloseIcon fontSize="small" /></button>
               </span>
             )}
             <button onClick={handleResetFilters} className={styles.clearFilterBtn}>
@@ -195,7 +195,7 @@ function ShopContent() {
           className={styles.mobileFilterToggle}
           onClick={() => setIsMobileFilterOpen(true)}
         >
-          ⚙️ Filter & Sort
+          <TuneOutlinedIcon fontSize="small" /> Filter & Sort
         </button>
         {isMobileFilterOpen && (
           <div
@@ -219,7 +219,7 @@ function ShopContent() {
                 style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--dark-text)" }}
                 onClick={() => setIsMobileFilterOpen(false)}
               >
-                &times;
+                <CloseIcon fontSize="small" />
               </button>
             )}
           </div>
@@ -287,20 +287,12 @@ function ShopContent() {
               >
                 New Arrivals
               </button>
-              <button
-                className={`${styles.categoryBtn} ${
-                  collectionFilter === "wishlist" ? styles.categoryBtnActive : ""
-                }`}
-                onClick={() => setCollectionFilter("wishlist")}
-              >
-                My Wishlist ({wishlist.length})
-              </button>
             </div>
           </div>
 
           {/* Price Range group */}
           <div className={styles.filterGroup}>
-            <span className={styles.filterLabel}>Max Price: ${maxPrice}</span>
+            <span className={styles.filterLabel}>Max Price: ₹{maxPrice}</span>
             <div className={styles.priceSliderContainer}>
               <input
                 type="range"
@@ -312,8 +304,8 @@ function ShopContent() {
                 className={styles.priceRangeInput}
               />
               <div className={styles.priceLabels}>
-                <span>$5</span>
-                <span>$100</span>
+                <span>₹5</span>
+                <span>₹100</span>
               </div>
             </div>
           </div>
@@ -384,7 +376,7 @@ function ShopContent() {
             </div>
           ) : (
             <div className={styles.emptyState}>
-              <span className={styles.emptyIcon}>🧶</span>
+              <span className={styles.emptyIcon}><Inventory2OutlinedIcon fontSize="large" /></span>
               <h3 className={styles.emptyTitle}>No products found</h3>
               <p className={styles.emptyDesc}>
                 We couldn't find any products that match your current search queries or filter choices.

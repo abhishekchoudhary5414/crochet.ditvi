@@ -13,6 +13,65 @@
   --success: #81C784;
   --shadow-color: rgba(74, 58, 64, 0.08);
 
+  /* Extended Palette */
+  --dark-brown: #2F2623;
+  --soft-brown: #4A4A4A;
+  --muted-brown: #8E6A45;
+  --warm-brown: #5C4A42;
+  --deep-brown: #43352F;
+  --soft-gold: #B68C58;
+  --gold-light: #E7D0A0;
+  --gold-cream: #F9F0DF;
+  --star-gold: #FFB74D;
+  --whatsapp: #25D366;
+  --whatsapp-dark: #128C7E;
+  --error-red: #E57373;
+  --error-bg: #FFF2F2;
+  --toast-soft: #FFF9FB;
+  --overlay-dark: rgba(74, 58, 64, 0.4);
+  --overlay-dark-strong: rgba(74, 58, 64, 0.6);
+  --overlay-dark-soft: rgba(74, 58, 64, 0.03);
+  --overlay-dark-strongest: rgba(74, 58, 64, 0.8);
+  --overlay-dark-opaque: rgba(74, 58, 64, 0.7);
+  --soft-pink-rgb: rgba(248, 187, 208, 0.3);
+  --soft-accent-rgb: rgba(232, 160, 181, 0.15);
+  --soft-accent-rgb-strong: rgba(232, 160, 181, 0.2);
+  --warm-gold-soft: rgba(224, 192, 113, 0.45);
+  --gold-underline-soft: rgba(214, 183, 118, 0.48);
+  --brown-divider-soft: rgba(140, 106, 77, 0.14);
+  --warm-shadow-soft: rgba(113, 82, 55, 0.12);
+  --warm-shadow-strong: rgba(116, 87, 98, 0.12);
+  --light-white-soft: rgba(255,255,255,0.92);
+  --light-white-strong: rgba(255,255,255,0.95);
+  --white-glass-strong: rgba(255,255,255,0.99);
+  --white-glass-light: rgba(255,255,255,0.72);
+  --white-glass-border: rgba(255,255,255,0.8);
+  --white-glass-border-strong: rgba(255,255,255,0.92);
+  --white-soft: rgba(255,255,255,0.98);
+  --white-transparent: rgba(255,255,255,0);
+  --cream-hero-start: #FFFDFD;
+  --cream-hero-mid: #FDF3F6;
+  --cream-hero-end: #F5E9EC;
+  --cream-hero-warm: #F3EAE2;
+  --gold-soft-border: rgba(162, 125, 82, 0.18);
+  --gold-soft-shadow: rgba(162, 125, 82, 0.08);
+  --warm-brown-glow: rgba(67,53,47,0.72);
+  --warm-brown-glimmer: rgba(67, 53, 47, 0.72);
+  --rose-brown-border: rgba(184, 146, 94, 0.26);
+  --black-shadow-soft: rgba(0,0,0,0.1);
+  --black-shadow-strong: rgba(0,0,0,0.3);
+  --white-opaque: rgba(255,255,255,0.5);
+  --white-ghost: rgba(255,249,251,0.95);
+  --soft-pink-glass: rgba(255,249,251,0.95);
+  --gold-amber: rgba(224, 192, 113, 0.58);
+  --gold-amber-soft: rgba(224, 192, 113, 0.24);
+  --gold-amber-ghost: rgba(214,183,118,0.48);
+  --gold-amber-transparent: rgba(224, 192, 113, 0);
+  --gold-brown-border: rgba(184, 146, 94, 0.26);
+  --brown-overlay-strong: rgba(74, 58, 64, 0.16);
+  --brown-overlay-soft: rgba(74, 58, 64, 0.12);
+  --text-shadow-soft: rgba(0, 0, 0, 0.3);
+
   /* Font Families (Fallbacks) */
   --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
   --font-sans: var(--font-montserrat), 'Montserrat', sans-serif;
@@ -64,7 +123,7 @@
 
 html, body {
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   overflow-x: hidden;
   background-color: var(--background);
   color: var(--dark-text);
@@ -80,6 +139,7 @@ html, body {
 body {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
 main {

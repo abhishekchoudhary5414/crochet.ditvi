@@ -1,19 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
+import Image from "next/image";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import PinterestIcon from "@mui/icons-material/Pinterest";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import siteConfig from "@/data/siteConfig.json";
 import { useApp } from "@/context/AppContext";
 import styles from "./Footer.module.css";
 
 export default function Footer() {
   const { addToast } = useApp();
-  const [email, setEmail] = useState("");
+  const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(siteConfig.whatsappMessage)}`;
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    addToast("Thank you for subscribing to our newsletter! 💖", "success");
-    setEmail("");
+  const handleJoinChannel = () => {
+    window.open(siteConfig.whatsappChannelUrl, "_blank", "noopener,noreferrer");
+    addToast("Opening the WhatsApp channel.", "success");
   };
 
   return (
@@ -21,8 +25,14 @@ export default function Footer() {
       <div className={`${styles.container} container`}>
         {/* Brand Column */}
         <div className={styles.brandCol}>
-          <Link href="/" className={styles.logo}>
-            Ditvi Crochet
+          <Link href="/" className={styles.logo} aria-label="Ditvi Crochet home">
+            <Image
+              src="/logo/logo.svg"
+              alt="Ditvi Crochet logo"
+              width={140}
+              height={56}
+              className={styles.logoImage}
+            />
           </Link>
           <p className={styles.tagline}>Made by Hand. Made With Heart.</p>
           <p className={styles.description}>
@@ -31,16 +41,16 @@ export default function Footer() {
           {/* Social Icons */}
           <div className={styles.socials}>
             <a href="https://instagram.com" target="_blank" rel="noreferrer" className={styles.socialLink} aria-label="Instagram">
-              📸
+              <InstagramIcon fontSize="small" />
             </a>
             <a href="https://facebook.com" target="_blank" rel="noreferrer" className={styles.socialLink} aria-label="Facebook">
-              📘
+              <FacebookIcon fontSize="small" />
             </a>
             <a href="https://pinterest.com" target="_blank" rel="noreferrer" className={styles.socialLink} aria-label="Pinterest">
-              📌
+              <PinterestIcon fontSize="small" />
             </a>
-            <a href="https://wa.me/911234567890" target="_blank" rel="noreferrer" className={styles.socialLink} aria-label="WhatsApp">
-              💬
+            <a href={whatsappUrl} target="_blank" rel="noreferrer" className={styles.socialLink} aria-label="WhatsApp">
+              <WhatsAppIcon fontSize="small" />
             </a>
           </div>
         </div>
@@ -75,19 +85,11 @@ export default function Footer() {
           <p className={styles.newsletterText}>
             Subscribe to get custom order discounts, sneak peeks of new collections, and craft stories!
           </p>
-          <form onSubmit={handleSubscribe} className={styles.form}>
-            <input
-              type="email"
-              placeholder="Your email address"
-              className={styles.input}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <button type="submit" className={styles.submitBtn}>
-              Join
+          <div className={styles.form}>
+            <button type="button" onClick={handleJoinChannel} className={styles.submitBtn}>
+              Join WhatsApp Channel
             </button>
-          </form>
+          </div>
         </div>
       </div>
 

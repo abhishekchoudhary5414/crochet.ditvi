@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
+import PhotoOutlinedIcon from "@mui/icons-material/PhotoOutlined";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import Button from "@/components/Button/Button";
 import { useApp } from "@/context/AppContext";
 import styles from "./custom.module.css";
@@ -32,7 +34,7 @@ export default function CustomOrdersPage() {
     const files = e.target.files;
     if (files && files.length > 0) {
       setFileName(files[0].name);
-      addToast(`Selected file: ${files[0].name} 📸`, "info");
+      addToast(`Selected file: ${files[0].name}`, "info");
     }
   };
 
@@ -41,7 +43,7 @@ export default function CustomOrdersPage() {
     
     // Simulate API submission
     setIsSuccess(true);
-    addToast("Custom request submitted! We will reach out on WhatsApp/Email. 🌸", "success");
+    addToast("Custom request submitted! We will reach out on WhatsApp/Email.", "success");
   };
 
   const handleReset = () => {
@@ -63,7 +65,7 @@ export default function CustomOrdersPage() {
     return (
       <div className={styles.container}>
         <div className={styles.successCard}>
-          <span className={styles.successIcon}>🌸</span>
+          <span className={styles.successIcon}><CheckCircleOutlineOutlinedIcon fontSize="large" /></span>
           <h2 className={styles.successTitle}>Request Submitted!</h2>
           <p className={styles.successText}>
             Thank you, <strong>{formData.name}</strong>, for sharing your creative dream with us! <br />
@@ -184,7 +186,7 @@ export default function CustomOrdersPage() {
             <div className={`${styles.formGroup} ${styles.fullWidth}`}>
               <label className={styles.label}>Reference Image (Sketch, Drawing or Photo)</label>
               <div className={styles.fileUploadContainer} onClick={() => document.getElementById("file-loader")?.click()}>
-                <span className={styles.uploadIcon}>📷</span>
+                <span className={styles.uploadIcon}><PhotoOutlinedIcon fontSize="small" /></span>
                 <span className={styles.uploadLabel}>Click to upload reference file</span>
                 <span className={styles.uploadSub}>Supports PNG, JPG, PDF (max 5MB)</span>
                 {fileName && <span className={styles.fileName}>Selected: {fileName}</span>}

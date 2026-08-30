@@ -1,19 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useApp } from "@/context/AppContext";
 import Button from "@/components/Button/Button";
 import styles from "./Newsletter.module.css";
 
 export default function Newsletter() {
   const { addToast } = useApp();
-  const [email, setEmail] = useState("");
 
-  const handleSubscribe = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-    addToast("Welcome to the Ditvi Crochet newsletter family! 💖 Check your inbox soon.", "success");
-    setEmail("");
+  const handleJoinChannel = () => {
+    window.open("https://whatsapp.com/channel/0029Vb8yxiYLNSZz50O43w0w", "_blank", "noopener,noreferrer");
+    addToast("Opening the WhatsApp channel.", "success");
   };
 
   return (
@@ -26,19 +23,11 @@ export default function Newsletter() {
             <p className={styles.desc}>
               Get 10% off your first custom order request, receive exclusive updates on newly dropped crochet collections, and read stories from our studio!
             </p>
-            <form onSubmit={handleSubscribe} className={styles.form}>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className={styles.input}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <Button variant="primary" type="submit" className={styles.subscribeBtn}>
-                Subscribe
+            <div className={styles.form}>
+              <Button variant="primary" onClick={handleJoinChannel} className={styles.subscribeBtn}>
+                Join WhatsApp Channel
               </Button>
-            </form>
+            </div>
             <p className={styles.footerNote}>
               We respect your privacy. Unsubscribe at any time.
             </p>

@@ -154,7 +154,7 @@
 /* Bottom Bar */
 .bottomBar {
   border-top: 1px solid var(--border-color);
-  background-color: rgba(74, 58, 64, 0.03);
+  background-color: var(--overlay-dark-soft);
   padding: var(--spacing-md) 0;
 }
 

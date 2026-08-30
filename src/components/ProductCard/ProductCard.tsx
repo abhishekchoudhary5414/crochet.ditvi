@@ -2,8 +2,11 @@
 
 import React from "react";
 import Link from "next/link";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import StarIcon from "@mui/icons-material/Star";
+import siteConfig from "@/data/siteConfig.json";
 import { Product } from "@/data/products";
-import { useApp } from "@/context/AppContext";
 import styles from "./ProductCard.module.css";
 
 interface ProductCardProps {
@@ -12,31 +15,21 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
-  const { toggleWishlist, isInWishlist, addToCart } = useApp();
-
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigating to details page
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images[0],
-      color: product.colors[0]?.name || "Default",
-      size: product.sizes[0] || "Standard",
-    });
-  };
-
-  const handleWishlistToggle = (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigating
-    toggleWishlist(product.id);
+  const handleOrderOnWhatsApp = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const message = encodeURIComponent(
+      `Hi Ditvi Crochet, I want to order ${product.name} (${product.category.replace("-", " ")}).\n` +
+        `Color: ${product.colors[0]?.name || "Default"}\n` +
+        `Size: ${product.sizes[0] || "Standard"}\n` +
+        `Price: ₹${product.price.toFixed(2)}\nPlease share availability and delivery details.`
+    );
+    window.open(`https://wa.me/${siteConfig.whatsappNumber}?text=${message}`, "_blank", "noopener,noreferrer");
   };
 
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
   const discountPercentage = hasDiscount
     ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
     : 0;
-
-  const isFavorite = isInWishlist(product.id);
 
   return (
     <div className={styles.card}>
@@ -74,15 +67,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
               title="Quick View"
               aria-label="Quick View product"
             >
-              👁️
-            </button>
-            <button
-              className={`${styles.overlayBtn} ${isFavorite ? styles.favorited : ""}`}
-              onClick={handleWishlistToggle}
-              title={isFavorite ? "Remove from Wishlist" : "Add to Wishlist"}
-              aria-label={isFavorite ? "Remove from Wishlist" : "Add to Wishlist"}
-            >
-              ❤️
+              <VisibilityOutlinedIcon fontSize="small" />
             </button>
           </div>
         </div>
@@ -97,29 +82,29 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
 
         {/* Rating Row */}
         <div className={styles.ratingRow}>
-          <span className={styles.stars}>⭐ {product.rating.toFixed(1)}</span>
+          <span className={styles.stars}><StarIcon fontSize="small" /> {product.rating.toFixed(1)}</span>
           <span className={styles.reviews}>({product.reviewCount})</span>
         </div>
 
         {/* Price & Cart Actions Row */}
         <div className={styles.footerRow}>
           <div className={styles.priceContainer}>
-            <span className={styles.price}>${product.price.toFixed(2)}</span>
+            <span className={styles.price}>₹{product.price.toFixed(2)}</span>
             {hasDiscount && (
               <span className={styles.originalPrice}>
-                ${product.originalPrice?.toFixed(2)}
+                ₹{product.originalPrice?.toFixed(2)}
               </span>
             )}
           </div>
 
           <button
-            className={styles.cartBtn}
-            onClick={handleAddToCart}
+            className={styles.orderBtn}
+            onClick={handleOrderOnWhatsApp}
             disabled={product.stockStatus === "out_of_stock"}
-            title="Add to Cart"
-            aria-label="Add product to cart"
+            title="Order on WhatsApp"
+            aria-label="Order product on WhatsApp"
           >
-            {product.stockStatus === "out_of_stock" ? "Out" : "＋"}
+            {product.stockStatus === "out_of_stock" ? "Out" : <><WhatsAppIcon fontSize="small" /> WhatsApp</>}
           </button>
         </div>
       </div>

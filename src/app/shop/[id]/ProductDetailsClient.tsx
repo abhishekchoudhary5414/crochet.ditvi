@@ -2,9 +2,13 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import siteConfig from "@/data/siteConfig.json";
 import { products, Product, Review } from "@/data/products";
-import { useApp } from "@/context/AppContext";
 import ProductCard from "@/components/ProductCard/ProductCard";
 import QuickViewModal from "@/components/QuickViewModal/QuickViewModal";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
@@ -16,9 +20,6 @@ interface ProductDetailsClientProps {
 }
 
 export default function ProductDetailsClient({ id }: ProductDetailsClientProps) {
-  const { addToCart, toggleWishlist, isInWishlist } = useApp();
-  const router = useRouter();
-
   // Find product by id
   const product = products.find((p) => p.id === id);
 
@@ -61,7 +62,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
   if (!product) {
     return (
       <div className={`${styles.container} text-center`} style={{ padding: "80px 0" }}>
-        <span style={{ fontSize: "4rem" }}>🧶</span>
+        <span style={{ fontSize: "4rem" }}><Inventory2OutlinedIcon fontSize="inherit" /></span>
         <h1 className={styles.title} style={{ marginTop: "20px" }}>Product Not Found</h1>
         <p style={{ marginBottom: "30px", opacity: 0.8 }}>
           Sorry, the product you are looking for does not exist or has been removed from our catalog.
@@ -73,7 +74,6 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
     );
   }
 
-  const isFavorite = isInWishlist(product.id);
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
   const discountPercentage = hasDiscount
     ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
@@ -83,32 +83,16 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
   const handleIncreaseQty = () => setQuantity((q) => q + 1);
   const handleDecreaseQty = () => setQuantity((q) => Math.max(1, q - 1));
 
-  // Add to cart
-  const handleAddToCart = () => {
-    addToCart(
-      {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.images[0],
-        color: selectedColor,
-        size: selectedSize,
-      },
-      quantity
+  const handleOrderOnWhatsApp = () => {
+    const orderMessage = encodeURIComponent(
+      `Hi Ditvi Crochet, I want to order ${product.name}.\n` +
+        `Color: ${selectedColor}\n` +
+        `Size: ${selectedSize}\n` +
+        `Quantity: ${quantity}\n` +
+        `Price: ₹${product.price.toFixed(2)}\nPlease confirm availability and delivery details.`
     );
-  };
 
-  // Buy Now
-  const handleBuyNow = () => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.images[0],
-      color: selectedColor,
-      size: selectedSize,
-    }, quantity);
-    router.push("/checkout");
+    window.open(`https://wa.me/${siteConfig.whatsappNumber}?text=${orderMessage}`, "_blank", "noopener,noreferrer");
   };
 
   // Accordion Toggle
@@ -165,7 +149,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
     <div className={styles.container}>
       {/* Back button */}
       <Link href="/shop" className={styles.backBtn}>
-        &larr; Back to Shop
+        <ArrowBackIcon fontSize="small" /> Back to Shop
       </Link>
 
       <div className={styles.grid}>
@@ -213,10 +197,15 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
           {/* Rating */}
           <div className={styles.ratingRow}>
             <span className={styles.stars}>
-              {"★".repeat(Math.round(product.rating))}
-              {"☆".repeat(5 - Math.round(product.rating))}
+              {[...Array(5)].map((_, i) =>
+                i < Math.round(product.rating) ? (
+                  <StarIcon key={i} fontSize="small" />
+                ) : (
+                  <StarBorderIcon key={i} fontSize="small" />
+                )
+              )}
             </span>
-            <span>⭐ {product.rating}</span>
+            <span><StarIcon fontSize="small" /> {product.rating}</span>
             <a
               onClick={(e) => {
                 e.preventDefault();
@@ -230,10 +219,10 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
 
           {/* Price */}
           <div className={styles.priceRow}>
-            <span className={styles.price}>${product.price.toFixed(2)}</span>
+            <span className={styles.price}>₹{product.price.toFixed(2)}</span>
             {hasDiscount && (
               <span className={styles.originalPrice}>
-                ${product.originalPrice?.toFixed(2)}
+                ₹{product.originalPrice?.toFixed(2)}
               </span>
             )}
           </div>
@@ -292,36 +281,16 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
               </button>
             </div>
 
-            {/* Cart Button */}
             <Button
               variant="primary"
-              onClick={handleAddToCart}
+              onClick={handleOrderOnWhatsApp}
               disabled={product.stockStatus === "out_of_stock"}
-              style={{ flex: 2, height: "48px" }}
+              className={styles.whatsappOrderBtn}
+              style={{ flex: 2, minWidth: 0, height: "48px" }}
             >
-              {product.stockStatus === "out_of_stock" ? "Out of Stock" : "Add to Cart"}
+              {product.stockStatus === "out_of_stock" ? "Out of Stock" : "Order on WhatsApp"}
             </Button>
 
-            {/* Buy Now Button */}
-            <Button
-              variant="primary"
-              onClick={handleBuyNow}
-              disabled={product.stockStatus === "out_of_stock"}
-              className={styles.buyNowBtn}
-              style={{ flex: 2, height: "48px" }}
-            >
-              Buy Now
-            </Button>
-
-            {/* Wishlist Button */}
-            <button
-              onClick={() => toggleWishlist(product.id)}
-              className={`${styles.wishlistBtn} ${isFavorite ? styles.wishlistActive : ""}`}
-              aria-label={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
-              title={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
-            >
-              ❤️
-            </button>
           </div>
 
           {/* Accordion Specs */}
@@ -334,7 +303,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
               >
                 <span>Product Details</span>
                 <span className={`${styles.accordionIcon} ${accordionOpen.details ? styles.accordionIconOpen : ""}`}>
-                  ▼
+                  <ExpandMoreIcon fontSize="small" />
                 </span>
               </button>
               {accordionOpen.details && (
@@ -357,7 +326,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
               >
                 <span>Materials & Sourcing</span>
                 <span className={`${styles.accordionIcon} ${accordionOpen.materials ? styles.accordionIconOpen : ""}`}>
-                  ▼
+                  <ExpandMoreIcon fontSize="small" />
                 </span>
               </button>
               {accordionOpen.materials && (
@@ -380,7 +349,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
               >
                 <span>Wash & Care Instructions</span>
                 <span className={`${styles.accordionIcon} ${accordionOpen.care ? styles.accordionIconOpen : ""}`}>
-                  ▼
+                  <ExpandMoreIcon fontSize="small" />
                 </span>
               </button>
               {accordionOpen.care && (
@@ -402,7 +371,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
               >
                 <span>Delivery & Returns Information</span>
                 <span className={`${styles.accordionIcon} ${accordionOpen.delivery ? styles.accordionIconOpen : ""}`}>
-                  ▼
+                  <ExpandMoreIcon fontSize="small" />
                 </span>
               </button>
               {accordionOpen.delivery && (
@@ -411,7 +380,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
                     Because this item is crafted completely by hand, production times range from 3-5 business days depending on queue lengths.
                   </p>
                   <ul className={styles.bulletList}>
-                    <li>Free worldwide standard shipping on orders above $50.</li>
+                    <li>Free standard shipping on orders above ₹50.</li>
                     <li>Estimated delivery: 5-8 business days after dispatch.</li>
                     <li>Returns: Unused items can be returned within 14 days of delivery. Custom products are non-refundable.</li>
                   </ul>
@@ -427,7 +396,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
         <div className={styles.reviewsHeader}>
           <h2 className={styles.reviewsTitle}>Customer Reviews</h2>
           <span className={styles.stars}>
-            ⭐ {product.rating} average based on {localReviews.length} reviews
+            <StarIcon fontSize="small" /> {product.rating} average based on {localReviews.length} reviews
           </span>
         </div>
 
@@ -461,7 +430,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
                         star <= reviewRating ? styles.starRatingBtnActive : ""
                       }`}
                     >
-                      ★
+                      {star <= reviewRating ? <StarIcon fontSize="small" /> : <StarBorderIcon fontSize="small" />}
                     </button>
                   ))}
                 </div>

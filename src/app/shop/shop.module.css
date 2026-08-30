@@ -310,7 +310,7 @@
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(74, 58, 64, 0.4);
+    background-color: var(--overlay-dark);
     z-index: 999;
   }
 }

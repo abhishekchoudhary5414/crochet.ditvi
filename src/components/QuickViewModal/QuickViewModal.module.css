@@ -4,7 +4,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(74, 58, 64, 0.4);
+  background-color: var(--overlay-dark);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -292,6 +292,15 @@
   font-size: var(--text-sm);
   font-weight: 600;
   color: var(--dark-text);
+}
+
+.whatsappButton {
+  background-color: var(--whatsapp) !important;
+  border-color: var(--whatsapp-dark) !important;
+}
+
+.whatsappButton:hover:not(:disabled) {
+  background-color: var(--whatsapp-dark) !important;
 }
 
 .viewDetailsLink {

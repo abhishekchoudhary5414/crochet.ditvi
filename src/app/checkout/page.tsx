@@ -3,6 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CreditCardOutlinedIcon from "@mui/icons-material/CreditCardOutlined";
+import SmartphoneOutlinedIcon from "@mui/icons-material/SmartphoneOutlined";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import { useApp } from "@/context/AppContext";
 import Button from "@/components/Button/Button";
 import styles from "./checkout.module.css";
@@ -52,7 +57,7 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (couponCode.toUpperCase().trim() === "COZY10") {
       setDiscountPercent(10);
-      addToast("Discount code COZY10 (10% Off) applied! 💖", "success");
+      addToast("Discount code COZY10 (10% Off) applied!", "success");
     } else {
       addToast("Invalid code. Use 'COZY10' for 10% off.", "error");
     }
@@ -93,7 +98,7 @@ export default function CheckoutPage() {
       total: totalAmount,
     });
     setIsSuccess(true);
-    addToast("Order placed successfully! Thank you! 🌸", "success");
+    addToast("Order placed successfully! Thank you!", "success");
     
     // Clear shopping cart state
     clearCart();
@@ -108,7 +113,7 @@ export default function CheckoutPage() {
   if (cart.length === 0 && !isSuccess) {
     return (
       <div className={styles.container} style={{ textAlign: "center", padding: "80px 0" }}>
-        <span style={{ fontSize: "4rem" }}>🛒</span>
+        <span style={{ fontSize: "4rem" }}><ShoppingCartOutlinedIcon fontSize="inherit" /></span>
         <h1 className={styles.title} style={{ marginTop: "20px" }}>Your Cart is Empty</h1>
         <p style={{ marginBottom: "30px", opacity: 0.8 }}>
           You cannot checkout without items. Please add some cozy crochet products to your cart.
@@ -243,7 +248,7 @@ export default function CheckoutPage() {
                     paymentMethod === "card" ? styles.activePaymentTab : ""
                   }`}
                 >
-                  💳 Credit/Debit Card
+                  <CreditCardOutlinedIcon fontSize="small" /> Credit/Debit Card
                 </button>
                 <button
                   type="button"
@@ -252,7 +257,7 @@ export default function CheckoutPage() {
                     paymentMethod === "upi" ? styles.activePaymentTab : ""
                   }`}
                 >
-                  📱 UPI / Scan QR
+                  <SmartphoneOutlinedIcon fontSize="small" /> UPI / Scan QR
                 </button>
                 <button
                   type="button"
@@ -261,7 +266,7 @@ export default function CheckoutPage() {
                     paymentMethod === "cod" ? styles.activePaymentTab : ""
                   }`}
                 >
-                  💬 Cash on Delivery
+                  <ChatBubbleOutlineOutlinedIcon fontSize="small" /> Cash on Delivery
                 </button>
               </div>
 
@@ -330,7 +335,7 @@ export default function CheckoutPage() {
           </div>
 
           <Button type="submit" variant="primary" fullWidth size="lg" style={{ marginTop: "30px" }}>
-            Place Order (${totalAmount.toFixed(2)})
+            Place Order (₹{totalAmount.toFixed(2)})
           </Button>
         </form>
 
@@ -351,7 +356,7 @@ export default function CheckoutPage() {
                     </span>
                   </div>
                   <span className={styles.itemPrice}>
-                    ${(item.price * item.quantity).toFixed(2)}
+                    ₹{(item.price * item.quantity).toFixed(2)}
                   </span>
                 </div>
               ))}
@@ -377,26 +382,26 @@ export default function CheckoutPage() {
             {/* Calculations */}
             <div className={styles.summaryRow}>
               <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+              <span>₹{subtotal.toFixed(2)}</span>
             </div>
 
             {discountPercent > 0 && (
               <div className={styles.summaryRow} style={{ color: "var(--accent)", fontWeight: 500 }}>
                 <span>Discount (10%)</span>
-                <span>-${discountAmount.toFixed(2)}</span>
+                <span>-₹{discountAmount.toFixed(2)}</span>
               </div>
             )}
 
             <div className={styles.summaryRow}>
               <span>Shipping</span>
-              <span>{shippingCost === 0 ? "FREE" : `$${shippingCost.toFixed(2)}`}</span>
+              <span>{shippingCost === 0 ? "FREE" : `₹${shippingCost.toFixed(2)}`}</span>
             </div>
 
             <div className={styles.summaryDivider} />
 
             <div className={styles.totalRow}>
               <span>Total Amount</span>
-              <span>${totalAmount.toFixed(2)}</span>
+              <span>₹{totalAmount.toFixed(2)}</span>
             </div>
           </div>
         </aside>
@@ -406,7 +411,7 @@ export default function CheckoutPage() {
       {isSuccess && (
         <div className={styles.overlay}>
           <div className={styles.modal}>
-            <span className={styles.successIcon}>🌸</span>
+            <span className={styles.successIcon}><CheckCircleOutlineOutlinedIcon fontSize="large" /></span>
             <h2 className={styles.successTitle}>Order Confirmed!</h2>
             <p className={styles.successText}>
               Thank you so much, <strong>{orderSummary.name}</strong>, for shopping with us! <br />

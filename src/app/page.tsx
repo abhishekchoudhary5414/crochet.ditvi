@@ -2,6 +2,11 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import LocalFloristOutlinedIcon from "@mui/icons-material/LocalFloristOutlined";
+import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
+import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
 import { categories } from "@/data/categories";
 import { products, Product } from "@/data/products";
 import ProductCard from "@/components/ProductCard/ProductCard";
@@ -117,7 +122,7 @@ export default function Home() {
               </div>
 
               <div className={`${styles.productBadge} ${styles.productBadgeTop}`}>
-                <span className={styles.badgeIcon}>🌼</span>
+                <span className={styles.badgeIcon}><LocalFloristOutlinedIcon fontSize="small" /></span>
                 <div>
                   <strong>Floral Tote</strong>
                   <small>Handcrafted</small>
@@ -125,7 +130,7 @@ export default function Home() {
               </div>
 
               <div className={`${styles.productBadge} ${styles.productBadgeBottom}`}>
-                <span className={styles.badgeIcon}>✨</span>
+                <span className={styles.badgeIcon}><AutoAwesomeOutlinedIcon fontSize="small" /></span>
                 <div>
                   <strong>4.9/5</strong>
                   <small>Happy customers</small>
@@ -192,28 +197,28 @@ export default function Home() {
           </div>
           <div className={styles.whyUsGrid}>
             <div className={styles.whyCard}>
-              <span className={styles.whyIcon}>💖</span>
+              <span className={styles.whyIcon}><FavoriteBorderOutlinedIcon fontSize="small" /></span>
               <h3 className={styles.whyTitle}>100% Hand-Stitched</h3>
               <p className={styles.whyDesc}>
                 Every product is carefully crocheted by hand, investing hours of patient dedication.
               </p>
             </div>
             <div className={styles.whyCard}>
-              <span className={styles.whyIcon}>🌿</span>
+              <span className={styles.whyIcon}><LocalFloristOutlinedIcon fontSize="small" /></span>
               <h3 className={styles.whyTitle}>Premium Materials</h3>
               <p className={styles.whyDesc}>
                 We select soft, organic, hypoallergenic yarns and natural wood accents.
               </p>
             </div>
             <div className={styles.whyCard}>
-              <span className={styles.whyIcon}>✨</span>
+              <span className={styles.whyIcon}><AutoAwesomeOutlinedIcon fontSize="small" /></span>
               <h3 className={styles.whyTitle}>Custom Orders</h3>
               <p className={styles.whyDesc}>
                 Have a dream shape, size, or color palette? We custom knit it just for you!
               </p>
             </div>
             <div className={styles.whyCard}>
-              <span className={styles.whyIcon}>📦</span>
+              <span className={styles.whyIcon}><LocalShippingOutlinedIcon fontSize="small" /></span>
               <h3 className={styles.whyTitle}>Packed with Heart</h3>
               <p className={styles.whyDesc}>
                 Arrives beautiful and pre-wrapped, ready for gifting to yourself or a loved one.
@@ -296,8 +301,8 @@ export default function Home() {
                 className={styles.instagramImg}
               />
               <div className={styles.instagramOverlay}>
-                <span className={styles.instaIcon}>📸</span>
-                <span>❤️ {post.likes} Likes</span>
+                <span className={styles.instaIcon}><CameraAltOutlinedIcon fontSize="small" /></span>
+                <span><FavoriteBorderOutlinedIcon fontSize="small" /> {post.likes} Likes</span>
               </div>
             </div>
           ))}

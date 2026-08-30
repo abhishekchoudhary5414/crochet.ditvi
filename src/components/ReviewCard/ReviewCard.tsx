@@ -1,4 +1,7 @@
 import React from "react";
+import StarIcon from "@mui/icons-material/Star";
+import StarBorderIcon from "@mui/icons-material/StarBorder";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import styles from "./ReviewCard.module.css";
 
 export interface ReviewData {
@@ -18,9 +21,11 @@ interface ReviewCardProps {
 export default function ReviewCard({ review }: ReviewCardProps) {
   // Render star ratings
   const stars = Array.from({ length: 5 }, (_, i) => (
-    <span key={i} className={i < review.rating ? styles.starFilled : styles.starEmpty}>
-      ★
-    </span>
+    i < review.rating ? (
+      <StarIcon key={i} className={styles.starFilled} fontSize="small" />
+    ) : (
+      <StarBorderIcon key={i} className={styles.starEmpty} fontSize="small" />
+    )
   ));
 
   return (
@@ -57,7 +62,7 @@ export default function ReviewCard({ review }: ReviewCardProps) {
       {/* Product Tag if provided */}
       {review.productName && (
         <div className={styles.productTag}>
-          <span className={styles.tagIcon}>🛍️</span> Verified Purchase:{" "}
+          <ShoppingBagOutlinedIcon className={styles.tagIcon} fontSize="small" /> Verified Purchase:{" "}
           <strong className={styles.tagText}>{review.productName}</strong>
         </div>
       )}

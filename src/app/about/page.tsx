@@ -1,5 +1,8 @@
 import React from "react";
 import Link from "next/link";
+import HandymanOutlinedIcon from "@mui/icons-material/HandymanOutlined";
+import ForestIcon from "@mui/icons-material/Forest";
+import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
 import Button from "@/components/Button/Button";
 import styles from "./about.module.css";
 
@@ -50,21 +53,21 @@ export default function AboutPage() {
         </div>
         <div className={styles.valuesGrid}>
           <div className={styles.valueCard}>
-            <span className={styles.valueIcon}>🧶</span>
+            <span className={styles.valueIcon}><HandymanOutlinedIcon fontSize="small" /></span>
             <h3 className={styles.valueTitle}>Handmade Integrity</h3>
             <p className={styles.valueDesc}>
               No automated machines or factory line shortcuts. Every single knot is hand-woven, ensuring that no two items are exactly identical—each piece is uniquely yours.
             </p>
           </div>
           <div className={styles.valueCard}>
-            <span className={styles.valueIcon}>🌿</span>
+            <span className={styles.valueIcon}><ForestIcon fontSize="small" /></span>
             <h3 className={styles.valueTitle}>Premium & Safe Materials</h3>
             <p className={styles.valueDesc}>
               We source safe, premium milk cotton and organic yarns. Perfect for delicate baby skins, hypoallergenic toys, and durable daily wear.
             </p>
           </div>
           <div className={styles.valueCard}>
-            <span className={styles.valueIcon}>🎨</span>
+            <span className={styles.valueIcon}><PaletteOutlinedIcon fontSize="small" /></span>
             <h3 className={styles.valueTitle}>Creative Personalization</h3>
             <p className={styles.valueDesc}>
               We love bringing your dream designs to life! Our custom orders section lets you share color preferences, sizes, and references for bespoke requests.

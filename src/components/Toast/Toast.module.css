@@ -29,6 +29,14 @@
   opacity: 0.95;
 }
 
+.iconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--spacing-sm);
+  flex-shrink: 0;
+}
+
 .message {
   font-family: var(--font-sans);
   font-size: var(--text-sm);
@@ -55,32 +63,22 @@
 /* Types */
 .success {
   border-left-color: var(--success);
-  background-color: #FFF9FB;
+  background-color: var(--toast-soft);
 }
 
-.success::before {
-  content: "💖";
-  margin-right: var(--spacing-sm);
+.success {
+  border-left-color: var(--success);
+  background-color: var(--toast-soft);
 }
 
 .info {
   border-left-color: var(--accent);
-  background-color: #FFF9FB;
-}
-
-.info::before {
-  content: "✨";
-  margin-right: var(--spacing-sm);
+  background-color: var(--toast-soft);
 }
 
 .error {
-  border-left-color: #E57373;
-  background-color: #FFF2F2;
-}
-
-.error::before {
-  content: "⚠️";
-  margin-right: var(--spacing-sm);
+  border-left-color: var(--error-red);
+  background-color: var(--error-bg);
 }
 
 @keyframes slideInRight {

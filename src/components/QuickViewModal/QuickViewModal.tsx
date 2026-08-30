@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import CloseIcon from "@mui/icons-material/Close";
+import StarIcon from "@mui/icons-material/Star";
+import siteConfig from "@/data/siteConfig.json";
 import { Product } from "@/data/products";
 import { useApp } from "@/context/AppContext";
 import Button from "@/components/Button/Button";
@@ -13,7 +16,6 @@ interface QuickViewModalProps {
 }
 
 export default function QuickViewModal({ product, onClose }: QuickViewModalProps) {
-  const { addToCart } = useApp();
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -35,18 +37,15 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
   if (!product) return null;
 
-  const handleAddToCart = () => {
-    addToCart(
-      {
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.images[0],
-        color: selectedColor,
-        size: selectedSize,
-      },
-      quantity
+  const handleOrderOnWhatsApp = () => {
+    const orderMessage = encodeURIComponent(
+      `Hi Ditvi Crochet, I want to order ${product.name}.\n` +
+        `Color: ${selectedColor || product.colors[0]?.name || "Default"}\n` +
+        `Size: ${selectedSize || product.sizes[0] || "Standard"}\n` +
+        `Quantity: ${quantity}\n` +
+        `Price: ₹${product.price.toFixed(2)}\nPlease confirm availability and delivery details.`
     );
+    window.open(`https://wa.me/${siteConfig.whatsappNumber}?text=${orderMessage}`, "_blank", "noopener,noreferrer");
     onClose();
   };
 
@@ -60,7 +59,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         {/* Close Button */}
         <button className={styles.closeBtn} onClick={onClose} aria-label="Close modal">
-          &times;
+          <CloseIcon fontSize="small" />
         </button>
 
         <div className={styles.grid}>
@@ -103,15 +102,15 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             {/* Price & Rating */}
             <div className={styles.metaRow}>
               <div className={styles.priceContainer}>
-                <span className={styles.price}>${product.price.toFixed(2)}</span>
+                <span className={styles.price}>₹{product.price.toFixed(2)}</span>
                 {hasDiscount && (
                   <span className={styles.originalPrice}>
-                    ${product.originalPrice?.toFixed(2)}
+                    ₹{product.originalPrice?.toFixed(2)}
                   </span>
                 )}
               </div>
               <div className={styles.rating}>
-                <span>⭐ {product.rating}</span>
+                <span><StarIcon fontSize="small" /> {product.rating}</span>
                 <span className={styles.reviewCount}>({product.reviewCount} reviews)</span>
               </div>
             </div>
@@ -183,11 +182,12 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
               <Button
                 variant="primary"
-                onClick={handleAddToCart}
+                className={styles.whatsappButton}
+                onClick={handleOrderOnWhatsApp}
                 disabled={product.stockStatus === "out_of_stock"}
                 fullWidth
               >
-                {product.stockStatus === "out_of_stock" ? "Out of Stock" : "Add to Cart"}
+                {product.stockStatus === "out_of_stock" ? "Out of Stock" : "Order on WhatsApp"}
               </Button>
             </div>
 

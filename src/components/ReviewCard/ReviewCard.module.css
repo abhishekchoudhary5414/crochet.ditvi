@@ -70,7 +70,7 @@
 }
 
 .starFilled {
-  color: #FFB74D; /* Soft orange/gold stars */
+  color: var(--star-gold);
   font-size: var(--text-md);
 }
 
@@ -94,7 +94,7 @@
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
-  background-color: rgba(74, 58, 64, 0.03);
+  background-color: var(--overlay-dark-soft);
   padding: 6px var(--spacing-sm);
   border-radius: var(--radius-sm);
 }

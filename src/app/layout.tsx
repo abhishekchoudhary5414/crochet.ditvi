@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
 import "./globals.css";
+import siteConfig from "@/data/siteConfig.json";
 import { AppProvider } from "@/context/AppContext";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import ToastContainer from "@/components/Toast/Toast";
+import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton/FloatingWhatsAppButton";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,15 +21,42 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Ditvi Crochet - Handmade With Love, Crafted For You",
-  description: "Explore premium cozy handmade crochet bags, flowers, keychains, dolls, home decor, and custom creations by Ditvi Crochet.",
-  keywords: ["crochet", "handmade", "crochet bags", "crochet flowers", "crochet keychains", "amigurumi dolls", "crochet gifts", "custom orders"],
+  metadataBase: new URL(siteConfig.siteUrl),
+  title: "Ditvi Crochet | Handmade Crochet Bags, Flowers & Gifts",
+  description: "Discover premium handcrafted crochet bags, flowers, keychains, dolls, and custom gifts by Ditvi Crochet. Thoughtfully made with love for every special moment.",
+  keywords: [
+    "crochet", "handmade crochet", "crochet bags", "crochet flowers", "crochet keychains",
+    "amigurumi dolls", "crochet gifts", "custom crochet orders", "Ditvi Crochet"
+  ],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Ditvi Crochet - Premium Handmade Crochet Boutique",
-    description: "Cozy and beautiful handmade crochet creations, crafted thoughtfully just for you.",
+    title: "Ditvi Crochet | Handmade Crochet Boutique",
+    description: "Premium handmade crochet creations crafted with warmth, charm, and artistry.",
+    url: siteConfig.siteUrl,
     type: "website",
     locale: "en_US",
     siteName: "Ditvi Crochet",
+    images: [
+      {
+        url: "/logo/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Ditvi Crochet logo",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ditvi Crochet | Handmade Crochet Boutique",
+    description: "Premium handmade crochet creations crafted with warmth, charm, and artistry.",
+    images: ["/logo/logo.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
   },
 };
 
@@ -40,12 +69,15 @@ export default function RootLayout({
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
       <body>
         <AppProvider>
-          <Navbar />
-          <main style={{ paddingTop: "80px", minHeight: "calc(100vh - 180px)" }}>
-            {children}
-          </main>
-          <ToastContainer />
-          <Footer />
+          <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+            <Navbar />
+            <main style={{ paddingTop: "80px", flex: 1 }}>
+              {children}
+            </main>
+            <ToastContainer />
+            <FloatingWhatsAppButton />
+            <Footer />
+          </div>
         </AppProvider>
       </body>
     </html>

@@ -2,6 +2,10 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import CloseIcon from "@mui/icons-material/Close";
+import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import { useApp } from "@/context/AppContext";
 import Button from "@/components/Button/Button";
 import styles from "./cart.module.css";
@@ -14,7 +18,7 @@ export default function CartPage() {
   // Subtotal calculation
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-  // Shipping logic: free above $50
+  // Shipping logic: free above ₹50
   const shippingThreshold = 50;
   const shippingCost = subtotal >= shippingThreshold || subtotal === 0 ? 0 : 5.0;
 
@@ -24,7 +28,7 @@ export default function CartPage() {
     const code = couponInput.trim().toUpperCase();
     if (code === "COZY10") {
       setDiscountPercent(10);
-      addToast("Discount code COZY10 (10% Off) applied successfully! 💖", "success");
+      addToast("Discount code COZY10 (10% Off) applied successfully!", "success");
     } else if (code === "") {
       addToast("Please enter a valid coupon code.", "error");
     } else {
@@ -49,7 +53,7 @@ export default function CartPage() {
     return (
       <div className={styles.container}>
         <div className={styles.emptyCart}>
-          <span className={styles.emptyIcon}>🧶</span>
+          <span className={styles.emptyIcon}><Inventory2OutlinedIcon fontSize="large" /></span>
           <h1 className={styles.emptyTitle}>Your Cart is Empty</h1>
           <p className={styles.emptyText}>
             It looks like you haven't added any beautiful handmade crochet items to your cart yet. Let's find something cozy!
@@ -85,7 +89,7 @@ export default function CartPage() {
                 </div>
 
                 <div className={styles.itemPrice}>
-                  ${item.price.toFixed(2)}
+                  ₹{item.price.toFixed(2)}
                 </div>
 
                 {/* Stepper */}
@@ -108,7 +112,7 @@ export default function CartPage() {
                 </div>
 
                 <div className={styles.itemSubtotal}>
-                  ${itemSubtotal.toFixed(2)}
+                  ₹{itemSubtotal.toFixed(2)}
                 </div>
 
                 <button
@@ -117,7 +121,7 @@ export default function CartPage() {
                   aria-label="Remove item"
                   title="Remove item"
                 >
-                  &times;
+                  <CloseIcon fontSize="small" />
                 </button>
               </div>
             );
@@ -140,7 +144,7 @@ export default function CartPage() {
             
             <Link href="/shop">
               <Button variant="text" size="sm">
-                &larr; Continue Shopping
+                <ArrowBackOutlinedIcon fontSize="small" /> Continue Shopping
               </Button>
             </Link>
           </div>
@@ -152,25 +156,25 @@ export default function CartPage() {
           
           <div className={styles.summaryRow}>
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>₹{subtotal.toFixed(2)}</span>
           </div>
 
           {discountAmount > 0 && (
             <div className={`${styles.summaryRow} styles.summaryRowDiscount`}>
               <span>Discount (10% Off)</span>
-              <span>-${discountAmount.toFixed(2)}</span>
+              <span>-₹{discountAmount.toFixed(2)}</span>
             </div>
           )}
 
           <div className={styles.summaryRow}>
             <span>Shipping</span>
-            <span>{shippingCost === 0 ? "FREE" : `$${shippingCost.toFixed(2)}`}</span>
+            <span>{shippingCost === 0 ? "FREE" : `₹${shippingCost.toFixed(2)}`}</span>
           </div>
 
           <div className={styles.summaryRow} style={{ fontSize: "var(--text-xs)", opacity: 0.8 }}>
             <span>
               {shippingCost > 0 
-                ? `Add $${(shippingThreshold - subtotal).toFixed(2)} more for FREE shipping!`
+                ? `Add ₹${(shippingThreshold - subtotal).toFixed(2)} more for FREE shipping!`
                 : "Eligible for free standard shipping!"}
             </span>
           </div>
@@ -179,7 +183,7 @@ export default function CartPage() {
 
           <div className={styles.totalRow}>
             <span>Total</span>
-            <span>${totalAmount.toFixed(2)}</span>
+            <span>₹{totalAmount.toFixed(2)}</span>
           </div>
 
           <Link href="/checkout">
@@ -189,7 +193,7 @@ export default function CartPage() {
           </Link>
 
           <div style={{ marginTop: "15px", textAlign: "center", fontSize: "0.8rem", opacity: 0.7 }}>
-            🔒 Safe & Secure Checkout
+            <LockOutlinedIcon fontSize="small" /> Safe & Secure Checkout
           </div>
         </div>
       </div>
