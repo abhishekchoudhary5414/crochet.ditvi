@@ -485,6 +485,14 @@
     padding: 60px 0;
   }
 
+  .heroContent {
+    order: 1;
+  }
+
+  .heroImageWrapper {
+    order: 2;
+  }
+
   .productsGrid {
     grid-template-columns: repeat(2, 1fr);
   }

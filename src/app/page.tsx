@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import LocalFloristOutlinedIcon from "@mui/icons-material/LocalFloristOutlined";
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
@@ -16,6 +17,7 @@ import QuickViewModal from "@/components/QuickViewModal/QuickViewModal";
 import Newsletter from "@/components/Newsletter/Newsletter";
 import Button from "@/components/Button/Button";
 import styles from "./page.module.css";
+import HeroImage from '../../public/hero/hero.png'
 
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -114,10 +116,14 @@ export default function Home() {
             <div className={styles.heroVisual}>
               <div className={styles.heroGlow} />
               <div className={styles.imageFrame}>
-                <img
-                  src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80"
+                <Image
+                  src={HeroImage}
                   alt="Beautiful crochet product by Ditvi Crochet"
                   className={styles.heroImg}
+                  width={510}
+                  height={585}
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
 
@@ -261,10 +267,12 @@ export default function Home() {
       <section className={`${styles.section} ${styles.container}`}>
         <div className={styles.storyGrid}>
           <div className={styles.storyImageWrapper}>
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=800&q=80"
               alt="Hands crocheting with soft wool yarn"
               className={styles.storyImg}
+              width={800}
+              height={600}
             />
           </div>
           <div>
@@ -295,10 +303,12 @@ export default function Home() {
         <div className={styles.instagramGrid}>
           {instagramGallery.map((post, idx) => (
             <div key={idx} className={styles.instagramCard}>
-              <img
+              <Image
                 src={post.image}
                 alt={`Ditvi Crochet Instagram post ${idx + 1}`}
                 className={styles.instagramImg}
+                width={400}
+                height={500}
               />
               <div className={styles.instagramOverlay}>
                 <span className={styles.instaIcon}><CameraAltOutlinedIcon fontSize="small" /></span>
