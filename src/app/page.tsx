@@ -23,6 +23,9 @@ import Newsletter from "@/components/Newsletter/Newsletter";
 import Button from "@/components/Button/Button";
 import styles from "./page.module.css";
 import blogs from "@/data/blogs.json";
+import { Dancing_Script } from "next/font/google";
+
+const dancingScript = Dancing_Script({ subsets: ["latin"], weight: "700" });
 import CarouselImage1 from '../../public/hero/carousel1.png'
 import CarouselImage2 from '../../public/hero/carousel2.png'
 import CarouselImage3 from '../../public/hero/carousel3.png'
@@ -180,8 +183,8 @@ export default function Home() {
         <div className={`${styles.heroGrid} ${styles.container}`}>
           <div className={styles.heroContent}>
             <span className={styles.heroSubtitle}>{heroSlides[activeSlide].label}</span>
-            <h1 className={styles.heroTitle}>
-              {heroSlides[activeSlide].title}
+            <h1 className={`${styles.heroTitle} ${dancingScript.className}`} style={{ fontWeight: 700 }}>
+              Sweet, Thoughtful Pieces Made To Cherish.
             </h1>
             <p className={styles.heroDesc}>
               {heroSlides[activeSlide].description}
