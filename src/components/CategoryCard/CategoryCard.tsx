@@ -10,11 +10,13 @@ interface CategoryCardProps {
 }
 
 export default function CategoryCard({ category }: CategoryCardProps) {
+  const imageSrc = typeof category.image === "string" ? category.image : category.image.src;
+
   return (
     <Link href={`/shop?category=${category.slug}`} className={styles.card}>
       <div className={styles.imageWrapper}>
         <img
-          src={category.image}
+          src={imageSrc}
           alt={category.name}
           className={styles.image}
           loading="lazy"

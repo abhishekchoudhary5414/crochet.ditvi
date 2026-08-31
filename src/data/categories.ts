@@ -1,25 +1,29 @@
+import type { StaticImageData } from "next/image";
+import FlowerCategory from "../../public/products/flower/1.png"
+import HairCategory from '../../public/products/hair/1.png'
+
 export interface Category {
   id: string;
   name: string;
   slug: string;
   description: string;
-  image: string;
+  image: string | StaticImageData;
 }
 
 export const categories: Category[] = [
   {
     id: "cat-bags",
-    name: "Crochet Bags",
-    slug: "crochet-bags",
+    name: "Crochet Hair Accessories",
+    slug: "crochet-hair-accessories",
     description: "Chic, durable, and stylish handmade bags for your everyday essentials.",
-    image: "https://images.unsplash.com/photo-1590736969955-71cb94801759?auto=format&fit=crop&w=600&q=80"
+    image: HairCategory
   },
   {
     id: "cat-flowers",
     name: "Crochet Flowers",
     slug: "crochet-flowers",
     description: "Everlasting blooms that add warmth and color to any space, requiring no watering.",
-    image: "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80"
+    image: FlowerCategory
   },
   {
     id: "cat-keychains",
