@@ -145,6 +145,21 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
     .filter((p) => p.category === product.category && p.id !== product.id)
     .slice(0, 4);
 
+  // Build displayed images array: prefer selected color image if provided
+  const colorHasImages = product.colors && product.colors.some((c: any) => !!c.image);
+  const displayedImages = colorHasImages
+    ? (() => {
+        const colorObj = product.colors.find((c: any) => c.name === selectedColor);
+        const colorImg = colorObj?.image;
+        const rest = product.images.filter((img) => img !== colorImg);
+        return colorImg ? [colorImg, ...rest] : product.images;
+      })()
+    : product.images;
+
+  useEffect(() => {
+    if (colorHasImages) setActiveImageIndex(0);
+  }, [selectedColor, colorHasImages]);
+
   return (
     <div className={styles.container}>
       {/* Back button */}
@@ -161,7 +176,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
             onMouseLeave={handleMouseLeave}
           >
             <img
-              src={product.images[activeImageIndex]}
+              src={displayedImages[activeImageIndex]}
               alt={product.name}
               className={styles.mainImage}
               style={zoomStyle}
@@ -171,10 +186,9 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
               <span className={styles.discountBadge}>-{discountPercentage}% Off</span>
             )}
           </div>
-
-          {product.images.length > 1 && (
+          {displayedImages.length > 1 && (
             <div className={styles.thumbnails}>
-              {product.images.map((img, idx) => (
+              {displayedImages.map((img, idx) => (
                 <button
                   key={idx}
                   className={`${styles.thumbnailBtn} ${

@@ -3,6 +3,7 @@
 export interface ProductColor {
   name: string;
   hex: string;
+  image?: string;
 }
 
 export interface Review {
@@ -46,8 +47,8 @@ export const products: Product[] = [
     reviewCount: 34,
     category: "crochet-bags",
     images: [
-      "./products/hair/1.png",
-      "./products/hair/1.png"
+      "/products/hair/clip/yellow.png",
+      "/products/hair/clip/red.png"
     ],
     description: "Our signature blossom tote bag is tightly hand-stitched for maximum durability and strength. Featuring a delicate floral granny square pattern, it adds a touch of bohemian elegance to any outfit. Roomy enough for your tablet, wallet, book, and daily essentials.",
     details: [
@@ -63,11 +64,10 @@ export const products: Product[] = [
       "Reshape while damp if necessary",
       "Avoid direct bleach or tumble dryers"
     ],
-    sizes: ["Standard (14\"x12\")", "Large (16\"x14\")"],
+    sizes: ["Standard"],
     colors: [
-      { name: "Creamy Sage", hex: "#E8EAE6" },
-      { name: "Dusty Rose", hex: "#E8A0B5" },
-      { name: "Soft Lavender", hex: "#E1BEE7" }
+      { name: "Yellow", hex: "#F9B900", image: "/products/hair/clip/yellow.png" },
+      { name: "Red", hex: "#D9162C", image: "/products/hair/clip/red.png" },
     ],
     isBestSeller: true,
     isNewArrival: false,
