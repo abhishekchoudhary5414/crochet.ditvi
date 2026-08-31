@@ -8,6 +8,11 @@ import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import FavoriteBorderOutlinedIcon from "@mui/icons-material/FavoriteBorderOutlined";
 import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
 import CameraAltOutlinedIcon from "@mui/icons-material/CameraAltOutlined";
+import CheckroomOutlinedIcon from "@mui/icons-material/CheckroomOutlined";
+import ToysOutlinedIcon from "@mui/icons-material/ToysOutlined";
+import PaletteOutlinedIcon from "@mui/icons-material/PaletteOutlined";
+import HandymanOutlinedIcon from "@mui/icons-material/HandymanOutlined";
+import ColorLensOutlinedIcon from "@mui/icons-material/ColorLensOutlined";
 import { categories } from "@/data/categories";
 import { products, Product } from "@/data/products";
 import ProductCard from "@/components/ProductCard/ProductCard";
@@ -18,6 +23,29 @@ import Newsletter from "@/components/Newsletter/Newsletter";
 import Button from "@/components/Button/Button";
 import styles from "./page.module.css";
 import HeroImage from '../../public/hero/hero.png'
+
+function SectionBackground() {
+  const icons = [
+    { Icon: LocalFloristOutlinedIcon, className: styles.iconOne },
+    { Icon: PaletteOutlinedIcon, className: styles.iconTwo },
+    { Icon: FavoriteBorderOutlinedIcon, className: styles.iconThree },
+    { Icon: HandymanOutlinedIcon, className: styles.iconFour },
+    { Icon: CheckroomOutlinedIcon, className: styles.iconFive },
+    { Icon: ToysOutlinedIcon, className: styles.iconSix },
+    { Icon: AutoAwesomeOutlinedIcon, className: styles.iconSeven },
+    { Icon: ColorLensOutlinedIcon, className: styles.iconEight },
+  ];
+
+  return (
+    <div className={styles.sectionBackground} aria-hidden="true">
+      {icons.map(({ Icon, className }, index) => (
+        <span key={index} className={`${styles.backgroundIcon} ${className}`}>
+          <Icon fontSize="small" />
+        </span>
+      ))}
+    </div>
+  );
+}
 
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -188,7 +216,8 @@ export default function Home() {
       </section>
 
       {/* 3. Featured Categories */}
-      <section className={`${styles.section} ${styles.container}`}>
+      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+        <SectionBackground />
         <div className={styles.sectionHeader}>
           <span>Collections</span>
           <h2 className={styles.sectionTitle}>Popular Categories</h2>
@@ -201,7 +230,8 @@ export default function Home() {
       </section>
 
       {/* 4. Best Sellers */}
-      <section className={`${styles.section} ${styles.container}`}>
+      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+        <SectionBackground />
         <div className={styles.sectionHeader}>
           <span>Customer Favorites</span>
           <h2 className={styles.sectionTitle}>Best Sellers</h2>
@@ -218,7 +248,8 @@ export default function Home() {
       </section>
 
       {/* 5. New Arrivals */}
-      <section className={`${styles.section} ${styles.container}`}>
+      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+        <SectionBackground />
         <div className={styles.sectionHeader}>
           <span>Just In</span>
           <h2 className={styles.sectionTitle}>New Arrivals</h2>
@@ -237,6 +268,7 @@ export default function Home() {
       {/* 6. Why Ditvi Crochet? */}
       <section className={`${styles.container}`}>
         <div className={styles.whyUs}>
+          <SectionBackground />
           <div className={styles.sectionHeader}>
             <span>Our Promises</span>
             <h2 className={styles.sectionTitle}>Why Choose Ditvi Crochet?</h2>
@@ -277,6 +309,7 @@ export default function Home() {
       {/* 7. Custom Crochet CTA Section */}
       <section className={`${styles.container}`}>
         <div className={styles.customCTA}>
+          <SectionBackground />
           <span className={styles.ctaSubtitle}>Bespoke Crochet Creation</span>
           <h2 className={styles.ctaTitle}>Have something special in mind?</h2>
           <p className={styles.ctaDesc}>
@@ -291,7 +324,8 @@ export default function Home() {
       </section>
 
       {/* 8. Customer Reviews */}
-      <section className={`${styles.section} ${styles.container}`}>
+      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+        <SectionBackground />
         <div className={styles.sectionHeader}>
           <span>Love Notes</span>
           <h2 className={styles.sectionTitle}>What Customers Say</h2>
@@ -304,7 +338,8 @@ export default function Home() {
       </section>
 
       {/* 9. Handmade Story */}
-      <section className={`${styles.section} ${styles.container}`}>
+      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+        <SectionBackground />
         <div className={styles.storyGrid}>
           <div className={styles.storyImageWrapper}>
             <Image
@@ -335,7 +370,8 @@ export default function Home() {
       </section>
 
       {/* 10. Instagram Gallery */}
-      <section className={`${styles.section} ${styles.container}`}>
+      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+        <SectionBackground />
         <div className={styles.sectionHeader}>
           <span>@DitviCrochet</span>
           <h2 className={styles.sectionTitle}>Cozy Studio Gram</h2>

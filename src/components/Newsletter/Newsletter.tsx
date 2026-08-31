@@ -23,11 +23,11 @@ export default function Newsletter() {
             <p className={styles.desc}>
               Get 10% off your first custom order request, receive exclusive updates on newly dropped crochet collections, and read stories from our studio!
             </p>
-            <div className={styles.form}>
+            {/* <div className={styles.form}> */}
               <Button variant="primary" onClick={handleJoinChannel} className={styles.subscribeBtn}>
                 Join WhatsApp Channel
               </Button>
-            </div>
+            {/* </div> */}
             <p className={styles.footerNote}>
               We respect your privacy. Unsubscribe at any time.
             </p>
