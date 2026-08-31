@@ -22,7 +22,12 @@ import QuickViewModal from "@/components/QuickViewModal/QuickViewModal";
 import Newsletter from "@/components/Newsletter/Newsletter";
 import Button from "@/components/Button/Button";
 import styles from "./page.module.css";
-import HeroImage from '../../public/hero/hero.png'
+import blogs from "@/data/blogs.json";
+import CarouselImage1 from '../../public/hero/carousel1.png'
+import CarouselImage2 from '../../public/hero/carousel2.png'
+import CarouselImage3 from '../../public/hero/carousel3.png'
+
+
 
 function SectionBackground() {
   const icons = [
@@ -56,7 +61,7 @@ export default function Home() {
       label: "Handmade Premium Boutique",
       title: "Handmade With Love, Crafted For You.",
       description: "Discover beautifully cozy, high-quality handmade crochet bags, flowers, amigurumi dolls, and unique home accessories. Stitching warmth and love into every single design.",
-      image: products[0].images[0],
+      image: CarouselImage1,
       badgeTitle: "Floral Tote",
       badgeMeta: "Handcrafted",
       badgeIcon: LocalFloristOutlinedIcon,
@@ -65,7 +70,7 @@ export default function Home() {
       label: "Bestselling Crochet Gifts",
       title: "Sweet, Thoughtful Pieces Made To Cherish.",
       description: "From statement totes to bouquet keepsakes, each design is created to add charm, warmth, and lasting joy to the people you love most.",
-      image: products[1].images[0],
+      image: CarouselImage2,
       badgeTitle: "New Bloom",
       badgeMeta: "Fresh drops",
       badgeIcon: AutoAwesomeOutlinedIcon,
@@ -74,7 +79,7 @@ export default function Home() {
       label: "Custom Handmade Magic",
       title: "Dream It, We’ll Crochet It In Your Style.",
       description: "Create a custom piece for birthdays, gifting, home styling, or personal keepsakes with colors, shapes, and stories tailored exactly to you.",
-      image: products[3].images[0],
+      image: CarouselImage3,
       badgeTitle: "Custom Love",
       badgeMeta: "Made to order",
       badgeIcon: FavoriteBorderOutlinedIcon,
@@ -152,13 +157,22 @@ export default function Home() {
     },
   ];
 
+  // blog posts loaded from data/blogs.json
+  const blogPosts = blogs;
+
+  // Resolve hero image URL (handle imported static image objects)
+  const currentHeroImage =
+    typeof heroSlides[activeSlide].image === "string"
+      ? heroSlides[activeSlide].image
+      : heroSlides[activeSlide].image?.src ?? "";
+
   return (
     <div className={styles.home}>
       {/* 2. Hero Section */}
       <section
         className={styles.hero}
         style={{
-          backgroundImage: `url(${heroSlides[activeSlide].image})`,
+          backgroundImage: `url(${currentHeroImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -395,7 +409,42 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 11. Newsletter */}
+      {/* 11. Blog Section */}
+      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+        <SectionBackground />
+        <div className={styles.sectionHeader}>
+          <span>Journal</span>
+          <h2 className={styles.sectionTitle}>Latest from the Blog</h2>
+        </div>
+        <div className={styles.blogGrid}>
+          {blogPosts.map((post) => (
+            <article key={post.id} className={styles.blogCard}>
+              <div className={styles.blogImageWrap}>
+                <Image
+                  src={post.image}
+                  alt={post.title}
+                  className={styles.blogImage}
+                  width={800}
+                  height={500}
+                />
+              </div>
+              <div className={styles.blogContent}>
+                <div className={styles.blogMetaRow}>
+                  <span className={styles.blogCategory}>{post.category}</span>
+                  <span className={styles.blogReadTime}>{post.readTime}</span>
+                </div>
+                <h3 className={styles.blogTitle}>{post.title}</h3>
+                <p className={styles.blogExcerpt}>{post.excerpt}</p>
+                <Link href={post.href} className={styles.blogLink}>
+                  Read article
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* 12. Newsletter */}
       <Newsletter />
 
       {/* Quick View Modal Overlay */}

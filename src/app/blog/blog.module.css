@@ -1,0 +1,224 @@
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(255, 249, 251, 0.9), rgba(255, 255, 255, 1));
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.header {
+  padding: 5.5rem 0 2.5rem;
+  background:
+    radial-gradient(circle at top left, rgba(233, 188, 199, 0.18), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(201, 228, 216, 0.2), transparent 24%),
+    linear-gradient(135deg, rgba(255, 249, 251, 0.96), rgba(255, 255, 255, 0.9));
+  border-bottom: 1px solid rgba(137, 92, 109, 0.08);
+}
+
+.kicker {
+  display: inline-block;
+  font-family: var(--font-serif);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  font-size: 0.8rem;
+  margin-bottom: 0.9rem;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 4vw, 4rem);
+  line-height: 1.08;
+  color: var(--dark-text);
+  max-width: 760px;
+  margin-bottom: 0.9rem;
+}
+
+.subtitle {
+  max-width: 700px;
+  color: rgba(48, 34, 38, 0.75);
+  font-size: 1.08rem;
+  line-height: 1.7;
+}
+
+.featuredCard {
+  margin-top: 2.75rem;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 0;
+  border: 1px solid rgba(148, 104, 118, 0.12);
+  border-radius: 28px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 22px 48px rgba(92, 72, 81, 0.08);
+}
+
+.featuredImageWrap {
+  position: relative;
+  min-height: 420px;
+}
+
+.featuredImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.featuredContent {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(248, 241, 244, 0.92));
+}
+
+.featuredLabel {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.5rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(193, 103, 124, 0.1);
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.featuredTitle {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3vw, 2.7rem);
+  line-height: 1.12;
+  color: var(--dark-text);
+  margin-bottom: 0.7rem;
+}
+
+.featuredMeta {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(48, 34, 38, 0.7);
+  margin-bottom: 1rem;
+}
+
+.featuredDescription {
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(48, 34, 38, 0.75);
+  margin-bottom: 1.5rem;
+}
+
+.gridSection {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding: 2.5rem 0 4rem;
+}
+
+.postCard {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(148, 104, 118, 0.12);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 16px 30px rgba(92, 72, 81, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.postCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 40px rgba(92, 72, 81, 0.1);
+}
+
+.postImageWrap {
+  height: 220px;
+  overflow: hidden;
+}
+
+.postImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.postCard:hover .postImage {
+  transform: scale(1.05);
+}
+
+.postBody {
+  padding: 1.2rem 1.15rem 1.4rem;
+}
+
+.metaRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.category,
+.readTime {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.readTime {
+  color: rgba(48, 34, 38, 0.7);
+  letter-spacing: 0.04em;
+}
+
+.postTitle {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1.3;
+  color: var(--dark-text);
+  margin-bottom: 0.8rem;
+}
+
+.excerpt {
+  color: rgba(48, 34, 38, 0.76);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.readMore {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.readMore:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 980px) {
+  .featuredCard {
+    grid-template-columns: 1fr;
+  }
+
+  .gridSection {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .gridSection {
+    grid-template-columns: 1fr;
+  }
+
+  .title {
+    font-size: 2.4rem;
+  }
+}

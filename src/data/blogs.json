@@ -1,0 +1,32 @@
+[
+  {
+    "id": "blog-1",
+    "title": "How to Style a Crochet Tote for Everyday Luxe",
+    "category": "Style Guide",
+    "date": "2026-08-20",
+    "readTime": "4 min read",
+    "excerpt": "From workday carryalls to weekend market runs, discover how to build a polished crochet bag look that feels effortless and elevated.",
+    "image": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80",
+    "href": "/blog"
+  },
+  {
+    "id": "blog-2",
+    "title": "Behind the Stitches: Why Handmade Crochet Lasts",
+    "category": "Craft Journal",
+    "date": "2026-07-15",
+    "readTime": "6 min read",
+    "excerpt": "Learn what makes handcrafted crochet pieces so special—durability, softness, and the thoughtful care that goes into every loop.",
+    "image": "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=80",
+    "href": "/blog"
+  },
+  {
+    "id": "blog-3",
+    "title": "Thoughtful Gift Ideas for Crochet Lovers",
+    "category": "Gift Ideas",
+    "date": "2026-06-30",
+    "readTime": "5 min read",
+    "excerpt": "Find charming, meaningful gifts for birthdays, new homes, and thank-you moments that feel personal, warm, and beautifully handmade.",
+    "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=900&q=80",
+    "href": "/blog"
+  }
+]
