@@ -1,3 +1,5 @@
+
+
 export interface ProductColor {
   name: string;
   hex: string;
@@ -35,7 +37,7 @@ export interface Product {
 
 export const products: Product[] = [
   {
-    id: "prod-tote-bag",
+    id: "prod-hair-clip",
     name: "Blossom Crochet Tote Bag",
     slug: "blossom-crochet-tote-bag",
     price: 39.99,
@@ -44,8 +46,8 @@ export const products: Product[] = [
     reviewCount: 34,
     category: "crochet-bags",
     images: [
-      "https://images.unsplash.com/photo-1590736969955-71cb94801759?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80"
+      "./products/hair/1.png",
+      "./products/hair/1.png"
     ],
     description: "Our signature blossom tote bag is tightly hand-stitched for maximum durability and strength. Featuring a delicate floral granny square pattern, it adds a touch of bohemian elegance to any outfit. Roomy enough for your tablet, wallet, book, and daily essentials.",
     details: [
