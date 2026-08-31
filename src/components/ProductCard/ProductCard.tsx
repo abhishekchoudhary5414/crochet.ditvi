@@ -97,23 +97,24 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             )}
           </div>
 
-          <div className="btn">
+          <div className={styles.btn}>
+            <Link
+              href={`/shop/${product.id}`}
+              className={styles.viewDetailsBtn}
+              aria-label={`View details for ${product.name}`}
+            >
+              View Details
+            </Link>
 
-          <button
-          className={styles.viewDetailsBtn}
-          >
-            View Details
-          </button>
-
-          <button
-            className={styles.orderBtn}
-            onClick={handleOrderOnWhatsApp}
-            disabled={product.stockStatus === "out_of_stock"}
-            title="Order on WhatsApp"
-            aria-label="Order product on WhatsApp"
-          >
-            {product.stockStatus === "out_of_stock" ? "Out" : <><WhatsAppIcon fontSize="small" /> WhatsApp</>}
-          </button>
+            <button
+              className={styles.orderBtn}
+              onClick={handleOrderOnWhatsApp}
+              disabled={product.stockStatus === "out_of_stock"}
+              title="Order on WhatsApp"
+              aria-label="Order product on WhatsApp"
+            >
+              {product.stockStatus === "out_of_stock" ? "Out" : <><WhatsAppIcon fontSize="small" /> WhatsApp</>}
+            </button>
           </div>
         </div>
       </div>
