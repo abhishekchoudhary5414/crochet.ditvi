@@ -166,10 +166,10 @@ function ShopContent() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Ditvi Crochet Shop</h1>
+        {/* <h1 className={styles.title}>Ditvi Crochet Shop</h1>
         <p className={styles.subtitle}>
           Browse our beautiful, premium handmade crochet catalog. Each piece is crafted stitch by stitch with warmth and love.
-        </p>
+        </p> */}
 
         {/* Active badges row */}
         {(selectedCategory.length > 0 || searchQuery || collectionFilter.length > 0 || maxPrice < 100) && (

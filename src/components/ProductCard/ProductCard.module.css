@@ -110,6 +110,17 @@
   background-color: var(--soft-pink);
 }
 
+.viewDetailsBtn {
+  background-color: var(--primary);
+  color: var(--white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
 /* Content */
 .content {
   padding: var(--spacing-md);

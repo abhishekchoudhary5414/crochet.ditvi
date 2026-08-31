@@ -58,6 +58,7 @@ function SectionBackground() {
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
 
   const heroSlides = [
     {
@@ -65,6 +66,7 @@ export default function Home() {
       title: "Handmade With Love, Crafted For You.",
       description: "Discover beautifully cozy, high-quality handmade crochet bags, flowers, amigurumi dolls, and unique home accessories. Stitching warmth and love into every single design.",
       image: CarouselImage1,
+      mobileImage: "/hero/mobile/carousel1.png",
       badgeTitle: "Floral Tote",
       badgeMeta: "Handcrafted",
       badgeIcon: LocalFloristOutlinedIcon,
@@ -74,6 +76,7 @@ export default function Home() {
       title: "Sweet, Thoughtful Pieces Made To Cherish.",
       description: "From statement totes to bouquet keepsakes, each design is created to add charm, warmth, and lasting joy to the people you love most.",
       image: CarouselImage2,
+      mobileImage: "/hero/mobile/carousel2.png",
       badgeTitle: "New Bloom",
       badgeMeta: "Fresh drops",
       badgeIcon: AutoAwesomeOutlinedIcon,
@@ -83,6 +86,7 @@ export default function Home() {
       title: "Dream It, We’ll Crochet It In Your Style.",
       description: "Create a custom piece for birthdays, gifting, home styling, or personal keepsakes with colors, shapes, and stories tailored exactly to you.",
       image: CarouselImage3,
+      mobileImage: "/hero/mobile/carousel3.png",
       badgeTitle: "Custom Love",
       badgeMeta: "Made to order",
       badgeIcon: FavoriteBorderOutlinedIcon,
@@ -95,6 +99,17 @@ export default function Home() {
     }, 4200);
 
     return () => clearInterval(interval);
+  }, []);
+
+  // track viewport to switch to mobile hero images
+  useEffect(() => {
+    function handleResize() {
+      setIsMobile(window.innerWidth <= 768);
+    }
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Filter products
@@ -164,10 +179,12 @@ export default function Home() {
   const blogPosts = blogs;
 
   // Resolve hero image URL (handle imported static image objects)
-  const currentHeroImage =
-    typeof heroSlides[activeSlide].image === "string"
-      ? heroSlides[activeSlide].image
-      : heroSlides[activeSlide].image?.src ?? "";
+  const currentHeroImage = (() => {
+    const slide = heroSlides[activeSlide];
+    if (isMobile && slide.mobileImage) return slide.mobileImage;
+    if (typeof slide.image === "string") return slide.image;
+    return slide.image?.src ?? "";
+  })();
 
   return (
     <div className={styles.home}>
@@ -247,7 +264,7 @@ export default function Home() {
       </section>
 
       {/* 4. Best Sellers */}
-      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+      {/* <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
         <SectionBackground />
         <div className={styles.sectionHeader}>
           <span>Customer Favorites</span>
@@ -262,7 +279,7 @@ export default function Home() {
             />
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* 5. New Arrivals */}
       <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>

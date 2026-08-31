@@ -97,6 +97,14 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             )}
           </div>
 
+          <div className="btn">
+
+          <button
+          className={styles.viewDetailsBtn}
+          >
+            View Details
+          </button>
+
           <button
             className={styles.orderBtn}
             onClick={handleOrderOnWhatsApp}
@@ -106,6 +114,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           >
             {product.stockStatus === "out_of_stock" ? "Out" : <><WhatsAppIcon fontSize="small" /> WhatsApp</>}
           </button>
+          </div>
         </div>
       </div>
     </div>
