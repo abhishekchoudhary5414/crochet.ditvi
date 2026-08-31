@@ -73,8 +73,8 @@
   --text-shadow-soft: rgba(0, 0, 0, 0.3);
 
   /* Font Families (Fallbacks) */
-  --font-serif: var(--font-playfair), 'Playfair Display', Georgia, serif;
-  --font-sans: var(--font-montserrat), 'Montserrat', sans-serif;
+  --font-serif: var(--font-ubuntu), 'Ubuntu', sans-serif;
+  --font-sans: var(--font-ubuntu), 'Ubuntu', sans-serif;
 
   /* Typography Scale */
   --text-xs: 0.75rem;
@@ -127,7 +127,7 @@ html, body {
   overflow-x: hidden;
   background-color: var(--background);
   color: var(--dark-text);
-  font-family: var(--font-sans), 'Montserrat', sans-serif;
+  font-family: var(--font-sans), 'Ubuntu', sans-serif;
   font-size: 16px;
   line-height: 1.6;
   scroll-behavior: smooth;

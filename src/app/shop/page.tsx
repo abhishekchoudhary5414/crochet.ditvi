@@ -3,8 +3,15 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
-import CloseIcon from "@mui/icons-material/Close";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import CategoryOutlinedIcon from "@mui/icons-material/CategoryOutlined";
+import CollectionsBookmarkOutlinedIcon from "@mui/icons-material/CollectionsBookmarkOutlined";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import SellOutlinedIcon from "@mui/icons-material/SellOutlined";
+import FilterAltOffOutlinedIcon from "@mui/icons-material/FilterAltOffOutlined";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import CheckBoxOutlineBlankRoundedIcon from "@mui/icons-material/CheckBoxOutlineBlankRounded";
 import { products, Product } from "@/data/products";
 import { categories } from "@/data/categories";
 import { useApp } from "@/context/AppContext";
@@ -19,11 +26,11 @@ function ShopContent() {
   const router = useRouter();
 
   // State parameters
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string[]>([]); // empty = all
   const [maxPrice, setMaxPrice] = useState<number>(100);
   const [showInStock, setShowInStock] = useState<boolean>(true);
   const [showOutStock, setShowOutStock] = useState<boolean>(true);
-  const [collectionFilter, setCollectionFilter] = useState<string>("all"); // 'all', 'best_sellers', 'new_arrivals', 'wishlist'
+  const [collectionFilter, setCollectionFilter] = useState<string[]>([]); // empty = all; values: 'best_sellers','new_arrivals'
   const [sortBy, setSortBy] = useState<string>("popular"); // 'popular', 'price_asc', 'price_desc', 'newest'
   
   // Mobile filter states
@@ -37,9 +44,10 @@ function ShopContent() {
     const filterParam = searchParams.get("filter");
 
     if (categoryParam) {
-      setSelectedCategory(categoryParam);
+      // support comma-separated categories in URL
+      setSelectedCategory(categoryParam.split(",").filter(Boolean));
     } else {
-      setSelectedCategory("all");
+      setSelectedCategory([]);
     }
 
     if (searchParam) {
@@ -47,16 +55,16 @@ function ShopContent() {
     }
 
     if (filterParam) {
-      setCollectionFilter("all");
+      setCollectionFilter(filterParam.split(",").filter(Boolean));
     } else {
-      setCollectionFilter("all");
+      setCollectionFilter([]);
     }
   }, [searchParams, setSearchQuery]);
 
   // Filter products based on selections
   const filteredProducts = products.filter((product) => {
-    // 1. Category Filter
-    if (selectedCategory !== "all" && product.category !== selectedCategory) {
+    // 1. Category Filter (multi-select)
+    if (selectedCategory.length > 0 && !selectedCategory.includes(product.category)) {
       return false;
     }
 
@@ -84,12 +92,12 @@ function ShopContent() {
       return false;
     }
 
-    // 5. Collection Filter
-    if (collectionFilter === "best_sellers" && !product.isBestSeller) {
-      return false;
-    }
-    if (collectionFilter === "new_arrivals" && !product.isNewArrival) {
-      return false;
+    // 5. Collection Filter (multi-select: at least one must match)
+    if (collectionFilter.length > 0) {
+      let collMatch = false;
+      if (collectionFilter.includes("best_sellers") && product.isBestSeller) collMatch = true;
+      if (collectionFilter.includes("new_arrivals") && product.isNewArrival) collMatch = true;
+      if (!collMatch) return false;
     }
 
     return true;
@@ -116,18 +124,22 @@ function ShopContent() {
   });
 
   const handleResetFilters = () => {
-    setSelectedCategory("all");
+    setSelectedCategory([]);
     setMaxPrice(100);
     setShowInStock(true);
     setShowOutStock(true);
-    setCollectionFilter("all");
+    setCollectionFilter([]);
     setSearchQuery("");
     setSortBy("popular");
     router.push("/shop");
   };
 
-  const handleRemoveCategory = () => {
-    setSelectedCategory("all");
+  const handleRemoveCategory = (slug?: string) => {
+    if (!slug) {
+      setSelectedCategory([]);
+    } else {
+      setSelectedCategory((prev) => prev.filter((s) => s !== slug));
+    }
     const params = new URLSearchParams(searchParams.toString());
     params.delete("category");
     router.push(`/shop?${params.toString()}`);
@@ -140,8 +152,12 @@ function ShopContent() {
     router.push(`/shop?${params.toString()}`);
   };
 
-  const handleRemoveCollection = () => {
-    setCollectionFilter("all");
+  const handleRemoveCollection = (col?: string) => {
+    if (!col) {
+      setCollectionFilter([]);
+    } else {
+      setCollectionFilter((prev) => prev.filter((c) => c !== col));
+    }
     const params = new URLSearchParams(searchParams.toString());
     params.delete("filter");
     router.push(`/shop?${params.toString()}`);
@@ -156,33 +172,46 @@ function ShopContent() {
         </p>
 
         {/* Active badges row */}
-        {(selectedCategory !== "all" || searchQuery || collectionFilter !== "all" || maxPrice < 100) && (
+        {(selectedCategory.length > 0 || searchQuery || collectionFilter.length > 0 || maxPrice < 100) && (
           <div className={styles.activeFiltersRow}>
-            {selectedCategory !== "all" && (
-              <span className={styles.filterBadge}>
-                Category: {selectedCategory.replace("-", " ")}
-                <button onClick={handleRemoveCategory} aria-label="Remove category filter"><CloseIcon fontSize="small" /></button>
-              </span>
+            {selectedCategory.length > 0 && (
+              <>
+                {selectedCategory.map((sc) => (
+                  <span key={sc} className={styles.filterBadge}>
+                    <CategoryOutlinedIcon fontSize="small" />
+                    <span>{sc.replace("-", " ")}</span>
+                    <button onClick={() => handleRemoveCategory(sc)} aria-label="Remove category filter"><CloseRoundedIcon fontSize="small" /></button>
+                  </span>
+                ))}
+              </>
             )}
             {searchQuery && (
               <span className={styles.filterBadge}>
-                Search: &ldquo;{searchQuery}&rdquo;
-                <button onClick={handleRemoveSearch} aria-label="Remove search filter"><CloseIcon fontSize="small" /></button>
+                <SearchOutlinedIcon fontSize="small" />
+                <span>&ldquo;{searchQuery}&rdquo;</span>
+                <button onClick={handleRemoveSearch} aria-label="Remove search filter"><CloseRoundedIcon fontSize="small" /></button>
               </span>
             )}
-            {collectionFilter !== "all" && (
-              <span className={styles.filterBadge}>
-                Collection: {collectionFilter.replace("_", " ")}
-                <button onClick={handleRemoveCollection} aria-label="Remove collection filter"><CloseIcon fontSize="small" /></button>
-              </span>
+            {collectionFilter.length > 0 && (
+              <>
+                {collectionFilter.map((cf) => (
+                  <span key={cf} className={styles.filterBadge}>
+                    <CollectionsBookmarkOutlinedIcon fontSize="small" />
+                    <span>{cf.replace("_", " ")}</span>
+                    <button onClick={() => handleRemoveCollection(cf)} aria-label="Remove collection filter"><CloseRoundedIcon fontSize="small" /></button>
+                  </span>
+                ))}
+              </>
             )}
             {maxPrice < 100 && (
               <span className={styles.filterBadge}>
-                Max Price: ₹{maxPrice}
-                <button onClick={() => setMaxPrice(100)} aria-label="Remove price filter"><CloseIcon fontSize="small" /></button>
+                <SellOutlinedIcon fontSize="small" />
+                <span>₹{maxPrice}</span>
+                <button onClick={() => setMaxPrice(100)} aria-label="Remove price filter"><CloseRoundedIcon fontSize="small" /></button>
               </span>
             )}
             <button onClick={handleResetFilters} className={styles.clearFilterBtn}>
+              <FilterAltOffOutlinedIcon fontSize="small" />
               Clear All Filters
             </button>
           </div>
@@ -219,7 +248,7 @@ function ShopContent() {
                 style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--dark-text)" }}
                 onClick={() => setIsMobileFilterOpen(false)}
               >
-                <CloseIcon fontSize="small" />
+                <CloseRoundedIcon fontSize="small" />
               </button>
             )}
           </div>
@@ -230,29 +259,51 @@ function ShopContent() {
             <div className={styles.categoryList}>
               <button
                 className={`${styles.categoryBtn} ${
-                  selectedCategory === "all" ? styles.categoryBtnActive : ""
+                  selectedCategory.length === 0 ? styles.categoryBtnActive : ""
                 }`}
                 onClick={() => {
-                  setSelectedCategory("all");
+                  setSelectedCategory([]);
                   setIsMobileFilterOpen(false);
                 }}
               >
-                All Categories ({products.length})
+                <span className={styles.categoryCheckbox} aria-hidden="true">
+                  {selectedCategory.length === 0 ? (
+                    <CheckRoundedIcon fontSize="inherit" />
+                  ) : (
+                    <CheckBoxOutlineBlankRoundedIcon fontSize="inherit" />
+                  )}
+                </span>
+                <span className={styles.categoryText}>All Categories</span>
+                <span className={styles.categoryCount}>({products.length})</span>
               </button>
               {categories.map((cat) => {
                 const count = products.filter((p) => p.category === cat.slug).length;
+                const isSelected = selectedCategory.includes(cat.slug);
                 return (
                   <button
                     key={cat.id}
                     className={`${styles.categoryBtn} ${
-                      selectedCategory === cat.slug ? styles.categoryBtnActive : ""
+                      isSelected ? styles.categoryBtnActive : ""
                     }`}
                     onClick={() => {
-                      setSelectedCategory(cat.slug);
+                      setSelectedCategory((prev) => {
+                        if (prev.includes(cat.slug)) {
+                          return prev.filter((s) => s !== cat.slug);
+                        }
+                        return [...prev, cat.slug];
+                      });
                       setIsMobileFilterOpen(false);
                     }}
                   >
-                    {cat.name} ({count})
+                    <span className={styles.categoryCheckbox} aria-hidden="true">
+                      {isSelected ? (
+                        <CheckRoundedIcon fontSize="inherit" />
+                      ) : (
+                        <CheckBoxOutlineBlankRoundedIcon fontSize="inherit" />
+                      )}
+                    </span>
+                    <span className={styles.categoryText}>{cat.name}</span>
+                    <span className={styles.categoryCount}>({count})</span>
                   </button>
                 );
               })}
@@ -265,25 +316,33 @@ function ShopContent() {
             <div className={styles.categoryList}>
               <button
                 className={`${styles.categoryBtn} ${
-                  collectionFilter === "all" ? styles.categoryBtnActive : ""
+                  collectionFilter.length === 0 ? styles.categoryBtnActive : ""
                 }`}
-                onClick={() => setCollectionFilter("all")}
+                onClick={() => setCollectionFilter([])}
               >
                 All Products
               </button>
               <button
                 className={`${styles.categoryBtn} ${
-                  collectionFilter === "best_sellers" ? styles.categoryBtnActive : ""
+                  collectionFilter.includes("best_sellers") ? styles.categoryBtnActive : ""
                 }`}
-                onClick={() => setCollectionFilter("best_sellers")}
+                onClick={() => {
+                  setCollectionFilter((prev) => 
+                    prev.includes("best_sellers") ? prev.filter((p) => p !== "best_sellers") : [...prev, "best_sellers"]
+                  );
+                }}
               >
                 Best Sellers
               </button>
               <button
                 className={`${styles.categoryBtn} ${
-                  collectionFilter === "new_arrivals" ? styles.categoryBtnActive : ""
+                  collectionFilter.includes("new_arrivals") ? styles.categoryBtnActive : ""
                 }`}
-                onClick={() => setCollectionFilter("new_arrivals")}
+                onClick={() => {
+                  setCollectionFilter((prev) => 
+                    prev.includes("new_arrivals") ? prev.filter((p) => p !== "new_arrivals") : [...prev, "new_arrivals"]
+                  );
+                }}
               >
                 New Arrivals
               </button>
@@ -292,7 +351,7 @@ function ShopContent() {
 
           {/* Price Range group */}
           <div className={styles.filterGroup}>
-            <span className={styles.filterLabel}>Max Price: ₹{maxPrice}</span>
+            <span className={styles.filterLabel}>Price: ₹{maxPrice}</span>
             <div className={styles.priceSliderContainer}>
               <input
                 type="range"

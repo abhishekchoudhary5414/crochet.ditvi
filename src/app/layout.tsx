@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Montserrat } from "next/font/google";
+import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import siteConfig from "@/data/siteConfig.json";
 import { AppProvider } from "@/context/AppContext";
@@ -8,15 +8,10 @@ import Footer from "@/components/Footer/Footer";
 import ToastContainer from "@/components/Toast/Toast";
 import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton/FloatingWhatsAppButton";
 
-const playfair = Playfair_Display({
+const ubuntu = Ubuntu({
   subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  variable: "--font-montserrat",
+  weight: ["300", "400", "500", "700"],
+  variable: "--font-ubuntu",
   display: "swap",
 });
 
@@ -66,7 +61,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
+    <html lang="en" className={ubuntu.variable}>
       <body>
         <AppProvider>
           <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>

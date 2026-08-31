@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import LocalFloristOutlinedIcon from "@mui/icons-material/LocalFloristOutlined";
@@ -21,6 +21,45 @@ import HeroImage from '../../public/hero/hero.png'
 
 export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+
+  const heroSlides = [
+    {
+      label: "Handmade Premium Boutique",
+      title: "Handmade With Love, Crafted For You.",
+      description: "Discover beautifully cozy, high-quality handmade crochet bags, flowers, amigurumi dolls, and unique home accessories. Stitching warmth and love into every single design.",
+      image: products[0].images[0],
+      badgeTitle: "Floral Tote",
+      badgeMeta: "Handcrafted",
+      badgeIcon: LocalFloristOutlinedIcon,
+    },
+    {
+      label: "Bestselling Crochet Gifts",
+      title: "Sweet, Thoughtful Pieces Made To Cherish.",
+      description: "From statement totes to bouquet keepsakes, each design is created to add charm, warmth, and lasting joy to the people you love most.",
+      image: products[1].images[0],
+      badgeTitle: "New Bloom",
+      badgeMeta: "Fresh drops",
+      badgeIcon: AutoAwesomeOutlinedIcon,
+    },
+    {
+      label: "Custom Handmade Magic",
+      title: "Dream It, We’ll Crochet It In Your Style.",
+      description: "Create a custom piece for birthdays, gifting, home styling, or personal keepsakes with colors, shapes, and stories tailored exactly to you.",
+      image: products[3].images[0],
+      badgeTitle: "Custom Love",
+      badgeMeta: "Made to order",
+      badgeIcon: FavoriteBorderOutlinedIcon,
+    },
+  ];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 4200);
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Filter products
   const bestSellers = products.filter((p) => p.isBestSeller).slice(0, 4);
@@ -88,16 +127,22 @@ export default function Home() {
   return (
     <div className={styles.home}>
       {/* 2. Hero Section */}
-      <section className={styles.hero}>
+      <section
+        className={styles.hero}
+        style={{
+          backgroundImage: `url(${heroSlides[activeSlide].image})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <div className={`${styles.heroGrid} ${styles.container}`}>
           <div className={styles.heroContent}>
-            <span className={styles.heroSubtitle}>Handmade Premium Boutique</span>
+            <span className={styles.heroSubtitle}>{heroSlides[activeSlide].label}</span>
             <h1 className={styles.heroTitle}>
-              Handmade With Love, <br />
-              <span>Crafted For You.</span>
+              {heroSlides[activeSlide].title}
             </h1>
             <p className={styles.heroDesc}>
-              Discover beautifully cozy, high-quality handmade crochet bags, flowers, amigurumi dolls, and unique home accessories. Stitching warmth and love into every single design.
+              {heroSlides[activeSlide].description}
             </p>
             <div className={styles.heroActions}>
               <Link href="/shop">
@@ -111,38 +156,33 @@ export default function Home() {
                 </Button>
               </Link>
             </div>
-          </div>
-          <div className={styles.heroImageWrapper}>
-            <div className={styles.heroVisual}>
-              <div className={styles.heroGlow} />
-              <div className={styles.imageFrame}>
-                <Image
-                  src={HeroImage}
-                  alt="Beautiful crochet product by Ditvi Crochet"
-                  className={styles.heroImg}
-                  width={510}
-                  height={585}
-                  priority
-                  sizes="(max-width: 768px) 100vw, 50vw"
+            <div className={styles.sliderDots} aria-label="Hero slider pagination">
+              {heroSlides.map((slide, index) => (
+                <button
+                  key={slide.label}
+                  type="button"
+                  className={`${styles.dot} ${index === activeSlide ? styles.activeDot : ""}`}
+                  onClick={() => setActiveSlide(index)}
+                  aria-label={`Show slide ${index + 1}`}
                 />
+              ))}
+            </div>
+            <div className={styles.heroFeatures}>
+              <div className={styles.featureItem}>
+                <LocalShippingOutlinedIcon fontSize="small" />
+                <span>100% Satisfaction</span>
               </div>
-
-              <div className={`${styles.productBadge} ${styles.productBadgeTop}`}>
-                <span className={styles.badgeIcon}><LocalFloristOutlinedIcon fontSize="small" /></span>
-                <div>
-                  <strong>Floral Tote</strong>
-                  <small>Handcrafted</small>
-                </div>
+              <div className={styles.featureItem}>
+                <LocalFloristOutlinedIcon fontSize="small" />
+                <span>Handmade</span>
               </div>
-
-              <div className={`${styles.productBadge} ${styles.productBadgeBottom}`}>
-                <span className={styles.badgeIcon}><AutoAwesomeOutlinedIcon fontSize="small" /></span>
-                <div>
-                  <strong>4.9/5</strong>
-                  <small>Happy customers</small>
-                </div>
+              <div className={styles.featureItem}>
+                <FavoriteBorderOutlinedIcon fontSize="small" />
+                <span>Custom Orders</span>
               </div>
             </div>
+
+            <p className={styles.heroNote}>Made with love — ethically sourced yarns, careful hand-stitching, and attention to detail.</p>
           </div>
         </div>
       </section>
