@@ -249,30 +249,34 @@
 /* Quantity & Actions Row */
 .actionsRow {
   display: flex;
+  align-items: center;
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-xl);
-  align-items: center;
+  flex-wrap: wrap;
 }
 
 .quantityStepper {
   display: flex;
   align-items: center;
   border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  background-color: var(--white);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #fff 0%, #fffafc 100%);
   overflow: hidden;
-  height: 48px;
+  height: 52px;
+  box-shadow: var(--shadow-sm);
+  min-width: 150px;
 }
 
 .stepperBtn {
   border: none;
-  background: none;
-  width: 40px;
+  background: transparent;
+  width: 44px;
   height: 100%;
   font-size: var(--text-lg);
   cursor: pointer;
   transition: var(--transition-fast);
   color: var(--dark-text);
+  font-weight: 700;
 }
 
 .stepperBtn:hover {
@@ -280,20 +284,27 @@
 }
 
 .quantityVal {
-  width: 40px;
+  width: 52px;
   text-align: center;
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--dark-text);
 }
 
-.whatsappOrderBtn {
-  background-color: var(--whatsapp) !important;
-  color: var(--white) !important;
-  border: none !important;
+.actionButtonsStack {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex: 1;
+  min-width: min(100%, 280px);
 }
 
-.whatsappOrderBtn:hover:not(:disabled) {
-  background-color: var(--whatsapp-dark) !important;
+.primaryActionBtn {
+  flex: 1;
+  min-width: 0;
+  height: 52px;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .wishlistBtn {
@@ -504,23 +515,28 @@
     flex-direction: column;
     align-items: stretch;
     gap: var(--spacing-sm);
-    flex-wrap: wrap;
   }
 
   .quantityStepper {
     width: 100%;
     justify-content: space-between;
+    min-width: 0;
   }
-  
-  .quantityStepper .stepperBtn {
-    flex: 1;
-  }
-  
-  .quantityStepper .quantityVal {
+
+  .stepperBtn {
     flex: 1;
   }
 
-  .whatsappOrderBtn {
+  .quantityVal {
+    flex: 1;
+  }
+
+  .actionButtonsStack {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .primaryActionBtn {
     width: 100%;
   }
 

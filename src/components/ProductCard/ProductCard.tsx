@@ -1,13 +1,39 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import StarIcon from "@mui/icons-material/Star";
+import { useRouter } from "next/navigation";
 import siteConfig from "@/data/siteConfig.json";
 import { Product } from "@/data/products";
 import styles from "./ProductCard.module.css";
+import { useApp } from '@/context/AppContext';
+import supabase from '@/lib/supabaseClient';
+
+// Small inline icons to avoid external dependency
+const VisibilityIcon = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="currentColor" />
+    <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+  </svg>
+);
+
+const StarIcon = ({ size = 14 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.788 1.402 8.172L12 18.896 4.664 23.17l1.402-8.172L.132 9.21l8.2-1.192L12 .587z" fill="currentColor" />
+  </svg>
+);
+
+const WhatsAppIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20.52 3.48A11.88 11.88 0 0 0 12 .5C6 0 1 4.98 1 11.02c0 1.94.5 3.84 1.44 5.5L.5 23.5l6.98-1.82A11.88 11.88 0 0 0 12 22.5c6 0 10.98-4.98 10.98-11.02 0-3.02-1.17-5.85-3.46-7.98z" fill="currentColor" />
+  </svg>
+);
+
+const PaidIcon = ({ size = 14 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 1L3 5v6c0 5 3.58 9.74 9 11 5.42-1.26 9-6 9-11V5l-9-4z" fill="currentColor" />
+  </svg>
+);
 
 interface ProductCardProps {
   product: Product;
@@ -15,39 +41,62 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
+  const { addToCart, addToast } = useApp();
+  const [favorited, setFavorited] = useState(false);
+  const [loadingFav, setLoadingFav] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const s = await supabase.auth.getSession();
+        const token = s?.data?.session?.access_token;
+        if (!token) return;
+        const res = await fetch('/api/account/wishlist', { headers: { Authorization: `Bearer ${token}` } });
+        if (!res.ok) return;
+        const j = await res.json();
+        const exists = (j.items || []).some((it: any) => String(it.product_id || it.productId || it.product_id) === String(product.id));
+        setFavorited(!!exists);
+      } catch (e) {}
+    })();
+  }, [product.id]);
+
   const handleOrderOnWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
     const message = encodeURIComponent(
       `Hi Ditvi Crochet, I want to order ${product.name} (${product.category.replace("-", " ")}).\n` +
-        `Color: ${product.colors[0]?.name || "Default"}\n` +
-        `Size: ${product.sizes[0] || "Standard"}\n` +
+        `Color: ${product.colors?.[0]?.name || "Default"}\n` +
+        `Size: ${product.sizes?.[0] || "Standard"}\n` +
         `Price: ₹${product.price.toFixed(2)}\nPlease share availability and delivery details.`
     );
     window.open(`https://wa.me/${siteConfig.whatsappNumber}?text=${message}`, "_blank", "noopener,noreferrer");
   };
 
-  const hasDiscount = product.originalPrice && product.originalPrice > product.price;
+  const hasDiscount = typeof product.originalPrice === 'number' && product.originalPrice > product.price;
   const discountPercentage = hasDiscount
     ? Math.round(((product.originalPrice! - product.price) / product.originalPrice!) * 100)
     : 0;
 
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addToCart({ id: product.id, name: product.name, price: product.price, image: product.images?.[0] || '', color: product.colors?.[0]?.name || '', size: product.sizes?.[0] || '' });
+  };
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const item = { id: product.id, name: product.name, price: product.price, image: product.images?.[0] || '', color: product.colors?.[0]?.name || '', size: product.sizes?.[0] || '', quantity: 1 };
+    try { sessionStorage.setItem('ditvi_buy_now', JSON.stringify(item)); } catch (e) {}
+    router.push('/checkout');
+  };
+
   return (
     <div className={styles.card}>
-      {/* Product Image Wrapper */}
       <Link href={`/shop/${product.id}`} className={styles.imageLink}>
         <div className={styles.imageWrapper}>
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className={styles.image}
-            loading="lazy"
-          />
+          <img src={product.images?.[0] || '/logo/logo.png'} alt={product.name} className={styles.image} loading="lazy" />
 
-          {/* Badge overlays */}
           {hasDiscount && (
-            <span className={`${styles.badge} ${styles.discountBadge}`}>
-              -{discountPercentage}% Off
-            </span>
+            <span className={`${styles.badge} ${styles.discountBadge}`}>-{discountPercentage}% Off</span>
           )}
           {product.isBestSeller && !hasDiscount && (
             <span className={`${styles.badge} ${styles.bestBadge}`}>Best Seller</span>
@@ -56,65 +105,70 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             <span className={`${styles.badge} ${styles.newBadge}`}>New</span>
           )}
 
-          {/* Quick Action Overlay Buttons */}
           <div className={styles.overlayActions}>
-            <button
-              className={styles.overlayBtn}
-              onClick={(e) => {
+            <button className={styles.overlayBtn} onClick={(e) => { e.preventDefault(); onQuickView(product); }} title="Quick View" aria-label="Quick View product">
+              <VisibilityIcon />
+            </button>
+              <button
+              className={`${styles.overlayBtn} ${favorited ? styles.favorited : ''}`}
+              onClick={async (e) => {
                 e.preventDefault();
-                onQuickView(product);
+                try {
+                  setLoadingFav(true);
+                  const s = await supabase.auth.getSession();
+                  const token = s?.data?.session?.access_token;
+                  if (!token) {
+                    addToast('Please login to save wishlist', 'error');
+                    router.push('/login');
+                    return;
+                  }
+                  if (!favorited) {
+                    const res = await fetch('/api/account/wishlist', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: product.id }) });
+                    if (res.ok) setFavorited(true);
+                    else addToast('Failed to add to wishlist', 'error');
+                  } else {
+                    const res = await fetch('/api/account/wishlist', { method: 'DELETE', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: product.id }) });
+                    if (res.ok) setFavorited(false);
+                    else addToast('Failed to remove from wishlist', 'error');
+                  }
+                } catch (err) {
+                  addToast('Wishlist action failed', 'error');
+                } finally { setLoadingFav(false); }
               }}
-              title="Quick View"
-              aria-label="Quick View product"
-            >
-              <VisibilityOutlinedIcon fontSize="small" />
+              title={favorited ? 'Remove from wishlist' : 'Add to wishlist'}
+              aria-label="Toggle wishlist"
+              >
+              {/* simple heart icon - color handled via CSS when favorited */}
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.heartIcon}>
+                <path d="M12 21s-7-4.35-10-7.6C-1.6 9.3 3.4 3 8.5 6.2 10.6 7.5 12 9.2 12 9.2s1.4-1.7 3.5-3.1C20.6 3 25.6 9.3 22 13.4 19 16.65 12 21 12 21z" fill="currentColor" />
+              </svg>
             </button>
           </div>
         </div>
       </Link>
 
-      {/* Product Content Details */}
       <div className={styles.content}>
         <span className={styles.category}>{product.category.replace("-", " ")}</span>
-        <Link href={`/shop/${product.id}`} className={styles.titleLink}>
-          <h3 className={styles.title}>{product.name}</h3>
-        </Link>
+        <Link href={`/shop/${product.id}`} className={styles.titleLink}><h3 className={styles.title}>{product.name}</h3></Link>
 
-        {/* Rating Row */}
         <div className={styles.ratingRow}>
-          <span className={styles.stars}><StarIcon fontSize="small" /> {product.rating.toFixed(1)}</span>
-          <span className={styles.reviews}>({product.reviewCount})</span>
+          <span className={styles.stars}><StarIcon /> {product.rating?.toFixed?.(1) ?? '0.0'}</span>
+          <span className={styles.reviews}>({product.reviewCount ?? 0})</span>
         </div>
 
-        {/* Price & Cart Actions Row */}
         <div className={styles.footerRow}>
           <div className={styles.priceContainer}>
             <span className={styles.price}>₹{product.price.toFixed(2)}</span>
-            {hasDiscount && (
-              <span className={styles.originalPrice}>
-                ₹{product.originalPrice?.toFixed(2)}
-              </span>
-            )}
+            {hasDiscount && <span className={styles.originalPrice}>₹{product.originalPrice?.toFixed(2)}</span>}
           </div>
 
           <div className={styles.btn}>
-            <Link
-              href={`/shop/${product.id}`}
-              className={styles.viewDetailsBtn}
-              aria-label={`View details for ${product.name}`}
-            >
-              View Details
-            </Link>
+            <Link href={`/shop/${product.id}`} className={styles.viewDetailsBtn} aria-label={`View details for ${product.name}`}>View Details</Link>
 
-            <button
-              className={styles.orderBtn}
-              onClick={handleOrderOnWhatsApp}
-              disabled={product.stockStatus === "out_of_stock"}
-              title="Order on WhatsApp"
-              aria-label="Order product on WhatsApp"
-            >
-              {product.stockStatus === "out_of_stock" ? "Out" : <><WhatsAppIcon fontSize="small" /> WhatsApp</>}
-            </button>
+            <div className={styles.actionGroup}>
+              <button className={styles.addCartBtn} onClick={handleAddToCart} aria-label="Add to cart">Add to Cart</button>
+              <button className={styles.buyNowBtn} onClick={handleBuyNow} aria-label="Buy now"><PaidIcon /> Buy Now</button>
+            </div>
           </div>
         </div>
       </div>

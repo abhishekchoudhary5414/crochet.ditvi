@@ -41,7 +41,7 @@ export const products: Product[] = [
     id: "prod-hair-clip",
     name: "Blossom Crochet Tote Bag",
     slug: "blossom-crochet-tote-bag",
-    price: 39.99,
+    price: 1,
     originalPrice: 49.99,
     rating: 4.8,
     reviewCount: 34,

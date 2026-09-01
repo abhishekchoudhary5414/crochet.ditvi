@@ -4,7 +4,26 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+// Lightweight inline SVG icons to avoid heavy external icon deps
+function PersonIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 12c2.7614 0 5-2.2386 5-5s-2.2386-5-5-5-5 2.2386-5 5 2.2386 5 5 5z" fill="currentColor" />
+      <path d="M3 20c0-3.866 3.5817-7 9-7s9 3.134 9 7v1H3v-1z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function CartIcon({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M7 4h-2l-1 2v2h2l3.6 7.59-1.35 2.45A1 1 0 0 0 9 19h9v-2H10.42a.25.25 0 0 1-.22-.14L11.1 16h5.45a1 1 0 0 0 .93-.63l1.58-4.02A1 1 0 0 0 18.1 9H7.21l-.94-2z" fill="currentColor" />
+      <circle cx="10.5" cy="20.5" r="1.5" fill="currentColor" />
+      <circle cx="17.5" cy="20.5" r="1.5" fill="currentColor" />
+    </svg>
+  );
+}
+import { useApp } from '@/context/AppContext';
 import siteConfig from "@/data/siteConfig.json";
 import styles from "./Navbar.module.css";
 
@@ -40,6 +59,8 @@ export default function Navbar() {
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
+  const { cart } = useApp();
+  const cartCount = cart.reduce((s, i) => s + i.quantity, 0);
 
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ""}`}>
@@ -88,10 +109,13 @@ export default function Navbar() {
 
         {/* Action Icons & Utilities */}
         <div className={styles.actions}>
-          <a href={whatsappUrl} target="_blank" rel="noreferrer" className={styles.whatsappButton} aria-label="Chat on WhatsApp">
-            <WhatsAppIcon fontSize="small" />
-            <span>WhatsApp</span>
-          </a>
+          <Link href="/cart" className={styles.cartButton} aria-label="View cart">
+            <CartIcon size={18} />
+            <span className={styles.cartCount}>{cartCount}</span>
+          </Link>
+          <Link href="/account/profile" className={styles.profileButton} aria-label="My account">
+            <PersonIcon size={18} />
+          </Link>
         </div>
       </div>
     </header>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
@@ -13,6 +14,7 @@ import ProductCard from "@/components/ProductCard/ProductCard";
 import QuickViewModal from "@/components/QuickViewModal/QuickViewModal";
 import ReviewCard from "@/components/ReviewCard/ReviewCard";
 import Button from "@/components/Button/Button";
+import { useApp } from "@/context/AppContext";
 import styles from "./details.module.css";
 
 interface ProductDetailsClientProps {
@@ -20,6 +22,9 @@ interface ProductDetailsClientProps {
 }
 
 export default function ProductDetailsClient({ id }: ProductDetailsClientProps) {
+  const { addToCart } = useApp();
+  const router = useRouter();
+
   // Find product by id
   const product = products.find((p) => p.id === id);
 
@@ -83,16 +88,38 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
   const handleIncreaseQty = () => setQuantity((q) => q + 1);
   const handleDecreaseQty = () => setQuantity((q) => Math.max(1, q - 1));
 
-  const handleOrderOnWhatsApp = () => {
-    const orderMessage = encodeURIComponent(
-      `Hi Ditvi Crochet, I want to order ${product.name}.\n` +
-        `Color: ${selectedColor}\n` +
-        `Size: ${selectedSize}\n` +
-        `Quantity: ${quantity}\n` +
-        `Price: ₹${product.price.toFixed(2)}\nPlease confirm availability and delivery details.`
+  const handleAddToCart = () => {
+    addToCart(
+      {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: displayedImages[0] || product.images?.[0] || "",
+        color: selectedColor,
+        size: selectedSize,
+      },
+      quantity
     );
+  };
 
-    window.open(`https://wa.me/${siteConfig.whatsappNumber}?text=${orderMessage}`, "_blank", "noopener,noreferrer");
+  const handleBuyNow = () => {
+    const item = {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: displayedImages[0] || product.images?.[0] || "",
+      color: selectedColor,
+      size: selectedSize,
+      quantity,
+    };
+
+    try {
+      sessionStorage.setItem("ditvi_buy_now", JSON.stringify(item));
+    } catch (e) {
+      console.error("Failed to save buy-now item", e);
+    }
+
+    router.push("/checkout");
   };
 
   // Accordion Toggle
@@ -284,7 +311,6 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
 
           {/* Quantity and Action Buttons */}
           <div className={styles.actionsRow}>
-            {/* Quantity Stepper */}
             <div className={styles.quantityStepper}>
               <button onClick={handleDecreaseQty} className={styles.stepperBtn} aria-label="Decrease quantity">
                 -
@@ -295,16 +321,25 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
               </button>
             </div>
 
-            <Button
-              variant="primary"
-              onClick={handleOrderOnWhatsApp}
-              disabled={product.stockStatus === "out_of_stock"}
-              className={styles.whatsappOrderBtn}
-              style={{ flex: 2, minWidth: 0, height: "48px" }}
-            >
-              {product.stockStatus === "out_of_stock" ? "Out of Stock" : "Order on WhatsApp"}
-            </Button>
+            <div className={styles.actionButtonsStack}>
+              <Button
+                variant="secondary"
+                onClick={handleAddToCart}
+                disabled={product.stockStatus === "out_of_stock"}
+                className={styles.primaryActionBtn}
+              >
+                {product.stockStatus === "out_of_stock" ? "Out of Stock" : "Add to Cart"}
+              </Button>
 
+              <Button
+                variant="primary"
+                onClick={handleBuyNow}
+                disabled={product.stockStatus === "out_of_stock"}
+                className={styles.primaryActionBtn}
+              >
+                Buy Now
+              </Button>
+            </div>
           </div>
 
           {/* Accordion Specs */}

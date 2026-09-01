@@ -1,0 +1,61 @@
+.container {
+  display: flex;
+  min-height: 70vh;
+}
+.aside {
+  width: 260px;
+  transition: width 180ms ease;
+  overflow: hidden;
+  background: #27232a;
+  color: #fff;
+  padding: 20px;
+}
+.asideClosed {
+  width: 0;
+  padding: 0;
+}
+.navHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.brand { font-weight: 700; }
+.navButton {
+  padding: 10px 12px;
+  text-align: left;
+  background: transparent;
+  color: #f1dfe7;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.navButtonActive {
+  background: linear-gradient(90deg,#ff7aa2,#ffb3c7);
+  color: #2b0a11;
+}
+.mainArea {
+  flex: 1;
+}
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+.mainContent {
+  padding: 20px;
+}
+.toggleButton {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.closeButton {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+}

@@ -126,14 +126,14 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                   <div className={styles.colorSwatches}>
                     {product.colors.map((color) => (
                       <button
-                        key={color.name}
-                        className={`${styles.colorSwatch} ${
-                          selectedColor === color.name ? styles.activeColor : ""
-                        }`}
-                        style={{ backgroundColor: color.hex }}
-                        onClick={() => setSelectedColor(color.name)}
-                        title={color.name}
-                      />
+                          key={color.name}
+                          className={`${styles.colorSwatch} ${
+                            selectedColor === color.name ? styles.activeColor : ""
+                          }`}
+                          onClick={() => setSelectedColor(color.name)}
+                          title={color.name}
+                          style={{ ['--swatch' as any]: color.hex } as React.CSSProperties}
+                        />
                     ))}
                   </div>
                 </div>

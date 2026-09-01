@@ -3,10 +3,10 @@ import { Ubuntu } from "next/font/google";
 import "./globals.css";
 import siteConfig from "@/data/siteConfig.json";
 import { AppProvider } from "@/context/AppContext";
+import { AuthProvider } from "@/context/AuthContext";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import ToastContainer from "@/components/Toast/Toast";
-import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton/FloatingWhatsAppButton";
 
 const ubuntu = Ubuntu({
   subsets: ["latin"],
@@ -64,15 +64,16 @@ export default function RootLayout({
     <html lang="en" className={ubuntu.variable}>
       <body>
         <AppProvider>
+          <AuthProvider>
           <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
             <Navbar />
             <main style={{ paddingTop: "80px", flex: 1 }}>
               {children}
             </main>
             <ToastContainer />
-            <FloatingWhatsAppButton />
             <Footer />
           </div>
+          </AuthProvider>
         </AppProvider>
       </body>
     </html>
