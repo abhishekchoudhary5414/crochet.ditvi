@@ -7,6 +7,7 @@ type User = { id: string; full_name?: string; email?: string; created_at?: strin
 
 export default function UsersDashboard() {
   const [users, setUsers] = useState<User[] | null>(null);
+  const [stats, setStats] = useState<{ orders?: number; users?: number; revenue?: number } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,9 +32,29 @@ export default function UsersDashboard() {
     return () => { mounted = false; };
   }, [router]);
 
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/admin/stats', { credentials: 'same-origin' });
+        if (!res.ok) return;
+        const d = await res.json();
+        if (mounted) setStats(d);
+      } catch (e) {
+        console.error('load stats', e);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <div>
       <h2>Users</h2>
+      <div className={styles.cardsRow}>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Users</div><div className={styles.cardValue}>{stats?.users ?? '-'}</div></div>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Orders</div><div className={styles.cardValue}>{stats?.orders ?? '-'}</div></div>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Revenue</div><div className={styles.cardValue}>₹{Number(stats?.revenue ?? 0).toFixed(2)}</div></div>
+      </div>
       <div className={styles.spaced}>
         {users === null ? (
           <div>Loading...</div>

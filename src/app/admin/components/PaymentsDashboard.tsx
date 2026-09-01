@@ -15,6 +15,11 @@ export default function PaymentsDashboard() {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [viewMode, setViewMode] = useState<'table'|'card'>('table');
+  const [total, setTotal] = useState<number>(0);
+  const [stats, setStats] = useState<{ orders?: number; users?: number; revenue?: number } | null>(null);
+  const [paidCount, setPaidCount] = useState<number>(0);
+  const [failedCount, setFailedCount] = useState<number>(0);
+  const [cancelledCount, setCancelledCount] = useState<number>(0);
 
   const loadPayments = useCallback(async (opts?: { append?: boolean }) => {
     setLoadingMore(true);
@@ -36,6 +41,7 @@ export default function PaymentsDashboard() {
       }
       const list: Payment[] = data.payments ?? [];
       setHasMore(list.length >= limit);
+      setTotal(Number(data.total ?? 0));
       setPayments((prev) => (opts?.append ? ((prev || []).concat(list)) : list));
     } catch (e) {
       console.error('load payments', e);
@@ -44,7 +50,35 @@ export default function PaymentsDashboard() {
     }
   }, [page, limit, query, statusFilter, router]);
 
+  const loadStats = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/stats', { credentials: 'same-origin' });
+      if (!res.ok) return;
+      const data = await res.json();
+      setStats(data);
+      // also fetch payment counts
+      try {
+        const p1 = await fetch('/api/admin/payments?status=paid&limit=1', { credentials: 'same-origin' });
+        const d1 = await p1.json();
+        setPaidCount(Number(d1.total ?? 0));
+      } catch (e) { console.error('paid count', e); }
+      try {
+        const p2 = await fetch('/api/admin/payments?status=failed&limit=1', { credentials: 'same-origin' });
+        const d2 = await p2.json();
+        setFailedCount(Number(d2.total ?? 0));
+      } catch (e) { console.error('failed count', e); }
+      try {
+        const p3 = await fetch('/api/admin/payments?status=cancelled&limit=1', { credentials: 'same-origin' });
+        const d3 = await p3.json();
+        setCancelledCount(Number(d3.total ?? 0));
+      } catch (e) { console.error('cancelled count', e); }
+    } catch (e) {
+      console.error('load stats', e);
+    }
+  }, []);
+
   useEffect(() => { loadPayments({ append: false }); }, [loadPayments]);
+  useEffect(() => { loadStats(); }, [loadStats]);
 
   return (
     <div>
@@ -59,6 +93,7 @@ export default function PaymentsDashboard() {
             <option value="paid">Paid</option>
             <option value="pending">Pending</option>
             <option value="failed">Failed</option>
+            <option value="cancelled">Cancelled</option>
           </select>
         </div>
         <div className={styles.controlsRight}>
@@ -70,6 +105,15 @@ export default function PaymentsDashboard() {
           </select>
           <button className={styles.iconBtn} onClick={() => setViewMode(viewMode === 'table' ? 'card' : 'table')}>{viewMode === 'table' ? 'Card' : 'Table'}</button>
         </div>
+      </div>
+
+      <div className={styles.cardsRow}>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Total Orders</div><div className={styles.cardValue}>{stats?.orders ?? '-'}</div></div>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Total Payments</div><div className={styles.cardValue}>{total ?? '-'}</div></div>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Paid</div><div className={styles.cardValue}>{paidCount ?? 0}</div></div>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Failed</div><div className={styles.cardValue}>{failedCount ?? 0}</div></div>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Cancelled</div><div className={styles.cardValue}>{cancelledCount ?? 0}</div></div>
+        <div className={styles.cardSmall}><div className={styles.cardLabel}>Revenue</div><div className={styles.cardValue}>₹{Number(stats?.revenue ?? 0).toFixed(2)}</div></div>
       </div>
 
       <div className={styles.spaced}>
@@ -134,6 +178,7 @@ export default function PaymentsDashboard() {
         <button disabled={page <= 1 || loadingMore} onClick={() => { setPage((p) => Math.max(1, p - 1)); }} className={styles.pageBtn}>Previous</button>
         <span className={styles.pageInfo}>Page {page}</span>
         <button disabled={!hasMore || loadingMore} onClick={() => { setPage((p) => p + 1); }} className={styles.pageBtn}>Next</button>
+        <div className={styles.totalInfo}>Total: {total}</div>
         <button onClick={() => { setPage(1); loadPayments({ append: false }); }} className={styles.pageBtnSecondary}>Refresh</button>
       </div>
     </div>

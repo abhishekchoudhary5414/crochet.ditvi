@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as z from 'zod';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import supabase from '@/lib/supabaseClient';
 import Button from '@/components/Button/Button';
@@ -17,8 +17,17 @@ const schema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectUrl = searchParams.get('redirect') || '/account/profile';
+  const [redirectUrl, setRedirectUrl] = useState('/account/profile');
+
+  useEffect(() => {
+    try {
+      const sp = new URLSearchParams(window.location.search);
+      const r = sp.get('redirect');
+      if (r) setRedirectUrl(r);
+    } catch (e) {
+      // ignore in non-browser environments
+    }
+  }, []);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

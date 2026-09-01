@@ -1,7 +1,186 @@
 .root {}
-.table { width: 100%; border-collapse: collapse; }
-.thead th { text-align: left; padding: 8px; }
-.row { border-top: 1px solid #f0f0f0; }
-.cell { padding: 8px; }
-.empty { background: white; padding: 12px; border-radius: 8px; }
-.spaced { margin-top: 12px; }
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.thead th {
+    text-align: left;
+    padding: 8px;
+}
+
+.row {
+    border-top: 1px solid #f0f0f0;
+}
+
+.cell {
+    padding: 8px;
+}
+
+.empty {
+    background: white;
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.spaced {
+    margin-top: 12px;
+}
+
+.cardsRow {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.cardSmall {
+    background: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    min-width: 120px;
+}
+
+.cardLabel {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.cardValue {
+    font-size: 20px;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.search {
+    padding: 8px 10px;
+    border: 1px solid #e6e6e6;
+    border-radius: 6px;
+}
+
+.pagination {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.pageInfo {
+    font-weight: 500;
+}
+
+.totalInfo {
+    margin-left: 12px;
+    color: #6c757d;
+}
+
+/* Status & payment badges */
+.badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.badge.paid {
+    background: #e6f4ea;
+    color: #116530;
+}
+
+.badge.failed {
+    background: #fdecea;
+    color: #9c1e1e;
+}
+
+.badge.pending {
+    background: #fff4e5;
+    color: #a66300;
+}
+
+.badge.cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.badge.unknown {
+    background: #eef2ff;
+    color: #233a75;
+}
+
+/* Select styling */
+.select {
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #e6e6e6;
+    background: white;
+}
+
+/* Responsive: turn table rows into stacked cards on small screens */
+@media (max-width: 820px) {
+    .table {
+        min-width: 100%;
+    }
+
+    .thead {
+        display: none;
+    }
+
+    .row {
+        display: block;
+        border: 1px solid #f0f0f0;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        padding: 12px;
+    }
+
+    .cell {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+    }
+
+    .cell::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--muted, #666);
+        margin-right: 8px;
+    }
+}
+
+/* Table hover and spacing improvements */
+.row:hover {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.tableWrap {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+.toolbar {
+    flex-wrap: wrap;
+}
+
+.headerTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.cardList { display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:12px; }
+.card { border:1px solid #f0f0f0; border-radius:8px; padding:12px; background:#fff; }
+.cardRow { display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed #f5f5f5; }
+.cardRow:last-child { border-bottom:none; }
+
+.pageBtn { padding:8px 10px; border-radius:6px; border:1px solid #e6e6e6; background:transparent; cursor:pointer; }
+.pageBtnSecondary { padding:8px 10px; border-radius:6px; border:1px solid #e6e6e6; background:#f6f8fa; cursor:pointer; }
