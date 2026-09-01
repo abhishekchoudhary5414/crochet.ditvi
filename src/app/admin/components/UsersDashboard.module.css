@@ -1,3 +1,9 @@
+.table { width: 100%; border-collapse: collapse; }
+.thead { background: #f8f9fa; }
+.row { border-bottom: 1px solid #e9ecef; }
+.cell { padding: 12px 16px; }
+.empty { padding: 12px; color: #6c757d; }
+.spaced { margin-top: 12px; }
 .root {}
 .table { width: 100%; border-collapse: collapse; }
 .thead th { text-align: left; padding: 8px; }

@@ -5,11 +5,11 @@ import supabase from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import styles from '../../../profile/profile.module.css';
 
-export default function ReceiptPage({ params }: { params?: Promise<{ id: string }> | { id: string } }) {
+export default function ReceiptPage({ params }: { params?: any }) {
   const resolvedParams = typeof params === 'object' && params !== null && 'then' in params
     ? use(params as Promise<{ id: string }>)
     : (params ?? { id: '' });
-  const { id } = resolvedParams as { id: string };
+  const { id } = (resolvedParams as any) as { id: string };
   const router = useRouter();
   const [order, setOrder] = useState<any | null>(null);
   const [items, setItems] = useState<any[]>([]);

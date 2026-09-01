@@ -7,11 +7,11 @@ import Link from 'next/link';
 import Button from '@/components/Button/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-export default function OrderDetailPage({ params }: { params?: Promise<{ id: string }> | { id: string } }) {
+export default function OrderDetailPage({ params }: { params?: any }) {
   const resolvedParams = typeof params === 'object' && params !== null && 'then' in params
     ? use(params as Promise<{ id: string }>)
     : (params ?? { id: '' });
-  const { id } = resolvedParams as { id: string };
+  const { id } = (resolvedParams as any) as { id: string };
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<any>(null);

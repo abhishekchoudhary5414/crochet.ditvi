@@ -1,0 +1,11 @@
+.page { }
+.header { margin-bottom: 12px; }
+.title { font-size: 20px; font-weight: 700; }
+.card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); overflow: hidden; }
+.orderRow { border-bottom: 1px solid #eee; padding: 12px; display: flex; justify-content: space-between; }
+.orderLeft { }
+.orderRight { text-align: right; }
+.smallText { font-size: 0.9rem; color: #666; }
+.viewLink { margin-top: 6px; }
+.empty { padding: 16px; }
+.loading { padding: 12px; }

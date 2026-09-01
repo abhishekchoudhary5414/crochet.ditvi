@@ -28,28 +28,21 @@ export async function POST(req: NextRequest) {
     if (!order) return NextResponse.json({ error: 'order not found' }, { status: 404 });
 
     const receiptNumber = generateReceiptNumber();
-    const cartSnapshot = (order.metadata as { cart_snapshot?: unknown[] })?.cart_snapshot || [];
+    const cartSnapshotRaw = (order.metadata as any)?.cart_snapshot;
+    const cartSnapshot = Array.isArray(cartSnapshotRaw) ? (cartSnapshotRaw as any[]) : [];
 
     // Insert order items from cart snapshot
-    if (Array.isArray(cartSnapshot) && cartSnapshot.length > 0) {
-      const orderItems = cartSnapshot.map((it: {
-        productId: string;
-        productName: string;
-        quantity: number;
-        unitPrice: number;
-        totalPrice: number;
-        color?: string;
-        size?: string;
-      }) => ({
+    if (cartSnapshot.length > 0) {
+      const orderItems = cartSnapshot.map((it) => ({
         order_id: orderId,
         product_id: null,
         product_name: [it.productName, it.color && `Color: ${it.color}`, it.size && `Size: ${it.size}`].filter(Boolean).join(' | '),
         sku: it.productId,
-        quantity: it.quantity,
-        unit_price: it.unitPrice,
+        quantity: Number(it.quantity) || 0,
+        unit_price: Number(it.unitPrice) || 0,
         discount: 0,
         tax: 0,
-        total_price: it.totalPrice,
+        total_price: Number(it.totalPrice) || 0,
       }));
 
       await supabaseAdmin.from('order_items').insert(orderItems);
@@ -90,8 +83,8 @@ export async function POST(req: NextRequest) {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     if (customerEmail) {
-      const itemsSummary = Array.isArray(cartSnapshot)
-        ? cartSnapshot.map((it: { productName: string; quantity: number }) => `${it.productName} x${it.quantity}`).join(', ')
+      const itemsSummary = cartSnapshot.length > 0
+        ? cartSnapshot.map((it: any) => `${it.productName} x${it.quantity}`).join(', ')
         : '';
 
       await sendOrderConfirmEmail({

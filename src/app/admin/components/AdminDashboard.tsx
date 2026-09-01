@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './AdminDashboard.module.css';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<{ orders: number; users: number; revenue: number } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     let mounted = true;
@@ -13,7 +15,7 @@ export default function AdminDashboard() {
       try {
         const res = await fetch('/api/admin/stats', { credentials: 'same-origin' });
         if (res.status === 401 || res.status === 403) {
-          window.location.href = '/admin/login';
+          router.push('/admin/login');
           return;
         }
         const data = await res.json();
@@ -32,7 +34,7 @@ export default function AdminDashboard() {
       }
     })();
     return () => { mounted = false; };
-  }, []);
+  }, [router]);
 
   return (
     <div>

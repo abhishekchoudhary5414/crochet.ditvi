@@ -1,11 +1,13 @@
 "use client";
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from './UsersDashboard.module.css';
 
 type User = { id: string; full_name?: string; email?: string; created_at?: string };
 
 export default function UsersDashboard() {
   const [users, setUsers] = useState<User[] | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     let mounted = true;
@@ -13,7 +15,7 @@ export default function UsersDashboard() {
       try {
         const res = await fetch('/api/admin/users', { credentials: 'same-origin' });
         if (res.status === 401 || res.status === 403) {
-          window.location.href = '/admin/login';
+          router.push('/admin/login');
           return;
         }
         const data = await res.json();
@@ -27,12 +29,12 @@ export default function UsersDashboard() {
       }
     })();
     return () => { mounted = false; };
-  }, []);
+  }, [router]);
 
   return (
     <div>
       <h2>Users</h2>
-      <div style={{ marginTop: 12 }}>
+      <div className={styles.spaced}>
         {users === null ? (
           <div>Loading...</div>
         ) : users.length === 0 ? (

@@ -1,0 +1,10 @@
+.title { font-size: 24px; font-weight: 600; color: #1c2434; margin-bottom: 24px; }
+.card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+.table { width: 100%; border-collapse: collapse; text-align: left; }
+.theadRow { background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
+.th { padding: 16px 24px; font-weight: 600; color: #495057; }
+.row { border-bottom: 1px solid #e9ecef; }
+.cell { padding: 16px 24px; color: #212529; }
+.joined { color: #6c757d; font-size: 14px; }
+.emptyCell { padding: 32px; text-align: center; color: #6c757d; }
+.loading { padding: 24px; }

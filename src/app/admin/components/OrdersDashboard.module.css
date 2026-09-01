@@ -4,3 +4,4 @@
 .row { border-top: 1px solid #f0f0f0; }
 .cell { padding: 8px; }
 .empty { background: white; padding: 12px; border-radius: 8px; }
+.spaced { margin-top: 12px; }

@@ -31,6 +31,8 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
+  // Hide global navbar on admin routes
+  if (typeof pathname === 'string' && pathname.startsWith('/admin')) return null;
   const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(siteConfig.whatsappMessage)}`;
 
   // Handle scroll to add background blur/shadow

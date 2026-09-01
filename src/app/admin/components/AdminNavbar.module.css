@@ -1,0 +1,92 @@
+.nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    background: var(--surface, #fff);
+    border-right: 1px solid #eee;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+}
+
+.navClosed {
+    transform: translateX(-100%);
+    transition: transform 220ms ease;
+}
+
+.topRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.brandTitle {
+    margin: 6px 0 12px;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    text-align: left;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: transparent;
+    color: var(--dark-text);
+}
+
+.btnActive {
+    background: var(--primary);
+    color: #fff;
+}
+
+.logoutWrap {
+    margin-top: auto;
+}
+
+.logoutBtn {
+    background: transparent;
+    color: var(--primary);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* Small screens: make sidebar collapsible by shifting content */
+@media (max-width: 900px) {
+    .nav { position: relative; width: 100%; height: auto; border-right: none; }
+}
+
+/* Open button shown when sidebar is closed */
+.openButton {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 60;
+    background: var(--surface, #fff);
+    border: 1px solid #e6e6e6;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+.hamburgerIcon {
+    display: block;
+    width: 18px;
+    height: 2px;
+    background: var(--dark-text);
+    box-shadow: 0 6px 0 var(--dark-text), 0 -6px 0 var(--dark-text);
+}
+.closeBtn {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}

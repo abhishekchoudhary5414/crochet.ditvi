@@ -1,0 +1,4 @@
+.checking { padding: 24px; }
+.headerBlock { margin-bottom: 28px; }
+.sectionLabel { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.sectionTitle { font-size: 32px; color: var(--dark-text); margin-top: 6px; margin-bottom: 8px; }

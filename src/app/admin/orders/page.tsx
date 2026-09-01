@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import supabase from '@/lib/supabaseClient';
 import Link from 'next/link';
-import styles from '@/app/account/profile/profile.module.css';
+import styles from '../orders.module.css';
+
+type Order = { id: string; order_number?: string; total_amount?: number; customer?: { full_name?: string; email?: string } };
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -28,17 +30,17 @@ export default function AdminOrdersPage() {
       <div className={styles.header}><h2 className={styles.title}>All Orders</h2></div>
       <div className={styles.card}>
         {orders.length === 0 ? (
-          <div>No orders yet.</div>
+          <div className={styles.empty}>No orders yet.</div>
         ) : (
           orders.map((o) => (
-            <div key={o.id} style={{ borderBottom: '1px solid #eee', padding: 12, display: 'flex', justifyContent: 'space-between' }}>
-              <div>
+            <div key={o.id} className={styles.orderRow}>
+              <div className={styles.orderLeft}>
                 <strong>{o.order_number}</strong>
-                <div style={{ fontSize: '0.9rem', color: '#666' }}>{o.customer?.full_name || o.customer?.email || 'Guest'}</div>
+                <div className={styles.smallText}>{o.customer?.full_name || o.customer?.email || 'Guest'}</div>
               </div>
-              <div style={{ textAlign: 'right' }}>
+              <div className={styles.orderRight}>
                 <div>₹{Number(o.total_amount).toFixed(2)}</div>
-                <div style={{ marginTop: 6 }}><Link href={`/admin/orders/${o.id}`}>View</Link></div>
+                <div className={styles.viewLink}><Link href={`/admin/orders/${o.id}`}>View</Link></div>
               </div>
             </div>
           ))

@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
+import styles from './layout.module.css';
+import AdminNavbar from './components/AdminNavbar';
 import { useRouter, usePathname } from 'next/navigation';
 // Link intentionally removed; admin layout no longer renders sidebar
 import supabase from '@/lib/supabaseClient';
@@ -57,16 +59,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [isAdmin, router]);
   // Do not render parent admin sidebar for the dedicated login page.
   if (typeof pathname === 'string' && (pathname === '/admin/login' || pathname.startsWith('/admin/login'))) {
-    return <div style={{ minHeight: '100vh' }}>{children}</div>;
+    return <div className={styles.minFull}>{children}</div>;
   }
-  if (isAdmin === null) return <div style={{ padding: 40, textAlign: 'center', color: 'var(--dark-text)' }}>Checking admin access...</div>;
+  if (isAdmin === null) return <div className={styles.checking}>Checking admin access...</div>;
 
   // navItems removed; no sidebar in admin layout
 
   return (
-
-      <main style={{ flex: 1, padding: 32, overflowY: 'auto' }}>
-        <div style={{  margin: '0' }}>{children}</div>
-      </main>
+      <>
+        <AdminNavbar />
+        <main className={styles.main}>
+          <div className={styles.content}>{children}</div>
+        </main>
+      </>
   );
 }

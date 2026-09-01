@@ -1,0 +1,8 @@
+.page { }
+.card { background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 12px; }
+.section { margin-bottom: 12px; }
+.itemsRow { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #eee; }
+.controls { margin-top: 12px; }
+.select { margin-left: 8px; }
+.updateBtn { margin-left: 8px; }
+.loading { padding: 12px; }

@@ -1,0 +1,28 @@
+.minFull {
+  min-height: 100vh;
+}
+.checking {
+  padding: 40px;
+  text-align: center;
+  color: var(--dark-text);
+}
+.main {
+  flex: 1;
+  padding: 32px;
+  overflow-y: auto;
+  margin-left: 240px; /* space for fixed sidebar */
+  min-height: 100vh;
+}
+.content {
+  margin: 0;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .main { margin-left: 0; padding-top: 16px; }
+}
+
+/* When the sidebar is hidden via the body class, remove left margin */
+:global(.admin-sidebar-closed) .main {
+  margin-left: 0;
+}

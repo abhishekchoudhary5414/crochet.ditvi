@@ -6,7 +6,9 @@ import Button from '@/components/Button/Button';
 import styles from './login.module.css';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import { useRouter } from 'next/navigation';
 export default function AdminLoginPage() {
+  const router = useRouter();
   // router not needed because we perform a full navigation after login
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -28,9 +30,8 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Invalid credentials');
 
-      // force a full navigation so the parent admin layout picks up the cookie
-      // and renders the admin sidebar immediately
-      window.location.href = '/admin';
+      // navigate to admin overview after successful login
+      router.push('/admin');
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Admin login failed';
       setError(message);
