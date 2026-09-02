@@ -166,10 +166,23 @@ function ShopContent() {
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        {/* <h1 className={styles.title}>Ditvi Crochet Shop</h1>
-        <p className={styles.subtitle}>
-          Browse our beautiful, premium handmade crochet catalog. Each piece is crafted stitch by stitch with warmth and love.
-        </p> */}
+        <form className={styles.searchForm} onSubmit={(e) => e.preventDefault()}>
+          <label htmlFor="shop-search" className={styles.searchLabel}>Search products</label>
+          <div className={styles.searchInputRow}>
+            <input
+              id="shop-search"
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search bags, flowers, dolls, decor..."
+              className={styles.searchInput}
+            />
+            <button type="submit" className={styles.searchButton}>
+              <SearchOutlinedIcon fontSize="small" />
+              Search
+            </button>
+          </div>
+        </form>
 
         {/* Active badges row */}
         {(selectedCategory.length > 0 || searchQuery || collectionFilter.length > 0 || maxPrice < 100) && (

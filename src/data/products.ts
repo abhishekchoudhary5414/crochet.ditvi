@@ -48,7 +48,6 @@ export const products: Product[] = [
     category: "crochet-bags",
     images: [
       "/products/hair/clip/yellow.png",
-      "/products/hair/clip/red.png"
     ],
     description: "Our signature blossom tote bag is tightly hand-stitched for maximum durability and strength. Featuring a delicate floral granny square pattern, it adds a touch of bohemian elegance to any outfit. Roomy enough for your tablet, wallet, book, and daily essentials.",
     details: [
@@ -196,7 +195,7 @@ export const products: Product[] = [
     reviewCount: 19,
     category: "crochet-accessories",
     images: [
-      "https://images.unsplash.com/photo-1575413829029-1bb393595e52?auto=format&fit=crop&w=600&q=80"
+      "/products/home/butterfly.png",
     ],
     description: "An elegant, feminine, and practical hair accessory bundle. The set includes a beautiful crochet flower hair claw clip and two matching ruffled pastel hair scrunchies. Soft on hair, avoiding snagging or headaches.",
     details: [
@@ -231,7 +230,7 @@ export const products: Product[] = [
     reviewCount: 15,
     category: "crochet-home-decor",
     images: [
-      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"
+      "/products/hair/clip/red.png"
     ],
     description: "Wrap your cushions in warmth! This cushion cover features a classic thick cable knit texture on the front and a durable canvas back with an invisible zipper. Brings a warm, rustic, and handmade look to your living room sofa or bed.",
     details: [
@@ -268,7 +267,7 @@ export const products: Product[] = [
     reviewCount: 12,
     category: "crochet-gifts",
     images: [
-      "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=600&q=80"
+      "/products/hair/1.png"
     ],
     description: "The ultimate handcrafted welcome kit for newborns. This gift set is thoughtfully curated with items designed for delicate baby skin. Perfect for baby showers, gender reveals, or new parent gifts.",
     details: [
@@ -304,7 +303,7 @@ export const products: Product[] = [
     reviewCount: 38,
     category: "custom-crochet",
     images: [
-      "https://images.unsplash.com/photo-1517594422361-5eeb8ae275a9?auto=format&fit=crop&w=600&q=80"
+      "/products/hair/hairdecorate.png",
     ],
     description: "Turn your beloved furry friend into a cute pocket-sized crochet buddy! Provide us with a few pictures of your pet, and our master makers will design a custom amigurumi figure capturing their unique spots, collar, and posture.",
     details: [
