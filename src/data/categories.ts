@@ -1,8 +1,8 @@
 import type { StaticImageData } from "next/image";
-import FlowerCategory from "../../public/products/flower/1.png"
+import FlowerCategory from "../../public/products/flower/sunflower.png"
 import HairCategory from '../../public/products/hair/1.png'
-import HandCategory from '../../public/products/hand/1.png'
-import HomeCategory from '../../public/products/home/1.png'
+import HandCategory from '../../public/products/hand/balla.png'
+import HomeCategory from '../../public/products/home/homeflower.png'
 
 
 export interface Category {

@@ -87,8 +87,7 @@ export const products: Product[] = [
     reviewCount: 42,
     category: "crochet-flowers",
     images: [
-      "https://images.unsplash.com/photo-1589156280159-27698a70f29e?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80"
+      "/products/hair/clip/4clip.png",
     ],
     description: "An everlasting bouquet of handmade daisies and tulips. Crafted with vibrant milk cotton yarn, these flowers will never fade or wither. They are wrapped in lovely premium craft paper, ready to be gifted to someone special.",
     details: [
@@ -103,11 +102,9 @@ export const products: Product[] = [
       "Keep away from water and damp places to preserve shape",
       "Do not wash"
     ],
-    sizes: ["Standard Bouquet (7 stems)", "Deluxe Bouquet (12 stems)"],
+    sizes: ["Standard"],
     colors: [
-      { name: "Sunset Pastel", hex: "#FFE0B2" },
-      { name: "Blushing Pink", hex: "#FCE4EC" },
-      { name: "Sunny Yellow", hex: "#FFF59D" }
+      // { name: "Sunset Pastel", hex: "#FFE0B2" },
     ],
     isBestSeller: true,
     isNewArrival: false,
@@ -126,7 +123,7 @@ export const products: Product[] = [
     reviewCount: 56,
     category: "crochet-keychains",
     images: [
-      "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?auto=format&fit=crop&w=600&q=80"
+      "/products/flower/mariegold.png",
     ],
     description: "Say hello to your new pocket companion! This chubby little bumblebee is crocheted by hand using super-soft chenille yarn, giving it a fluffy, velvet-like texture. Equipped with a sturdy silver keyring.",
     details: [
@@ -163,7 +160,7 @@ export const products: Product[] = [
     reviewCount: 28,
     category: "crochet-dolls",
     images: [
-      "https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&w=600&q=80"
+      "/products/flower/sunflower.png",
     ],
     description: "Meet Bella! She is a cute amigurumi bunny wearing a hand-knit pastel pinafore dress. With her long floppy ears and gentle blush cheeks, she makes a perfect keepsake gift for baby showers, nurseries, or collectors.",
     details: [
@@ -377,7 +374,7 @@ export const products: Product[] = [
     reviewCount: 31,
     category: "crochet-flowers",
     images: [
-      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&q=80"
+      "/products/home/homeflower.png"
     ],
     description: "A gorgeous handmade crochet tulip night light. The stems feature tiny integrated warm LED string lights that shine softly through the knit petals, creating an enchanted, fairy-tale glow on your nightstand. Batteries are included.",
     details: [
@@ -413,7 +410,7 @@ export const products: Product[] = [
     reviewCount: 45,
     category: "crochet-keychains",
     images: [
-      "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=600&q=80"
+      "/products/hand/balla.png"
     ],
     description: "A cute little sprout leaf that wraps around your headphones, charging cables, or bags. Inspired by anime 'little green sprouts', it is a quick and simple way to keep your cords tidy or add a charming, playful green touch to your daily accessories.",
     details: [
@@ -445,7 +442,7 @@ export const products: Product[] = [
     reviewCount: 16,
     category: "crochet-home-decor",
     images: [
-      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=600&q=80"
+      "/products/flower/root.png"
     ],
     description: "Help your little one drift into sweet dreams with this baby mobile. Features a central sleepy crescent moon, surrounded by 4 soft stars and fluffy white clouds hanging from a light bamboo ring. Entirely handcrafted with organic cotton.",
     details: [
