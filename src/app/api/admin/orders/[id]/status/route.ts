@@ -11,20 +11,39 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (error === 'forbidden') return NextResponse.json({ error: 'forbidden' }, { status: 403 });
 
     const { id } = await params;
-    const { order_status } = await req.json();
+    const body = await req.json();
+    const { order_status, payment_status } = body ?? {};
 
-    if (!order_status) return NextResponse.json({ error: 'order_status required' }, { status: 400 });
+    const nextOrderStatus = order_status ? String(order_status).trim() : undefined;
+    const nextPaymentStatus = payment_status ? String(payment_status).trim().toLowerCase() : undefined;
+
+    const updates: Record<string, string> = {};
+    if (nextOrderStatus) updates.order_status = nextOrderStatus;
+    if (nextPaymentStatus) updates.payment_status = nextPaymentStatus;
+
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ error: 'order_status or payment_status required' }, { status: 400 });
+    }
 
     const { data: order, error: updateErr } = await supabaseAdmin
       .from('orders')
-      .update({ order_status })
+      .update({ ...updates, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select('*')
       .single();
 
     if (updateErr) throw updateErr;
 
-    if (order_status === 'delivered') {
+    if (nextPaymentStatus) {
+      const { error: paymentErr } = await supabaseAdmin
+        .from('payments')
+        .update({ status: nextPaymentStatus, updated_at: new Date().toISOString() })
+        .eq('order_id', id);
+
+      if (paymentErr) throw paymentErr;
+    }
+
+    if (nextOrderStatus === 'delivered') {
       const { order: fullOrder, profile } = await getOrderWithItems(id);
       const email = profile?.email || (fullOrder.metadata as { shipping_address?: { email?: string } })?.shipping_address?.email;
       const name = profile?.full_name || profile?.first_name || 'Customer';

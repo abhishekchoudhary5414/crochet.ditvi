@@ -140,6 +140,18 @@
     letter-spacing: 0.06em;
 }
 
+.paymentSelect {
+    min-height: 38px;
+    padding: 7px 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(232, 160, 181, 0.35);
+    background: #fff;
+    color: #4d3a40;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: lowercase;
+}
+
 .badge {
     display: inline-flex;
     align-items: center;

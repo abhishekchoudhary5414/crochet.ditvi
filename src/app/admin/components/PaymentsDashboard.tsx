@@ -338,7 +338,37 @@ export default function PaymentsDashboard() {
                         </td>
 
                         <td className={styles.cell} data-label="Status">
-                          <span className={`${styles.badge} ${getBadgeClass(status)}`}>{status}</span>
+                          <select
+                            className={styles.paymentSelect}
+                            value={status}
+                            onChange={async (e) => {
+                              const nextStatus = e.target.value;
+                              if (!nextStatus || nextStatus === status) return;
+
+                              try {
+                                const res = await fetch(`/api/admin/payments/${payment.id}/status`, {
+                                  method: 'PATCH',
+                                  credentials: 'same-origin',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ payment_status: nextStatus }),
+                                });
+                                const data = await res.json();
+                                if (!res.ok) throw new Error(data?.error || 'update failed');
+
+                                setPayments((prev) => (prev || []).map((p) =>
+                                  p.id === payment.id ? { ...p, status: nextStatus } : p
+                                ));
+                              } catch (err) {
+                                console.error('update payment status', err);
+                                alert('Failed to update payment status');
+                              }
+                            }}
+                          >
+                            <option value="paid">paid</option>
+                            <option value="pending">pending</option>
+                            <option value="failed">failed</option>
+                            <option value="cancelled">cancelled</option>
+                          </select>
                         </td>
 
                         <td className={styles.cell} data-label="Amount">

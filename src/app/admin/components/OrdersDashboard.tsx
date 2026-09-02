@@ -79,6 +79,7 @@ export default function OrdersDashboard() {
   const [emailFilter, setEmailFilter] = useState('');
   const [stats, setStats] = useState<{ orders?: number; users?: number; revenue?: number } | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [addressPopupId, setAddressPopupId] = useState<string | null>(null);
   const router = useRouter();
 
   const loadStats = useCallback(async () => {
@@ -158,7 +159,8 @@ export default function OrdersDashboard() {
 
   const getCustomerName = (o: Order) => o.customer?.full_name || o.customer?.first_name || o.customer?.last_name || 'Guest';
   const getCustomerPhone = (o: Order) => String(o.address?.phone || o.customer?.phone || '').trim();
-  const getAddressText = (o: Order) => {
+
+  const getFullAddressText = (o: Order) => {
     const address = o.address;
     if (!address) return '—';
 
@@ -168,9 +170,41 @@ export default function OrdersDashboard() {
       address.city,
       address.state,
       address.pincode,
+      address.country,
     ].filter(Boolean);
 
     return parts.length > 0 ? parts.join(', ') : '—';
+  };
+
+  const getShortAddressText = (o: Order) => {
+    const fullAddress = getFullAddressText(o);
+    if (fullAddress === '—') return '—';
+    return fullAddress.length > 48 ? `${fullAddress.slice(0, 48).trim()}...` : fullAddress;
+  };
+
+  const getPaymentLabel = (value?: string) => {
+    const normalized = String(value || 'pending').toLowerCase();
+    const labels: Record<string, string> = {
+      paid: 'Paid',
+      pending: 'Pending',
+      failed: 'Failed',
+      cancelled: 'Cancelled',
+      refunded: 'Refunded',
+      processing: 'Processing',
+      successful: 'Paid',
+      captured: 'Paid',
+      complete: 'Paid',
+      completed: 'Paid',
+    };
+    return labels[normalized] || normalized.charAt(0).toUpperCase() + normalized.slice(1);
+  };
+
+  const paymentSelectClass = (status?: string) => {
+    const normalized = String(status || 'pending').toLowerCase();
+    if (normalized === 'paid' || normalized === 'successful' || normalized === 'captured' || normalized === 'completed' || normalized === 'complete') return `${styles.select} ${styles.paymentPaid}`;
+    if (normalized === 'failed') return `${styles.select} ${styles.paymentFailed}`;
+    if (normalized === 'cancelled') return `${styles.select} ${styles.paymentCancelled}`;
+    return `${styles.select} ${styles.paymentPending}`;
   };
 
   return (
@@ -248,7 +282,9 @@ export default function OrdersDashboard() {
                     .map((o) => {
                       const phone = getCustomerPhone(o);
                       const customerName = getCustomerName(o);
-                      const addressText = getAddressText(o);
+                      const shortAddress = getShortAddressText(o);
+                      const fullAddress = getFullAddressText(o);
+                      const currentPaymentStatus = String((o as any).last_payment_status ?? o.payment_status ?? 'pending').toLowerCase();
 
                       return (
                         <tr key={o.id} className={styles.row}>
@@ -272,7 +308,30 @@ export default function OrdersDashboard() {
                             )}
                           </td>
                           <td className={styles.cell} data-label="Address">
-                            <span className={styles.addressText}>{addressText}</span>
+                            <div className={styles.addressCell}>
+                              <span className={styles.addressText}>{shortAddress}</span>
+                              {fullAddress !== '—' && (
+                                <button
+                                  type="button"
+                                  className={styles.addressPopupTrigger}
+                                  aria-label="View full address"
+                                  onClick={() => setAddressPopupId((prev) => prev === o.id ? null : o.id)}
+                                >
+                                  📍
+                                </button>
+                              )}
+                            </div>
+                            {addressPopupId === o.id && fullAddress !== '—' && (
+                              <div className={styles.addressBackdrop} onClick={() => setAddressPopupId(null)}>
+                                <div className={styles.addressPopup} onClick={(e) => e.stopPropagation()}>
+                                  <div className={styles.addressPopupHeader}>
+                                    <strong>Full address</strong>
+                                    <button type="button" className={styles.closeButton} onClick={() => setAddressPopupId(null)}>×</button>
+                                  </div>
+                                  <p>{fullAddress}</p>
+                                </div>
+                              </div>
+                            )}
                           </td>
                           <td className={styles.cell} data-label="Status">
                             <select
@@ -306,7 +365,43 @@ export default function OrdersDashboard() {
                             </select>
                           </td>
                           <td className={styles.cell} data-label="Payment">
-                            <span className={`${styles.badge} ${styles[((o as any).last_payment_status || o.payment_status || 'unknown').toLowerCase()] || styles['unknown']}`}>{String((o as any).last_payment_status ?? o.payment_status ?? 'unpaid')}</span>
+                            <select
+                              className={paymentSelectClass(currentPaymentStatus)}
+                              value={currentPaymentStatus}
+                              onChange={async (e) => {
+                                const newPaymentStatus = e.target.value;
+                                try {
+                                  const res = await fetch(`/api/admin/orders/${o.id}/status`, {
+                                    method: 'PATCH',
+                                    credentials: 'same-origin',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                      order_status: (o as any).order_status || 'pending',
+                                      payment_status: newPaymentStatus,
+                                    }),
+                                  });
+                                  const data = await res.json();
+                                  if (!res.ok) throw new Error(data?.error || 'update failed');
+                                  setOrders((prev) => (prev || []).map((x) =>
+                                    x.id === o.id
+                                      ? {
+                                          ...x,
+                                          payment_status: newPaymentStatus,
+                                          last_payment_status: newPaymentStatus,
+                                        }
+                                      : x
+                                  ));
+                                } catch (err) {
+                                  console.error('update payment status', err);
+                                  alert('Failed to update payment status');
+                                }
+                              }}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="paid">Paid</option>
+                              <option value="failed">Failed</option>
+                              <option value="cancelled">Cancelled</option>
+                            </select>
                           </td>
                           <td className={styles.cell} data-label="Total">₹{Number(o.total_amount ?? 0).toFixed(2)}</td>
                           <td className={styles.cell} data-label="Created">{o.created_at ? new Date(o.created_at).toLocaleString() : '-'}</td>
