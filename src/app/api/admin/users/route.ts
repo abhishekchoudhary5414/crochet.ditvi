@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     const profilesList = (profiles ?? []) as Profile[];
     const userIds = usersList.map((u) => u.id);
 
-    let orderSummary: Record<string, { count: number; totalSpent: number; paidAmount: number; unpaidAmount: number; lastOrderDate: string | null; status: string }> = {};
+    let orderSummary: Record<string, { count: number; totalSpent: number; paidAmount: number; unpaidAmount: number; lastOrderDate: string | null; lastOrderStatus: string; lastPaymentStatus: string; status: string }> = {};
     if (userIds.length > 0) {
       const { data: orders, error: ordersErr } = await supabaseAdmin
         .from('orders')
@@ -36,13 +36,18 @@ export async function GET(req: NextRequest) {
       for (const order of orders ?? []) {
         const userId = String(order.user_id ?? '');
         if (!userId) continue;
-        const current = orderSummary[userId] ?? { count: 0, totalSpent: 0, paidAmount: 0, unpaidAmount: 0, lastOrderDate: null, status: 'new' };
+        const current = orderSummary[userId] ?? { count: 0, totalSpent: 0, paidAmount: 0, unpaidAmount: 0, lastOrderDate: null, lastOrderStatus: 'pending', lastPaymentStatus: 'pending', status: 'new' };
         const total = Number(order.total_amount ?? 0);
         current.count += 1;
         current.totalSpent += total;
 
+        const orderStatus = String(order.order_status || 'pending').trim() || 'pending';
+        const paymentStatus = String(order.payment_status || 'pending').trim() || 'pending';
+
         if (order.created_at && (!current.lastOrderDate || new Date(order.created_at) > new Date(current.lastOrderDate))) {
           current.lastOrderDate = order.created_at;
+          current.lastOrderStatus = orderStatus;
+          current.lastPaymentStatus = paymentStatus;
         }
 
         if (isPaidStatus(order.payment_status)) {
@@ -80,7 +85,7 @@ export async function GET(req: NextRequest) {
 
     const combined = usersList.map((u) => {
       const p = profilesList.find((pr) => pr.user_id === u.id);
-      const summary = orderSummary[u.id] ?? { count: 0, totalSpent: 0, paidAmount: 0, unpaidAmount: 0, lastOrderDate: null, status: 'new' };
+      const summary = orderSummary[u.id] ?? { count: 0, totalSpent: 0, paidAmount: 0, unpaidAmount: 0, lastOrderDate: null, lastOrderStatus: 'pending', lastPaymentStatus: 'pending', status: 'new' };
       const payment = paymentSummary[u.id] ?? { paidAmount: 0, unpaidAmount: 0 };
 
       return {
@@ -94,6 +99,8 @@ export async function GET(req: NextRequest) {
         paid_amount: payment.paidAmount || summary.paidAmount,
         unpaid_amount: payment.unpaidAmount || summary.unpaidAmount,
         last_order_date: summary.lastOrderDate,
+        order_status: summary.lastOrderStatus || 'pending',
+        payment_status: summary.lastPaymentStatus || (payment.paidAmount > 0 ? 'paid' : 'pending'),
         status: summary.count > 0 ? 'active' : 'new',
       };
     });

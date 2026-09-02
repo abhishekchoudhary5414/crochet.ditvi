@@ -46,15 +46,21 @@ export default function OrdersPage() {
           </div>
         ) : (
           orders.map((o) => {
-            const orderStatus = String(o.order_status || '').toLowerCase();
+            const orderStatus = String(o.order_status || 'pending').toLowerCase();
+            const paymentStatus = String(o.latest_payment_status || o.payment_status || 'pending').toLowerCase();
             const wasPaymentCancelled = orderStatus.includes('payment canceled') || orderStatus.includes('payment cancelled') || orderStatus === 'canceled' || orderStatus === 'cancelled';
-            const statusColor = orderStatus === 'delivered'
+            const orderColor = orderStatus === 'delivered'
               ? '#388e3c'
               : orderStatus === 'paid'
                 ? 'var(--primary)'
                 : wasPaymentCancelled
                   ? '#d32f2f'
                   : 'var(--accent)';
+            const paymentColor = paymentStatus === 'paid' || paymentStatus === 'captured' || paymentStatus === 'success' || paymentStatus === 'successful'
+              ? '#388e3c'
+              : paymentStatus === 'failed' || paymentStatus === 'cancelled' || paymentStatus === 'canceled'
+                ? '#d32f2f'
+                : '#f39c12';
 
             return (
               <Link href={`/account/orders/${o.id}`} key={o.id} style={{ textDecoration: 'none', color: 'inherit', display: 'block', borderBottom: '1px solid #f0f0f0' }}>
@@ -74,8 +80,31 @@ export default function OrdersPage() {
                       <div style={{ fontSize: 14, color: '#878787', marginBottom: 8 }}>
                         Placed on {new Date(o.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
                       </div>
-                      <div style={{ fontWeight: 500, fontSize: 14, color: statusColor }}>
-                        {String(o.order_status || '').toUpperCase()}
+
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
+                        <div style={{
+                          fontWeight: 600,
+                          fontSize: 12,
+                          color: orderColor,
+                          background: 'rgba(0,0,0,0.02)',
+                          border: '1px solid rgba(0,0,0,0.06)',
+                          borderRadius: 999,
+                          padding: '6px 10px',
+                        }}>
+                          Order: {String(o.order_status || 'pending').toUpperCase()}
+                        </div>
+
+                        <div style={{
+                          fontWeight: 600,
+                          fontSize: 12,
+                          color: paymentColor,
+                          background: 'rgba(0,0,0,0.02)',
+                          border: '1px solid rgba(0,0,0,0.06)',
+                          borderRadius: 999,
+                          padding: '6px 10px',
+                        }}>
+                          Payment: {String(o.latest_payment_status || o.payment_status || 'pending').toUpperCase()}
+                        </div>
                       </div>
                     </div>
                   </div>

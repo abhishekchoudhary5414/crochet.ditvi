@@ -15,6 +15,8 @@ type User = {
   paid_amount?: number;
   unpaid_amount?: number;
   last_order_date?: string | null;
+  order_status?: string;
+  payment_status?: string;
   status?: string;
 };
 
@@ -141,6 +143,21 @@ export default function UsersDashboard() {
     return styles.inactive;
   };
 
+  const getOrderBadgeClass = (value: string) => {
+    const status = (value || 'pending').toLowerCase();
+    if (['pending', 'processing', 'placed', 'out_for_delivery'].includes(status)) return styles.pending;
+    if (['delivered', 'paid', 'confirmed', 'completed'].includes(status)) return styles.paid;
+    if (['cancelled', 'failed'].includes(status)) return styles.cancelled;
+    return styles.pending;
+  };
+
+  const getPaymentBadgeClass = (value: string) => {
+    const status = (value || 'pending').toLowerCase();
+    if (['paid', 'captured', 'success', 'successful', 'completed', 'complete', 'confirmed'].includes(status)) return styles.paid;
+    if (['failed', 'cancelled', 'rejected', 'error'].includes(status)) return styles.cancelled;
+    return styles.pending;
+  };
+
   return (
     <div className={styles.dashboard}>
       <div className={styles.headerTitle}>
@@ -196,7 +213,8 @@ export default function UsersDashboard() {
                   <th>Orders</th>
                   <th>Paid</th>
                   <th>Unpaid</th>
-                  <th>Status</th>
+                  <th>Order status</th>
+                  <th>Payment status</th>
                   <th>Last order</th>
                 </tr>
               </thead>
@@ -241,8 +259,14 @@ export default function UsersDashboard() {
                       </div>
                     </td>
 
-                    <td className={styles.cell} data-label="Status">
-                      <span className={`${styles.badge} ${getBadgeClass(user.status || 'new')}`}>{user.status || 'new'}</span>
+                    <td className={styles.cell} data-label="Order status">
+                      <span className={`${styles.badge} ${getOrderBadgeClass(user.order_status || 'pending')}`}>{(user.order_status || 'pending').toLowerCase()}</span>
+                    </td>
+
+                    <td className={styles.cell} data-label="Payment status">
+                      <span className={`${styles.badge} ${getPaymentBadgeClass(user.payment_status || 'pending')}`}>
+                        {(user.payment_status || 'pending').toLowerCase()}
+                      </span>
                     </td>
 
                     <td className={styles.cell} data-label="Last order">
