@@ -15,7 +15,6 @@ export default function OrdersDashboard() {
   const [statusFilter, setStatusFilter] = useState('');
   const [paymentFilter, setPaymentFilter] = useState('');
   const [loading, setLoading] = useState(false);
-  const [viewMode, setViewMode] = useState<'table'|'card'>('table');
   const [emailFilter, setEmailFilter] = useState('');
   const [stats, setStats] = useState<{ orders?: number; users?: number; revenue?: number } | null>(null);
   const router = useRouter();
@@ -90,20 +89,42 @@ export default function OrdersDashboard() {
 
   const totalPages = Math.max(1, Math.ceil(total / limit));
 
+  const getCustomerName = (o: Order) => o.customer?.full_name || o.customer?.first_name || o.customer?.last_name || 'Guest';
+  const getCustomerPhone = (o: Order) => String(o.address?.phone || o.customer?.phone || '').trim();
+  const getAddressText = (o: Order) => {
+    const address = o.address;
+    if (!address) return '—';
+
+    const parts = [
+      address.address_line_1,
+      address.address_line_2,
+      address.city,
+      address.state,
+      address.pincode,
+    ].filter(Boolean);
+
+    return parts.length > 0 ? parts.join(', ') : '—';
+  };
+
   return (
-    <div>
-      <div className={styles.headerTitle}><h2>Orders</h2></div>
+    <div className={styles.dashboard}>
+      <div className={styles.headerTitle}>
+        <div>
+          <span className={styles.kicker}>Sales flow</span>
+          <h2>Orders</h2>
+        </div>
+      </div>
 
       <div className={styles.cardsRow}>
-        <div className={styles.cardSmall}>
+        <div className={`${styles.cardSmall} ${styles.cardPink}`}>
           <div className={styles.cardLabel}>Total Orders</div>
           <div className={styles.cardValue}>{stats?.orders ?? '-'}</div>
         </div>
-        <div className={styles.cardSmall}>
+        <div className={`${styles.cardSmall} ${styles.cardPeach}`}>
           <div className={styles.cardLabel}>Users</div>
           <div className={styles.cardValue}>{stats?.users ?? '-'}</div>
         </div>
-        <div className={styles.cardSmall}>
+        <div className={`${styles.cardSmall} ${styles.cardMint}`}>
           <div className={styles.cardLabel}>Revenue</div>
           <div className={styles.cardValue}>₹{Number(stats?.revenue ?? 0).toFixed(2)}</div>
         </div>
@@ -132,7 +153,6 @@ export default function OrdersDashboard() {
           <option value={20}>20 / page</option>
           <option value={50}>50 / page</option>
         </select>
-        <button onClick={() => setViewMode((v) => v === 'table' ? 'card' : 'table')} className={styles.pageBtnSecondary}>{viewMode === 'table' ? 'Card View' : 'Table View'}</button>
         <button onClick={() => exportCSV()} className={styles.pageBtn}>Export CSV</button>
       </div>
 
@@ -144,83 +164,93 @@ export default function OrdersDashboard() {
         ) : (
           <>
             <div className={styles.tableWrap}>
-            <table className={styles.table}>
-              <thead className={styles.thead}>
-                <tr>
-                  <th>Order</th>
-                  <th>Customer</th>
-                  <th>Status</th>
-                  <th>Payment</th>
-                  <th>Total</th>
-                  <th>Created</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders
-                  .filter((oo) => !emailFilter || String(oo.customer?.email || '').toLowerCase().includes(emailFilter.toLowerCase()))
-                  .map((o) => (
-                  <tr key={o.id} className={styles.row}>
-                    <td className={styles.cell} data-label="Order">{o.order_number ?? o.id}</td>
-                    <td className={styles.cell} data-label="Customer">{o.customer?.full_name ?? '—'}</td>
-                    <td className={styles.cell} data-label="Email">{o.customer?.email ?? '—'}</td>
-                    <td className={styles.cell} data-label="Address">{o.address ? `${o.address.address_line_1 || ''} ${o.address.city || ''} ${o.address.pincode || ''}` : '—'}</td>
-                    <td className={styles.cell}>
-                      <select
-                        className={styles.select}
-                        value={(o as any).order_status || ''}
-                        onChange={async (e) => {
-                          const newStatus = e.target.value;
-                          try {
-                            const res = await fetch(`/api/admin/orders/${o.id}/status`, {
-                              method: 'PATCH',
-                              credentials: 'same-origin',
-                              headers: { 'Content-Type': 'application/json' },
-                              body: JSON.stringify({ order_status: newStatus }),
-                            });
-                            const data = await res.json();
-                            if (!res.ok) throw new Error(data?.error || 'update failed');
-                            // update local state
-                            setOrders((prev) => (prev || []).map((x) => (x.id === o.id ? { ...x, order_status: newStatus } : x)));
-                          } catch (err) {
-                            console.error('update status', err);
-                            alert('Failed to update status');
-                          }
-                        }}
-                      >
-                        <option value="pending">pending</option>
-                        <option value="confirmed">confirmed</option>
-                        <option value="processing">processing</option>
-                        <option value="shipped">shipped</option>
-                        <option value="out_for_delivery">out_for_delivery</option>
-                        <option value="delivered">delivered</option>
-                        <option value="cancelled">cancelled</option>
-                      </select>
-                    </td>
-                    <td className={styles.cell} data-label="Payment">
-                      <span className={`${styles.badge} ${styles[((o as any).last_payment_status || o.payment_status || 'unknown').toLowerCase()] || styles['unknown']}`}>{String((o as any).last_payment_status ?? o.payment_status ?? 'unpaid')}</span>
-                    </td>
-                    <td className={styles.cell} data-label="Total">₹{Number(o.total_amount ?? 0).toFixed(2)}</td>
-                    <td className={styles.cell} data-label="Created">{o.created_at ? new Date(o.created_at).toLocaleString() : '-'}</td>
+              <table className={styles.table}>
+                <thead className={styles.thead}>
+                  <tr>
+                    <th>Order</th>
+                    <th>Customer</th>
+                    <th>Contact</th>
+                    <th>Address</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th>Total</th>
+                    <th>Created</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            </div>
+                </thead>
+                <tbody>
+                  {orders
+                    .filter((oo) => !emailFilter || String(oo.customer?.email || '').toLowerCase().includes(emailFilter.toLowerCase()))
+                    .map((o) => {
+                      const phone = getCustomerPhone(o);
+                      const customerName = getCustomerName(o);
+                      const addressText = getAddressText(o);
 
-            {viewMode === 'card' && (
-              <div className={styles.cardList}>
-                {orders.filter((oo) => !emailFilter || String(oo.customer?.email || '').toLowerCase().includes(emailFilter.toLowerCase())).map((o) => (
-                  <div key={o.id} className={styles.card}>
-                    <div className={styles.cardRow}><strong>Order</strong><span>{o.order_number ?? o.id}</span></div>
-                    <div className={styles.cardRow}><strong>Customer</strong><span>{o.customer?.full_name ?? o.customer?.email ?? 'Guest'}</span></div>
-                    <div className={styles.cardRow}><strong>Payment</strong><span className={`${styles.badge} ${styles[((o as any).last_payment_status || o.payment_status || 'unknown').toLowerCase()] || styles['unknown']}`}>{String((o as any).last_payment_status ?? o.payment_status ?? 'unpaid')}</span></div>
-                    <div className={styles.cardRow}><strong>Total</strong><span>₹{Number(o.total_amount ?? 0).toFixed(2)}</span></div>
-                    <div className={styles.cardRow}><strong>Status</strong><span>{o.order_status}</span></div>
-                    <div className={styles.cardRow}><strong>Created</strong><span>{o.created_at ? new Date(o.created_at).toLocaleString() : '-'}</span></div>
-                  </div>
-                ))}
-              </div>
-            )}
+                      return (
+                        <tr key={o.id} className={styles.row}>
+                          <td className={styles.cell} data-label="Order">{o.order_number ?? o.id}</td>
+                          <td className={styles.cell} data-label="Customer">
+                            <div className={styles.personCell}>
+                              <span className={styles.personName}>{customerName}</span>
+                              <small>{o.customer?.email ?? 'No email'}</small>
+                            </div>
+                          </td>
+                          <td className={styles.cell} data-label="Contact">
+                            {phone ? (
+                              <div className={styles.contactCell}>
+                                <span>{phone}</span>
+                                <a href={`tel:${phone.replace(/\s+/g, '')}`} className={styles.callButton} aria-label={`Call ${customerName}`}>
+                                  Call
+                                </a>
+                              </div>
+                            ) : (
+                              '—'
+                            )}
+                          </td>
+                          <td className={styles.cell} data-label="Address">
+                            <span className={styles.addressText}>{addressText}</span>
+                          </td>
+                          <td className={styles.cell} data-label="Status">
+                            <select
+                              className={styles.select}
+                              value={(o as any).order_status || ''}
+                              onChange={async (e) => {
+                                const newStatus = e.target.value;
+                                try {
+                                  const res = await fetch(`/api/admin/orders/${o.id}/status`, {
+                                    method: 'PATCH',
+                                    credentials: 'same-origin',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ order_status: newStatus }),
+                                  });
+                                  const data = await res.json();
+                                  if (!res.ok) throw new Error(data?.error || 'update failed');
+                                  setOrders((prev) => (prev || []).map((x) => (x.id === o.id ? { ...x, order_status: newStatus } : x)));
+                                } catch (err) {
+                                  console.error('update status', err);
+                                  alert('Failed to update status');
+                                }
+                              }}
+                            >
+                              <option value="pending">pending</option>
+                              <option value="confirmed">confirmed</option>
+                              <option value="processing">processing</option>
+                              <option value="shipped">shipped</option>
+                              <option value="out_for_delivery">out_for_delivery</option>
+                              <option value="delivered">delivered</option>
+                              <option value="cancelled">cancelled</option>
+                            </select>
+                          </td>
+                          <td className={styles.cell} data-label="Payment">
+                            <span className={`${styles.badge} ${styles[((o as any).last_payment_status || o.payment_status || 'unknown').toLowerCase()] || styles['unknown']}`}>{String((o as any).last_payment_status ?? o.payment_status ?? 'unpaid')}</span>
+                          </td>
+                          <td className={styles.cell} data-label="Total">₹{Number(o.total_amount ?? 0).toFixed(2)}</td>
+                          <td className={styles.cell} data-label="Created">{o.created_at ? new Date(o.created_at).toLocaleString() : '-'}</td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
 
             <div className={styles.pagination}>
               <button disabled={page <= 1} onClick={() => setPage((p) => Math.max(1, p - 1))}>Prev</button>

@@ -22,10 +22,7 @@ export default function AdminOverviewPage() {
 
   return (
     <div>
-      <div className={styles.headerBlock}>
-        <div className={styles.sectionLabel}>Dashboard</div>
-        <h2 className={styles.sectionTitle}>Overview</h2>
-      </div>
+  
 
       <AdminDashboard />
     </div>

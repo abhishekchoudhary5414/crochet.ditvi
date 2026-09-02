@@ -44,32 +44,69 @@ export default function AdminLoginPage() {
     <div className={styles.pageWrapper}>
       <div className={styles.container}>
         <div className={styles.leftPane}>
-          <h2>Admin Access</h2>
-          <p>Sign in to manage orders, users, and store activity.</p>
+          <div className={styles.glowOne} />
+          <div className={styles.glowTwo} />
+
+          <div className={styles.brandRow}>
+            <div className={styles.brandMark}>DC</div>
+            <span>Ditvi Crochet</span>
+          </div>
+
+          <div className={styles.heroContent}>
+            <span className={styles.kicker}>Secure admin access</span>
+            <h2>Run your boutique from one elegant dashboard.</h2>
+            <p>
+              Manage orders, customer accounts, payments, and daily store activity with complete
+              confidence.
+            </p>
+          </div>
+
+          <ul className={styles.featureList}>
+            <li>
+              <span className={styles.featureDot} />
+              Track inventory and sales in real time
+            </li>
+            <li>
+              <span className={styles.featureDot} />
+              Review customer orders and fulfilment updates
+            </li>
+            <li>
+              <span className={styles.featureDot} />
+              Monitor store performance and account activity
+            </li>
+          </ul>
         </div>
 
         <div className={styles.rightPane}>
-          <h1>Admin Login</h1>
+          <div className={styles.formHeader}>
+            <span className={styles.eyebrow}>Admin portal</span>
+            <h1>Welcome back</h1>
+            <p>Sign in to access your control center.</p>
+          </div>
 
           <form onSubmit={onSubmit} className={styles.form}>
             <div className={styles.inputGroup}>
-              <label>Username</label>
+              <label htmlFor="admin-username">Username</label>
               <input
+                id="admin-username"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Enter admin username"
+                autoComplete="username"
               />
             </div>
 
             <div className={styles.inputGroup}>
-              <label>Password</label>
+              <label htmlFor="admin-password">Password</label>
               <div className={styles.passwordField}>
                 <input
+                  id="admin-password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter admin password"
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
@@ -84,7 +121,7 @@ export default function AdminLoginPage() {
 
             {error && <small className={styles.error}>{error}</small>}
 
-            <Button type="submit" variant="primary" disabled={isSubmitting} size="lg">
+            <Button type="submit" variant="primary" disabled={isSubmitting} size="lg" fullWidth className={styles.submitButton}>
               {isSubmitting ? 'Signing in...' : 'Login as Admin'}
             </Button>
 

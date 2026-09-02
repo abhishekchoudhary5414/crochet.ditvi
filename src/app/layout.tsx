@@ -4,9 +4,7 @@ import "./globals.css";
 import siteConfig from "@/data/siteConfig.json";
 import { AppProvider } from "@/context/AppContext";
 import { AuthProvider } from "@/context/AuthContext";
-import Navbar from "@/components/Navbar/Navbar";
-import Footer from "@/components/Footer/Footer";
-import ToastContainer from "@/components/Toast/Toast";
+import SiteShell from "@/components/SiteShell";
 
 const ubuntu = Ubuntu({
   subsets: ["latin"],
@@ -65,14 +63,7 @@ export default function RootLayout({
       <body>
         <AppProvider>
           <AuthProvider>
-          <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-            <Navbar />
-            <main style={{ paddingTop: "80px", flex: 1 }}>
-              {children}
-            </main>
-            <ToastContainer />
-            <Footer />
-          </div>
+            <SiteShell>{children}</SiteShell>
           </AuthProvider>
         </AppProvider>
       </body>

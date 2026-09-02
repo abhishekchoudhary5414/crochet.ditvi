@@ -117,6 +117,8 @@
 .actionGroup {
   display: flex;
   gap: 8px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .viewDetailsBtn {
@@ -275,6 +277,7 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 700;
+  width: 100%;
 }
 
 .buyNowBtn {
@@ -286,8 +289,10 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   font-weight: 700;
+  width: 100%;
 }
 
 .orderBtn:disabled {

@@ -1,28 +1,28 @@
 .minFull {
   min-height: 100vh;
 }
+
 .checking {
   padding: 40px;
   text-align: center;
   color: var(--dark-text);
 }
+
 .main {
   flex: 1;
-  padding: 32px;
+  padding: 28px 20px 40px;
   overflow-y: auto;
-  margin-left: 240px; /* space for fixed sidebar */
-  min-height: 100vh;
+  min-height: calc(100vh - 74px);
 }
+
 .content {
-  margin: 0;
+  margin: 0 auto;
   width: 100%;
 }
 
-@media (max-width: 900px) {
-  .main { margin-left: 0; padding-top: 16px; }
-}
-
-/* When the sidebar is hidden via the body class, remove left margin */
-:global(.admin-sidebar-closed) .main {
-  margin-left: 0;
+@media (max-width: 760px) {
+  .main {
+    padding-top: 20px;
+    min-height: calc(100vh - 64px);
+  }
 }

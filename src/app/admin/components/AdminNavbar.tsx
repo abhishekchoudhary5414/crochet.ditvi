@@ -11,7 +11,8 @@ type Props = {
 export default function AdminNavbar({ view, setView }: Props) {
   const router = useRouter();
   const pathname = usePathname();
-  // derive active view from pathname when available
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
   const activeView = React.useMemo(() => {
     if (typeof pathname === 'string') {
       if (pathname.startsWith('/admin/orders')) return 'orders';
@@ -22,12 +23,13 @@ export default function AdminNavbar({ view, setView }: Props) {
     return (view as any) || 'overview';
   }, [pathname, view]);
 
-  const setViewHandler = (v: 'overview'|'orders'|'users'|'payments') => {
+  const setViewHandler = (v: 'overview' | 'orders' | 'users' | 'payments') => {
     if (setView) {
       setView(v);
+      setMobileOpen(false);
       return;
     }
-    // navigate to the corresponding admin route so content updates
+
     switch (v) {
       case 'orders':
         router.push('/admin/orders');
@@ -41,62 +43,54 @@ export default function AdminNavbar({ view, setView }: Props) {
       default:
         router.push('/admin');
     }
+
+    setMobileOpen(false);
   };
 
-  const [open, setOpen] = React.useState<boolean>(true);
-
-  React.useEffect(() => {
-    // toggle body class so layout can respond to sidebar visibility
-    try {
-      if (open) {
-        document.body.classList.remove('admin-sidebar-closed');
-      } else {
-        document.body.classList.add('admin-sidebar-closed');
-      }
-    } catch (e) {
-      // ignore (server-side or restricted env)
-    }
-    return () => {};
-  }, [open]);
+  const handleLogout = async () => {
+    await fetch('/api/admin/logout', { method: 'POST' });
+    router.push('/');
+  };
 
   return (
-    <>
-      {!open && (
+    <nav className={styles.nav}>
+      <div className={styles.navInner}>
+        <div className={styles.brandWrap}>
+          <div className={styles.brandMark}>DC</div>
+          <div>
+            <div className={styles.brandTitle}>Ditvi Admin</div>
+            <span className={styles.brandSubtitle}>Control center</span>
+          </div>
+        </div>
+
         <button
-          className={styles.openButton}
-          onClick={() => setOpen(true)}
-          aria-label="Open sidebar"
+          type="button"
+          className={styles.mobileToggle}
+          onClick={() => setMobileOpen((value) => !value)}
+          aria-label="Toggle admin menu"
         >
           <span className={styles.hamburgerIcon} />
         </button>
-      )}
 
-      <nav className={`${styles.nav} ${!open ? styles.navClosed : ''}`}>
-        <div className={styles.topRow}>
-          <h3 className={styles.brandTitle}>Admin</h3>
-          <button className={styles.closeBtn} onClick={() => setOpen(false)} aria-label="Close sidebar">×</button>
+        <div className={`${styles.menu} ${mobileOpen ? styles.menuOpen : ''}`}>
+          <button className={`${styles.btn} ${activeView === 'overview' ? styles.btnActive : ''}`} onClick={() => setViewHandler('overview')}>
+            Dashboard
+          </button>
+          <button className={`${styles.btn} ${activeView === 'orders' ? styles.btnActive : ''}`} onClick={() => setViewHandler('orders')}>
+            Orders
+          </button>
+          <button className={`${styles.btn} ${activeView === 'users' ? styles.btnActive : ''}`} onClick={() => setViewHandler('users')}>
+            Users
+          </button>
+          <button className={`${styles.btn} ${activeView === 'payments' ? styles.btnActive : ''}`} onClick={() => setViewHandler('payments')}>
+            Payments
+          </button>
+
+          <button className={styles.logoutBtn} onClick={handleLogout}>
+            Logout
+          </button>
         </div>
-      <div>
-        <h3 className={styles.brandTitle}>Admin</h3>
       </div>
-
-      <button className={`${styles.btn} ${activeView === 'overview' ? styles.btnActive : ''}`} onClick={() => setViewHandler('overview')}>Dashboard</button>
-      <button className={`${styles.btn} ${activeView === 'orders' ? styles.btnActive : ''}`} onClick={() => setViewHandler('orders')}>Orders</button>
-      <button className={`${styles.btn} ${activeView === 'users' ? styles.btnActive : ''}`} onClick={() => setViewHandler('users')}>Users</button>
-      <button className={`${styles.btn} ${activeView === 'payments' ? styles.btnActive : ''}`} onClick={() => setViewHandler('payments')}>Payments</button>
-
-      <div className={styles.logoutWrap}>
-        <button
-          className={styles.logoutBtn}
-          onClick={async () => {
-            await fetch('/api/admin/logout', { method: 'POST' });
-            router.push('/');
-          }}
-        >
-          Logout
-        </button>
-      </div>
-      </nav>
-    </>
+    </nav>
   );
 }
