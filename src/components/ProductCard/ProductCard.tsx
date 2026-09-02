@@ -42,24 +42,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const { addToCart, addToast } = useApp();
-  const [favorited, setFavorited] = useState(false);
-  const [loadingFav, setLoadingFav] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const s = await supabase.auth.getSession();
-        const token = s?.data?.session?.access_token;
-        if (!token) return;
-        const res = await fetch('/api/account/wishlist', { headers: { Authorization: `Bearer ${token}` } });
-        if (!res.ok) return;
-        const j = await res.json();
-        const exists = (j.items || []).some((it: any) => String(it.product_id || it.productId || it.product_id) === String(product.id));
-        setFavorited(!!exists);
-      } catch (e) {}
-    })();
-  }, [product.id]);
 
   const handleOrderOnWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -108,40 +91,6 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           <div className={styles.overlayActions}>
             <button className={styles.overlayBtn} onClick={(e) => { e.preventDefault(); onQuickView(product); }} title="Quick View" aria-label="Quick View product">
               <VisibilityIcon />
-            </button>
-              <button
-              className={`${styles.overlayBtn} ${favorited ? styles.favorited : ''}`}
-              onClick={async (e) => {
-                e.preventDefault();
-                try {
-                  setLoadingFav(true);
-                  const s = await supabase.auth.getSession();
-                  const token = s?.data?.session?.access_token;
-                  if (!token) {
-                    addToast('Please login to save wishlist', 'error');
-                    router.push('/login');
-                    return;
-                  }
-                  if (!favorited) {
-                    const res = await fetch('/api/account/wishlist', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: product.id }) });
-                    if (res.ok) setFavorited(true);
-                    else addToast('Failed to add to wishlist', 'error');
-                  } else {
-                    const res = await fetch('/api/account/wishlist', { method: 'DELETE', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }, body: JSON.stringify({ productId: product.id }) });
-                    if (res.ok) setFavorited(false);
-                    else addToast('Failed to remove from wishlist', 'error');
-                  }
-                } catch (err) {
-                  addToast('Wishlist action failed', 'error');
-                } finally { setLoadingFav(false); }
-              }}
-              title={favorited ? 'Remove from wishlist' : 'Add to wishlist'}
-              aria-label="Toggle wishlist"
-              >
-              {/* simple heart icon - color handled via CSS when favorited */}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={styles.heartIcon}>
-                <path d="M12 21s-7-4.35-10-7.6C-1.6 9.3 3.4 3 8.5 6.2 10.6 7.5 12 9.2 12 9.2s1.4-1.7 3.5-3.1C20.6 3 25.6 9.3 22 13.4 19 16.65 12 21 12 21z" fill="currentColor" />
-              </svg>
             </button>
           </div>
         </div>

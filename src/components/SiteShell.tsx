@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar/Navbar";
 import Footer from "@/components/Footer/Footer";
 import ToastContainer from "@/components/Toast/Toast";
+import FloatingWhatsAppButton from "@/components/FloatingWhatsAppButton/FloatingWhatsAppButton";
 
 export default function SiteShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,6 +17,7 @@ export default function SiteShell({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <ToastContainer />
+      {!isAdminRoute && <FloatingWhatsAppButton />}
       {!isAdminRoute && <Footer />}
     </div>
   );

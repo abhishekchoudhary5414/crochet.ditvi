@@ -51,6 +51,18 @@ export default function OrderDetailPage({ params }: { params?: any }) {
     return 'var(--accent)';
   };
 
+  const paymentStatus = String(order?.payment_status || order?.last_payment_status || 'pending').toLowerCase();
+  const normalizedPaymentStatus = [
+    'paid', 'success', 'successful', 'succeeded', 'captured', 'completed', 'confirmed', 'authorized'
+  ].includes(paymentStatus) ? 'paid' :
+    ['failed', 'failure', 'cancelled', 'canceled', 'rejected', 'expired'].includes(paymentStatus) ?
+      (paymentStatus === 'cancelled' || paymentStatus === 'canceled' ? 'cancelled' : 'failed') :
+      paymentStatus;
+
+  const paymentStatusLabel = normalizedPaymentStatus === 'paid' ? 'Paid' : normalizedPaymentStatus === 'failed' ? 'Failed' : normalizedPaymentStatus === 'cancelled' ? 'Cancelled' : 'Pending';
+  const isDelivered = String(order?.order_status || '').trim().toLowerCase() === 'delivered';
+  const supportUrl = `https://wa.me/919285248504?text=${encodeURIComponent('Hi Ditvi Crochet, I need support for my order.')}`;
+
   return (
     <div>
       <div style={{ padding: '24px', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -85,13 +97,39 @@ export default function OrderDetailPage({ params }: { params?: any }) {
             <div style={{ fontSize: 16, fontWeight: 500, color: getStatusColor(order.order_status) }}>
               Order Status: {order.order_status}
             </div>
-            <Link href={`/account/orders/${id}/receipt`}>
-              <Button variant="outline" size="sm">Download Invoice</Button>
-            </Link>
+            {isDelivered && (
+              <Link href={`/account/orders/${id}/receipt`}>
+                <Button variant="outline" size="sm">Download Invoice</Button>
+              </Link>
+            )}
           </div>
         </div>
 
         <div style={{ border: '1px solid #e0e0e0', borderRadius: 4, padding: 24, marginBottom: 24 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
+            <div>
+              <div style={{ fontSize: 14, color: '#878787', marginBottom: 6 }}>Payment Status</div>
+              <div style={{
+                display: 'inline-block',
+                padding: '8px 12px',
+                borderRadius: 999,
+                fontWeight: 700,
+                fontSize: 13,
+                background:
+                  normalizedPaymentStatus === 'paid' ? '#e8f8ee' :
+                  normalizedPaymentStatus === 'failed' ? '#fdecec' :
+                  normalizedPaymentStatus === 'cancelled' ? '#f2ebff' : '#fff5df',
+                color:
+                  normalizedPaymentStatus === 'paid' ? '#1d7a45' :
+                  normalizedPaymentStatus === 'failed' ? '#b42318' :
+                  normalizedPaymentStatus === 'cancelled' ? '#5b3e8e' : '#9c6a00'
+              }}>
+                {paymentStatusLabel}
+              </div>
+            </div>
+            <div style={{ fontSize: 14, color: '#878787' }}>Status on order: <strong style={{ color: getStatusColor(order.order_status) }}>{order.order_status}</strong></div>
+          </div>
+
           <h3 style={{ fontSize: 16, fontWeight: 500, marginBottom: 16, marginTop: 0 }}>Items Ordered</h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             {items.map((it) => (
@@ -141,6 +179,30 @@ export default function OrderDetailPage({ params }: { params?: any }) {
           ) : (
             <div style={{ fontSize: 14, color: '#878787' }}>No shipping information available.</div>
           )}
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 24 }}>
+          <a
+            href={supportUrl}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              padding: '12px 18px',
+              borderRadius: 999,
+              background: 'linear-gradient(135deg, #f8dfe9 0%, #f3c7d9 100%)',
+              color: '#4a2f38',
+              fontWeight: 700,
+              fontSize: 14,
+              textDecoration: 'none',
+              boxShadow: '0 10px 20px rgba(201, 134, 164, 0.2)',
+            }}
+          >
+            Need Help? WhatsApp
+          </a>
         </div>
       </div>
     </div>

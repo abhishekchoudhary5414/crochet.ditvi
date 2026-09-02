@@ -1,11 +1,11 @@
 "use client";
 
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import siteConfig from "@/data/siteConfig.json";
 import styles from "./FloatingWhatsAppButton.module.css";
 
 export default function FloatingWhatsAppButton() {
-  const whatsappUrl = `https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(siteConfig.whatsappMessage)}`;
+  const whatsappNumber = "919285248504";
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent("Hi Ditvi Crochet, I need support.")}`;
 
   return (
     <a
@@ -15,7 +15,10 @@ export default function FloatingWhatsAppButton() {
       aria-label="Chat on WhatsApp"
       className={styles.wrapper}
     >
-      <WhatsAppIcon fontSize="large" />
+      <span className={styles.iconWrap}>
+        <WhatsAppIcon fontSize="medium" />
+      </span>
+      <span className={styles.label}>Support</span>
     </a>
   );
 }

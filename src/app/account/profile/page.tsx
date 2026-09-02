@@ -4,6 +4,47 @@ import React, { useEffect, useState } from 'react';
 import supabase from '@/lib/supabaseClient';
 import Button from '@/components/Button/Button';
 import { useApp } from '@/context/AppContext';
+import styles from './profile.module.css';
+
+const ProfilePageSkeleton = () => (
+  <div className={styles.page}>
+    <div className={styles.header}>
+      <div className={`${styles.skeletonLine} ${styles.skeletonTitle}`} />
+      <div className={`${styles.skeletonLine} ${styles.skeletonAction}`} />
+    </div>
+
+    <div className={styles.card}>
+      <div className={styles.profileHeader}>
+        <div className={`${styles.skeletonBox} ${styles.skeletonAvatar}`} />
+        <div className={styles.meta}>
+          <div className={`${styles.skeletonLine} ${styles.skeletonName}`} />
+          <div className={`${styles.skeletonLine} ${styles.skeletonEmail}`} />
+        </div>
+      </div>
+
+      <div className={styles.formRow}>
+        <div className={styles.fieldRow}>
+          <div className={`${styles.skeletonLine} ${styles.skeletonLabel}`} />
+          <div className={`${styles.skeletonLine} ${styles.skeletonInput}`} />
+        </div>
+        <div className={styles.fieldRow}>
+          <div className={`${styles.skeletonLine} ${styles.skeletonLabel}`} />
+          <div className={`${styles.skeletonLine} ${styles.skeletonInput}`} />
+        </div>
+      </div>
+
+      <div className={styles.fieldRow} style={{ marginTop: 16 }}>
+        <div className={`${styles.skeletonLine} ${styles.skeletonLabel}`} />
+        <div className={`${styles.skeletonLine} ${styles.skeletonInputLarge}`} />
+      </div>
+
+      <div className={styles.fieldRow} style={{ marginTop: 16 }}>
+        <div className={`${styles.skeletonLine} ${styles.skeletonLabel}`} />
+        <div className={`${styles.skeletonLine} ${styles.skeletonInputLarge}`} />
+      </div>
+    </div>
+  </div>
+);
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<any>({});
@@ -52,7 +93,7 @@ export default function ProfilePage() {
     }
   };
 
-  if (loading) return <div style={{ padding: 24 }}>Loading profile...</div>;
+  if (loading) return <ProfilePageSkeleton />;
 
   return (
     <div>

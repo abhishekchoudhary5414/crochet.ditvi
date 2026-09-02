@@ -97,7 +97,99 @@
   padding: 24px;
 }
 
+.button,
+.buttonOutline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button {
+  background: linear-gradient(135deg, #f7c9d8 0%, #e7a9be 100%);
+  color: #3d2d33;
+  border: none;
+  box-shadow: 0 10px 18px rgba(196, 137, 159, 0.18);
+}
+
+.buttonOutline {
+  background: transparent;
+  color: #4d3a40;
+  border: 1px solid rgba(168, 126, 144, 0.35);
+}
+
+.button:hover,
+.buttonOutline:hover {
+  transform: translateY(-1px);
+}
+
 .prompt h3 { margin-bottom: 8px; }
+
+.skeletonLine,
+.skeletonBox {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.35s ease-in-out infinite;
+}
+
+.skeletonTitle {
+  width: 180px;
+  height: 26px;
+}
+
+.skeletonAction {
+  width: 72px;
+  height: 32px;
+  border-radius: 999px;
+}
+
+.skeletonAvatar {
+  width: 78px;
+  height: 78px;
+  border-radius: 12px;
+}
+
+.skeletonName {
+  width: 180px;
+  height: 22px;
+  margin-bottom: 10px;
+}
+
+.skeletonEmail {
+  width: 220px;
+  height: 18px;
+}
+
+.skeletonLabel {
+  width: 120px;
+  height: 14px;
+  margin-bottom: 8px;
+}
+
+.skeletonInput {
+  width: 100%;
+  height: 46px;
+}
+
+.skeletonInputLarge {
+  width: 100%;
+  height: 46px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
 
 @media (max-width: 880px) {
   .grid { grid-template-columns: 1fr; }
