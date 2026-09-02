@@ -24,8 +24,19 @@ async function writeLocalOtps(rows: unknown[]) {
   }
 }
 
+type OtpRow = {
+  id?: string;
+  email?: string;
+  otp_hash?: string;
+  is_used?: boolean;
+  expires_at?: string;
+  attempt_count?: number;
+  created_at?: string;
+  [key: string]: unknown;
+};
+
 async function verifyOtpRecord(email: string, otp: string) {
-  let row: Record<string, unknown> | null = null;
+  let row: OtpRow | null = null;
 
   try {
     const { data: rows } = await supabaseAdmin
@@ -34,14 +45,14 @@ async function verifyOtpRecord(email: string, otp: string) {
       .eq('email', email)
       .order('created_at', { ascending: false })
       .limit(1);
-    row = rows?.[0] ?? null;
+    row = (rows?.[0] as OtpRow | undefined) ?? null;
   } catch {
-    const rows = await readLocalOtps();
+    const rows = (await readLocalOtps()) as OtpRow[];
     const filtered = rows
-      .filter((r: { email: string }) => r.email === email)
+      .filter((r) => r.email === email)
       .sort(
-        (a: { created_at: string }, b: { created_at: string }) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        (a, b) =>
+          new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime()
       );
     row = filtered[0] ?? null;
   }
@@ -55,15 +66,18 @@ async function verifyOtpRecord(email: string, otp: string) {
   const hash = crypto.createHash('sha256').update(otp + salt).digest('hex');
   if (hash !== storedHash) {
     try {
-      await supabaseAdmin
-        .from('email_otps')
-        .update({ attempt_count: (row.attempt_count as number || 0) + 1 })
-        .eq('id', row.id);
+      if (row.id) {
+        await supabaseAdmin
+          .from('email_otps')
+          .update({ attempt_count: (row.attempt_count as number || 0) + 1 })
+          .eq('id', row.id);
+      }
     } catch {
-      const rows = await readLocalOtps();
-      const idx = rows.findIndex((r: { id: string }) => r.id === row!.id);
+      const rows = (await readLocalOtps()) as OtpRow[];
+      const rowId = row.id;
+      const idx = rowId ? rows.findIndex((r) => r.id === rowId) : -1;
       if (idx !== -1) {
-        rows[idx].attempt_count = (rows[idx].attempt_count || 0) + 1;
+        rows[idx].attempt_count = (Number(rows[idx].attempt_count) || 0) + 1;
         await writeLocalOtps(rows);
       }
     }
@@ -71,10 +85,13 @@ async function verifyOtpRecord(email: string, otp: string) {
   }
 
   try {
-    await supabaseAdmin.from('email_otps').update({ is_used: true }).eq('id', row.id);
+    if (row.id) {
+      await supabaseAdmin.from('email_otps').update({ is_used: true }).eq('id', row.id);
+    }
   } catch {
-    const rows = await readLocalOtps();
-    const idx = rows.findIndex((r: { id: string }) => r.id === row!.id);
+    const rows = (await readLocalOtps()) as OtpRow[];
+    const rowId = row.id;
+    const idx = rowId ? rows.findIndex((r) => r.id === rowId) : -1;
     if (idx !== -1) {
       rows[idx].is_used = true;
       await writeLocalOtps(rows);
@@ -122,27 +139,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'already registered' }, { status: 409 });
     }
 
-    let userId: string;
+    const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    });
 
-    if (existing) {
-      await supabaseAdmin.auth.admin.updateUserById(existing.id, {
-        password,
-        email_confirm: true,
-      });
-      userId = existing.id;
-    } else {
-      const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
-        email,
-        password,
-        email_confirm: true,
-      });
-
-      if (createErr || !created.user) {
-        return NextResponse.json({ error: createErr?.message || 'Failed to create account' }, { status: 500 });
-      }
-
-      userId = created.user.id;
+    if (createErr || !created.user) {
+      return NextResponse.json({ error: createErr?.message || 'Failed to create account' }, { status: 500 });
     }
+
+    const userId = created.user.id;
 
     await supabaseAdmin.from('profiles').upsert(
       {
