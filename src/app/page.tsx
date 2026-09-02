@@ -396,7 +396,7 @@ export default function Home() {
       </section>
 
       {/* 10. Instagram Gallery */}
-      <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
+      {/* <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
         <SectionBackground />
         <div className={styles.sectionHeader}>
           <span>@DitviCrochet</span>
@@ -419,7 +419,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* 11. Blog Section */}
       <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
