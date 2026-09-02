@@ -81,6 +81,19 @@
   background-color: var(--error-bg);
 }
 
+.warning {
+  border-left-color: #f59e0b;
+  background-color: #fffaf0;
+}
+
+.warning .message {
+  color: #7a4d00;
+}
+
+.warning .iconWrap {
+  color: #d97706;
+}
+
 @keyframes slideInRight {
   from {
     transform: translateX(100%);

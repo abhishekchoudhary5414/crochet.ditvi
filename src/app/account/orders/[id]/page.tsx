@@ -7,6 +7,63 @@ import Link from 'next/link';
 import Button from '@/components/Button/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
+const OrderDetailPageSkeleton = () => (
+  <div>
+    <div style={{ padding: '24px', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+      <div style={{ width: 170, height: 22, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+    </div>
+
+    <div style={{ padding: 24 }}>
+      <div style={{ border: '1px solid #e0e0e0', borderRadius: 4, padding: 24, marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', gap: 16, marginBottom: 16, flexWrap: 'wrap' }}>
+          <div style={{ width: 180, height: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+          <div style={{ width: 220, height: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+          <div style={{ width: 150, height: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ width: 220, height: 22, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+          <div style={{ width: 140, height: 38, borderRadius: 999, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        </div>
+      </div>
+
+      <div style={{ border: '1px solid #e0e0e0', borderRadius: 4, padding: 24, marginBottom: 24 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, marginBottom: 18, flexWrap: 'wrap' }}>
+          <div style={{ width: 160, height: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+          <div style={{ width: 120, height: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {[1, 2].map((item) => (
+            <div key={item} style={{ display: 'flex', justifyContent: 'space-between', padding: '16px', background: '#fafafa', borderRadius: 4, gap: 16 }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ width: '45%', height: 18, marginBottom: 8, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+                <div style={{ width: '60%', height: 14, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+              </div>
+              <div style={{ width: 80, height: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ border: '1px solid #e0e0e0', borderRadius: 4, padding: 24 }}>
+        <div style={{ width: 180, height: 18, marginBottom: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        <div style={{ width: '40%', height: 18, marginBottom: 8, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        <div style={{ width: '50%', height: 14, marginBottom: 6, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        <div style={{ width: '55%', height: 14, marginBottom: 6, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        <div style={{ width: '28%', height: 14, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+      </div>
+
+      <style jsx>{`
+        @keyframes shimmer {
+          0% { background-position: 200% 0; }
+          100% { background-position: -200% 0; }
+        }
+      `}</style>
+    </div>
+  </div>
+);
+
 export default function OrderDetailPage({ params }: { params?: any }) {
   const resolvedParams = typeof params === 'object' && params !== null && 'then' in params
     ? use(params as Promise<{ id: string }>)
@@ -40,7 +97,7 @@ export default function OrderDetailPage({ params }: { params?: any }) {
     })();
   }, [id, router]);
 
-  if (loading) return <div style={{ padding: 24 }}>Loading order details...</div>;
+  if (loading) return <OrderDetailPageSkeleton />;
   if (!order) return <div style={{ padding: 24 }}>Order not found.</div>;
 
   const getStatusColor = (status: string) => {

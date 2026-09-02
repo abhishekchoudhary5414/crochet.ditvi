@@ -64,6 +64,7 @@ export default function Footer() {
             <li><Link href="/shop?category=crochet-dolls">Crochet Dolls</Link></li>
             <li><Link href="/shop?category=crochet-keychains">Crochet Keychains</Link></li>
             <li><Link href="/custom-orders">Custom Orders</Link></li>
+            <li><Link href="/admin/login">Admin</Link></li>
           </ul>
         </div>
 

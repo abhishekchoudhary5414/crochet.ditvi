@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@/components/Button/Button';
 import styles from '@/app/auth.module.css';
+import { useApp } from '@/context/AppContext';
 
 const schema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
@@ -13,6 +14,7 @@ const schema = z.object({
 
 export default function SignupPage() {
   const router = useRouter();
+  const { addToast } = useApp();
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -37,14 +39,21 @@ export default function SignupPage() {
         body: JSON.stringify({ email })
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || 'Failed to send OTP');
+      if (!res.ok) {
+        const message = data?.error === 'already registered' ? 'Already registered' : (data?.error || 'Failed to send OTP');
+        addToast(message, 'warning');
+        setErrors({ form: message });
+        return;
+      }
 
       // Save email in session to pre-fill the verify-otp page
       try { sessionStorage.setItem('pendingSignup', JSON.stringify({ email })); } catch (e) {}
       
       router.push('/verify-otp');
     } catch (err: any) {
-      setErrors({ form: err?.message || 'Signup failed. Please try again.' });
+      const message = err?.message || 'Signup failed. Please try again.';
+      addToast(message, 'error');
+      setErrors({ form: message });
     } finally {
       setIsSubmitting(false);
     }

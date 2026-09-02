@@ -6,6 +6,43 @@ import Link from 'next/link';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
 
+const OrdersPageSkeleton = () => (
+  <div>
+    <div style={{ padding: '24px', borderBottom: '1px solid #f0f0f0' }}>
+      <div style={{ width: 150, height: 22, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite', borderRadius: 8 }} />
+    </div>
+
+    {[1, 2, 3].map((item) => (
+      <div key={item} style={{ padding: '24px', borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24 }}>
+        <div style={{ display: 'flex', gap: 24, alignItems: 'center', flex: 1 }}>
+          <div style={{ width: 80, height: 80, borderRadius: 4, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+
+          <div style={{ flex: 1 }}>
+            <div style={{ width: '40%', height: 18, marginBottom: 10, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite', borderRadius: 8 }} />
+            <div style={{ width: '60%', height: 14, marginBottom: 12, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite', borderRadius: 8 }} />
+            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+              <div style={{ width: 120, height: 28, borderRadius: 999, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+              <div style={{ width: 130, height: 28, borderRadius: 999, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          <div style={{ width: 80, height: 20, borderRadius: 8, background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+          <div style={{ width: 18, height: 18, borderRadius: '50%', background: 'linear-gradient(90deg, #f2edf0 25%, #f9f3f6 50%, #f2edf0 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.3s ease-in-out infinite' }} />
+        </div>
+      </div>
+    ))}
+
+    <style jsx>{`
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+    `}</style>
+  </div>
+);
+
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +67,7 @@ export default function OrdersPage() {
     setLoading(false);
   };
 
-  if (loading) return <div style={{ padding: 24 }}>Loading orders...</div>;
+  if (loading) return <OrdersPageSkeleton />;
 
   return (
     <div>

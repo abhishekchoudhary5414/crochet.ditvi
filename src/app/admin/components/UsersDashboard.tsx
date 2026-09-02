@@ -213,8 +213,7 @@ export default function UsersDashboard() {
                   <th>Orders</th>
                   <th>Paid</th>
                   <th>Unpaid</th>
-                  <th>Order status</th>
-                  <th>Payment status</th>
+             
                   <th>Last order</th>
                 </tr>
               </thead>
@@ -259,15 +258,7 @@ export default function UsersDashboard() {
                       </div>
                     </td>
 
-                    <td className={styles.cell} data-label="Order status">
-                      <span className={`${styles.badge} ${getOrderBadgeClass(user.order_status || 'pending')}`}>{(user.order_status || 'pending').toLowerCase()}</span>
-                    </td>
-
-                    <td className={styles.cell} data-label="Payment status">
-                      <span className={`${styles.badge} ${getPaymentBadgeClass(user.payment_status || 'pending')}`}>
-                        {(user.payment_status || 'pending').toLowerCase()}
-                      </span>
-                    </td>
+                 
 
                     <td className={styles.cell} data-label="Last order">
                       {user.last_order_date ? new Date(user.last_order_date).toLocaleString() : '—'}

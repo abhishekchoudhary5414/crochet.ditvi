@@ -67,18 +67,23 @@ export default function LoginPage() {
     <div className={styles.pageWrapper}>
       <div className={styles.container}>
         <div className={styles.leftPane}>
-          <h2>Welcome Back!</h2>
-          <p>Login to access your orders, track shipments, and manage your profile.</p>
+          <span className={styles.brandBadge}>Member access</span>
+          <h2>Welcome back!</h2>
+          <p>Login to access your orders, track shipments, and manage your profile with ease.</p>
         </div>
+
         <div className={styles.rightPane}>
-          <h1>Login</h1>
-          
+          <div className={styles.formHeader}>
+            <p className={styles.kicker}>Sign in</p>
+            <h1>Login</h1>
+          </div>
+
           <form onSubmit={onSubmit} className={styles.form}>
             <div className={styles.inputGroup}>
               <label>Email Address</label>
-              <input 
+              <input
                 type="email"
-                value={email} 
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
               />
@@ -108,7 +113,7 @@ export default function LoginPage() {
 
             {errors.form && <small className={styles.error}>{errors.form}</small>}
 
-            <Button type="submit" variant="primary" disabled={isSubmitting} size="lg" style={{ marginTop: 12 }}>
+            <Button type="submit" variant="primary" disabled={isSubmitting} size="lg" style={{ marginTop: 8 }}>
               {isSubmitting ? 'Logging in...' : 'Login'}
             </Button>
 

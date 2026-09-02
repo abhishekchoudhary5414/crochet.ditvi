@@ -87,23 +87,28 @@ async function verifyOtpRecord(email: string, otp: string) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { email, otp, password, firstName, lastName, phone, address, city, state, pin, country } = body as {
+    const { email, otp, password, fullName, phone } = body as {
       email: string;
       otp: string;
       password?: string;
-      firstName?: string;
-      lastName?: string;
+      fullName?: string;
       phone?: string;
-      address?: string;
-      city?: string;
-      state?: string;
-      pin?: string;
-      country?: string;
     };
 
-    if (!email || !otp) return NextResponse.json({ error: 'email and otp required' }, { status: 400 });
+    if (!email || !otp) {
+      return NextResponse.json({ error: 'email and otp required' }, { status: 400 });
+    }
+
     if (!password || password.length < 8) {
       return NextResponse.json({ error: 'password must be at least 8 characters' }, { status: 400 });
+    }
+
+    if (!fullName || fullName.trim().length < 2) {
+      return NextResponse.json({ error: 'full name is required' }, { status: 400 });
+    }
+
+    if (!phone || phone.trim().length < 10) {
+      return NextResponse.json({ error: 'valid phone number is required' }, { status: 400 });
     }
 
     const verification = await verifyOtpRecord(email, otp);
@@ -111,14 +116,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: verification.error }, { status: verification.status });
     }
 
-    // Create auth user server-side
     const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
     const existing = existingUsers?.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+    if (existing) {
+      return NextResponse.json({ error: 'already registered' }, { status: 409 });
+    }
 
     let userId: string;
 
     if (existing) {
-      await supabaseAdmin.auth.admin.updateUserById(existing.id, { password, email_confirm: true });
+      await supabaseAdmin.auth.admin.updateUserById(existing.id, {
+        password,
+        email_confirm: true,
+      });
       userId = existing.id;
     } else {
       const { data: created, error: createErr } = await supabaseAdmin.auth.admin.createUser({
@@ -126,41 +136,26 @@ export async function POST(req: NextRequest) {
         password,
         email_confirm: true,
       });
+
       if (createErr || !created.user) {
         return NextResponse.json({ error: createErr?.message || 'Failed to create account' }, { status: 500 });
       }
+
       userId = created.user.id;
     }
 
-    // Upsert profile
-    const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
     await supabaseAdmin.from('profiles').upsert(
       {
         user_id: userId,
         email,
-        first_name: firstName || null,
-        last_name: lastName || null,
-        full_name: fullName || null,
-        phone: phone || null,
+        full_name: fullName.trim(),
+        first_name: fullName.trim().split(' ')[0] || null,
+        last_name: fullName.trim().split(' ').slice(1).join(' ') || null,
+        phone: phone.trim(),
       },
       { onConflict: 'user_id' }
     );
 
-    if (address && city && state && pin) {
-      await supabaseAdmin.from('addresses').insert({
-        user_id: userId,
-        full_name: fullName || email,
-        phone: phone || '',
-        address_line_1: address,
-        city,
-        state,
-        pincode: pin,
-        country: country || 'India',
-        is_default: true,
-      });
-    }
-
-    // Also upsert into application-managed credentials table (`public.users`)
     try {
       const passwordHash = await bcrypt.hash(password, 12);
       await supabaseAdmin.from('users').upsert(

@@ -4,6 +4,7 @@ import React from "react";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import ErrorOutlineOutlinedIcon from "@mui/icons-material/ErrorOutlineOutlined";
+import WarningAmberOutlinedIcon from "@mui/icons-material/WarningAmberOutlined";
 import CloseIcon from "@mui/icons-material/Close";
 import { useApp } from "@/context/AppContext";
 import styles from "./Toast.module.css";
@@ -13,12 +14,14 @@ export default function ToastContainer() {
 
   if (toasts.length === 0) return null;
 
-  const getIcon = (type: "success" | "info" | "error") => {
+  const getIcon = (type: "success" | "info" | "error" | "warning") => {
     switch (type) {
       case "success":
         return <CheckCircleOutlineOutlinedIcon fontSize="small" />;
       case "error":
         return <ErrorOutlineOutlinedIcon fontSize="small" />;
+      case "warning":
+        return <WarningAmberOutlinedIcon fontSize="small" />;
       default:
         return <InfoOutlinedIcon fontSize="small" />;
     }

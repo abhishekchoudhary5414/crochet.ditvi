@@ -13,9 +13,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const router = useRouter();
   const [profile, setProfile] = useState<{ full_name: string; email: string } | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadUser() {
+      setLoading(true);
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push('/login');
@@ -28,6 +30,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
       } else {
         setProfile({ full_name: 'User', email: session.user.email || '' });
       }
+      setLoading(false);
     }
     loadUser();
   }, [router]);
@@ -39,6 +42,43 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
   };
 
   const initial = profile?.full_name ? profile.full_name.charAt(0) : (profile?.email ? profile.email.charAt(0) : 'U');
+
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.layout}>
+          <aside className={styles.sidebar}>
+            <div className={styles.loadingUserCard}>
+              <div className={`${styles.skeleton} ${styles.loadingAvatar}`} />
+              <div className={styles.loadingUserText}>
+                <div className={`${styles.skeleton} ${styles.loadingBlock}`} style={{ width: '30%', height: 12 }} />
+                <div className={`${styles.skeleton} ${styles.loadingBlock}`} style={{ width: '75%', height: 18 }} />
+              </div>
+            </div>
+
+            <div className={styles.loadingNavCard}>
+              <div className={styles.loadingNavSection}>
+                <div className={`${styles.skeleton} ${styles.loadingNavHeader}`} />
+                <div className={`${styles.skeleton} ${styles.loadingNavItem}`} />
+              </div>
+              <div className={styles.loadingNavSection}>
+                <div className={`${styles.skeleton} ${styles.loadingNavHeader}`} />
+                <div className={`${styles.skeleton} ${styles.loadingNavItem}`} />
+                <div className={`${styles.skeleton} ${styles.loadingNavItem}`} />
+              </div>
+            </div>
+          </aside>
+
+          <main className={styles.loadingMainContent}>
+            <div className={`${styles.skeleton} ${styles.loadingTile}`} />
+            <div className={`${styles.skeleton} ${styles.loadingBlock}`} />
+            <div className={`${styles.skeleton} ${styles.loadingBlock}`} />
+            <div className={`${styles.skeleton} ${styles.loadingBlock}`} style={{ width: '80%' }} />
+          </main>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>

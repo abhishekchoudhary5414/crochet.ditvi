@@ -15,7 +15,7 @@ export interface CartItem {
 export interface Toast {
   id: string;
   message: string;
-  type: "success" | "info" | "error";
+  type: "success" | "info" | "error" | "warning";
 }
 
 interface AppContextType {
@@ -30,7 +30,7 @@ interface AppContextType {
   clearCart: () => void;
   toggleWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
-  addToast: (message: string, type?: "success" | "info" | "error") => void;
+  addToast: (message: string, type?: "success" | "info" | "error" | "warning") => void;
   removeToast: (id: string) => void;
 }
 
@@ -76,7 +76,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [wishlist, isHydrated]);
 
-  const addToast = (message: string, type: "success" | "info" | "error" = "success") => {
+  const addToast = (message: string, type: "success" | "info" | "error" | "warning" = "success") => {
     const id = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     setToasts((prev) => [...prev, { id, message, type }]);
     

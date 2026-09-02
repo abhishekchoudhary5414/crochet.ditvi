@@ -29,6 +29,12 @@ export async function POST(req: NextRequest) {
     const { email } = await req.json();
     if (!email) return NextResponse.json({ error: 'email required' }, { status: 400 });
 
+    const { data: existingUsers } = await supabaseAdmin.auth.admin.listUsers();
+    const existing = existingUsers?.users?.find((user) => user.email?.toLowerCase() === String(email).toLowerCase());
+    if (existing) {
+      return NextResponse.json({ error: 'already registered' }, { status: 409 });
+    }
+
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
     const salt = crypto.randomBytes(16).toString('hex');
     const hash = crypto.createHash('sha256').update(otp + salt).digest('hex');
