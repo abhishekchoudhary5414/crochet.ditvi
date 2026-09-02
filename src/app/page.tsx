@@ -59,6 +59,7 @@ export default function Home() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [activeSlide, setActiveSlide] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [showAllProducts, setShowAllProducts] = useState(false);
 
   const heroSlides = [
     {
@@ -115,6 +116,7 @@ export default function Home() {
   // Filter products
   const bestSellers = products.filter((p) => p.isBestSeller).slice(0, 4);
   const newArrivals = products.filter((p) => p.isNewArrival).slice(0, 4);
+  const visibleProducts = showAllProducts ? products : newArrivals;
 
   // Take first 4 categories for homepage display
   const featuredCategories = categories.slice(0, 4);
@@ -289,13 +291,19 @@ export default function Home() {
           <h2 className={styles.sectionTitle}>New Arrivals</h2>
         </div>
         <div className={styles.productsGrid}>
-          {newArrivals.map((product) => (
+          {visibleProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
               onQuickView={(p) => setSelectedProduct(p)}
             />
           ))}
+        </div>
+
+        <div className={styles.viewAllWrap}>
+          <Link href="/shop" className={styles.viewAllButton}>
+            Show all products
+          </Link>
         </div>
       </section>
 
