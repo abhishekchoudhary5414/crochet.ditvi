@@ -340,23 +340,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. Custom Crochet CTA Section */}
-      <section className={`${styles.container}`}>
-        <div className={styles.customCTA}>
-          <SectionBackground />
-          <span className={styles.ctaSubtitle}>Bespoke Crochet Creation</span>
-          <h2 className={styles.ctaTitle}>Have something special in mind?</h2>
-          <p className={styles.ctaDesc}>
-            Let’s crochet it together. Whether it's a personalized amigurumi doll of your pet, a custom color tote bag, or a specific wedding floral bouquet, we will bring your design to life.
-          </p>
-          <Link href="/custom-orders">
-            <Button variant="primary" className={styles.ctaBtn} size="lg">
-              Request Custom Design
-            </Button>
-          </Link>
-        </div>
-      </section>
-
+    
       {/* 8. Customer Reviews */}
       <section className={`${styles.section} ${styles.container} ${styles.decoratedSection}`}>
         <SectionBackground />
