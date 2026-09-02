@@ -6,6 +6,67 @@ import styles from './OrdersDashboard.module.css';
 
 type Order = { id: string; order_number?: string; total_amount?: number; order_status?: string; payment_status?: string; created_at?: string; customer?: any; paid?: boolean; last_payment_status?: string; address?: any };
 
+const OrdersDashboardSkeleton = () => (
+  <div className={styles.dashboard}>
+    <div className={styles.headerTitle}>
+      <div>
+        <span className={styles.kicker}>Sales flow</span>
+        <h2>Orders</h2>
+      </div>
+    </div>
+
+    <div className={styles.cardsRow}>
+      {Array.from({ length: 3 }).map((_, index) => (
+        <div key={index} className={`${styles.cardSmall} ${styles.cardSkeleton}`}>
+          <div className={`${styles.skeletonLine} ${styles.skeletonShort}`} />
+          <div className={`${styles.skeletonLine} ${styles.skeletonMetric}`} />
+        </div>
+      ))}
+    </div>
+
+    <div className={styles.toolbar}>
+      <div className={`${styles.skeletonLine} ${styles.skeletonSearch}`} />
+      <div className={`${styles.skeletonLine} ${styles.skeletonSearch}`} />
+      <div className={`${styles.skeletonLine} ${styles.skeletonFilter}`} />
+      <div className={`${styles.skeletonLine} ${styles.skeletonFilter}`} />
+      <div className={`${styles.skeletonLine} ${styles.skeletonFilter}`} />
+    </div>
+
+    <div className={styles.spaced}>
+      <div className={styles.tableWrap}>
+        <table className={styles.table}>
+          <thead className={styles.thead}>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Contact</th>
+              <th>Address</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Total</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <tr key={index} className={styles.row}>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowSm}`} /></td>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowMd}`} /></td>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowSm}`} /></td>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowLg}`} /></td>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowSm}`} /></td>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowSm}`} /></td>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowSm}`} /></td>
+                <td className={styles.cell}><div className={`${styles.skeletonLine} ${styles.skeletonRowSm}`} /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
 export default function OrdersDashboard() {
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [page, setPage] = useState(1);
@@ -14,12 +75,14 @@ export default function OrdersDashboard() {
   const [q, setQ] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [paymentFilter, setPaymentFilter] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [emailFilter, setEmailFilter] = useState('');
   const [stats, setStats] = useState<{ orders?: number; users?: number; revenue?: number } | null>(null);
+  const [statsLoading, setStatsLoading] = useState(true);
   const router = useRouter();
 
   const loadStats = useCallback(async () => {
+    setStatsLoading(true);
     try {
       const res = await fetch('/api/admin/stats', { credentials: 'same-origin' });
       if (!res.ok) return;
@@ -27,6 +90,8 @@ export default function OrdersDashboard() {
       setStats(data);
     } catch (e) {
       console.error('load stats', e);
+    } finally {
+      setStatsLoading(false);
     }
   }, []);
 
@@ -63,6 +128,8 @@ export default function OrdersDashboard() {
 
   useEffect(() => { loadStats(); }, [loadStats]);
   useEffect(() => { load(); }, [load]);
+
+  if (loading || statsLoading) return <OrdersDashboardSkeleton />;
 
   function exportCSV() {
     const rows = (orders || []).map((o) => ({
@@ -157,9 +224,7 @@ export default function OrdersDashboard() {
       </div>
 
       <div className={styles.spaced}>
-        {loading ? (
-          <div>Loading...</div>
-        ) : !orders || orders.length === 0 ? (
+        {!orders || orders.length === 0 ? (
           <div className={styles.empty}><em>No orders found</em></div>
         ) : (
           <>

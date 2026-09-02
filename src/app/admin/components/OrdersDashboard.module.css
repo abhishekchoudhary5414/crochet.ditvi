@@ -402,3 +402,56 @@
         width: 100%;
     }
 }
+
+.skeletonLine,
+.skeletonBar,
+.skeletonBarFill {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, rgba(240, 220, 230, 0.75) 25%, rgba(255, 255, 255, 0.9) 50%, rgba(240, 220, 230, 0.75) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
+}
+
+.cardSkeleton {
+  min-height: 130px;
+  padding: 18px 18px 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(240, 220, 230, 0.8);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.skeletonShort {
+  width: 42%;
+  height: 12px;
+  border-radius: 999px;
+  margin-bottom: 16px;
+}
+
+.skeletonMetric {
+  width: 64%;
+  height: 32px;
+  border-radius: 12px;
+}
+
+.skeletonSearch {
+  flex: 1 1 180px;
+  min-width: 160px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.skeletonFilter {
+  flex: 0 0 120px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.skeletonRowSm { width: 60px; height: 12px; border-radius: 999px; }
+.skeletonRowMd { width: 110px; height: 12px; border-radius: 999px; }
+.skeletonRowLg { width: 150px; height: 12px; border-radius: 999px; }
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
