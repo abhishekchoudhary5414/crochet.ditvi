@@ -1,0 +1,42 @@
+flowchart TD
+    Start(["Start"]) --> A["Admin creates Institute"]
+    A --> B{"Are you a WTF Partner?"}
+    B -->|"Yes - Partnered"| C["Institute acts as Sub-Admin"]
+    C --> D["Institute creates Teacher"]
+    D --> E{"Teacher type?"}
+    E -->|"Registered"| F1["Upload teacher documents (Registered)"]
+    E -->|"Unregistered"| F2["Upload teacher documents (if not possible to upload)"]
+    F2 --> F3["Unregistered teacher tries to complete WTF training"]
+    F1 --> G1["Payment option: Skip"]
+    F3 --> G1
+    G1 --> H1["Add Students/Patient - Step 2.1"]
+    H1 --> I1["Admin attaches Life Coach / Therapist / Doctor"]
+    I1 --> I2["Institute has power to attach WTF Life Coach"]
+    H1 --> M{"Add Students/Patient - Step 2.1"}
+    B -->|"No - Non-Partnered"| J["Institute creates Teacher"]
+    J --> K{"Teacher type?"}
+    K -->|"Registered"| L1["Upload teacher documents"]
+    L1 --> L2["Payment Mandate"]
+    L2 --> L3["Add Students/Patient - Step 2.1"]
+    L3 --> L4["Admin attaches Therapist/Doctor only"]
+    L3 --> M
+    K -->|"Unregistered"| N1["Upload teacher documents (if not possible to upload) - Step 1.1"]
+    N1 --> N2["Complete Mandate training of WTF"]
+    N2 --> N3{"Is Step 1.1 completed?"}
+    N3 -->|"Yes"| N4["Proceed to Payment"]
+    N3 -->|"No"| N5(["Blocked"])
+    N4 --> N6["Add Students/Patient - Step 2.1"]
+    N6 --> N7["Admin attaches Therapist/Doctor only"]
+    N6 --> M
+    M -->|"Institute Patient"| P2["Institute patient onboarding"]
+    M -->|"Direct Patient/Student"| P1["Direct patient/student onboarding"]
+    P1 --> Q["Get onboarding link"]
+    P2 --> Q
+    Q --> R["Give all mandate fields"]
+    R --> S["Age category based on DOB<br/>(Child: Parent/Guardian info becomes mandatory)"]
+    S --> T["Upload insurance documents"]
+    T --> U["Complete onboarding"]
+    U --> V{"Institute non-partnered?"}
+    V -->|"Yes"| W["Payment mandate: Insurance or One-time payment"]
+    V -->|"No (Partnered)"| X(["End"])
+    W --> X

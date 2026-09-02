@@ -123,7 +123,7 @@ export default function Home() {
   const brandReviews: ReviewData[] = [
     {
       id: "br1",
-      name: "Sophia L.",
+      name: "Aisha L.",
       rating: 5,
       date: "2026-08-28",
       comment: "I requested a custom bag in sage green and it exceeded all expectations! The stitches are incredibly neat and sturdy. Highly recommend!",
@@ -131,7 +131,7 @@ export default function Home() {
     },
     {
       id: "br2",
-      name: "Ethan M.",
+      name: "Rohan M.",
       rating: 5,
       date: "2026-08-25",
       comment: "The Daisy and Tulip bouquet makes the perfect home decor addition. They look so elegant and cozy without needing any watering.",
@@ -139,7 +139,7 @@ export default function Home() {
     },
     {
       id: "br3",
-      name: "Olivia R.",
+      name: "Meera R.",
       rating: 5,
       date: "2026-08-19",
       comment: "Bought Bella the Bunny amigurumi doll for my niece's birthday. The material is so soft and safe. Absolutely love the attention to detail!",

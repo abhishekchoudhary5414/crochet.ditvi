@@ -73,8 +73,8 @@ export const products: Product[] = [
     isNewArrival: false,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r1", name: "Sarah M.", rating: 5, date: "2026-08-15", comment: "Absolutely gorgeous bag! The craftsmanship is incredible and the lining is very sturdy. I get compliments everywhere I go!" },
-      { id: "r2", name: "Jessica K.", rating: 4, date: "2026-08-02", comment: "Very cute bag, perfect for summer outings. The color is exactly as pictured." }
+      { id: "r1", name: "Aisha M.", rating: 5, date: "2026-08-15", comment: "Absolutely gorgeous bag! The craftsmanship is incredible and the lining is very sturdy. I get compliments everywhere I go!" },
+      { id: "r2", name: "Meera K.", rating: 4, date: "2026-08-02", comment: "Very cute bag, perfect for summer outings. The color is exactly as pictured." }
     ]
   },
   {
@@ -113,8 +113,8 @@ export const products: Product[] = [
     isNewArrival: false,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r3", name: "Emily R.", rating: 5, date: "2026-08-20", comment: "Bought this as a birthday gift for my mother. She loved it! They look so cozy on her coffee table." },
-      { id: "r4", name: "Liam T.", rating: 5, date: "2026-08-11", comment: "Amazing quality. Stitches are neat, and wrapping was beautiful. Highly recommend." }
+      { id: "r3", name: "Priya R.", rating: 5, date: "2026-08-20", comment: "Bought this as a birthday gift for my mother. She loved it! They look so cozy on her coffee table." },
+      { id: "r4", name: "Rohan T.", rating: 5, date: "2026-08-11", comment: "Amazing quality. Stitches are neat, and wrapping was beautiful. Highly recommend." }
     ]
   },
   {
@@ -150,7 +150,7 @@ export const products: Product[] = [
     isNewArrival: false,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r5", name: "Chloe P.", rating: 5, date: "2026-08-22", comment: "So squishy and cute! Perfect size for my backpack zipper." }
+      { id: "r5", name: "Ananya P.", rating: 5, date: "2026-08-22", comment: "So squishy and cute! Perfect size for my backpack zipper." }
     ]
   },
   {
@@ -187,7 +187,7 @@ export const products: Product[] = [
     isNewArrival: false,
     stockStatus: "low_stock",
     reviews: [
-      { id: "r6", name: "Amanda G.", rating: 5, date: "2026-07-28", comment: "Bella is even cuter in person! Stitches are so uniform and tight. My daughter won't go to sleep without her." }
+      { id: "r6", name: "Kavya G.", rating: 5, date: "2026-07-28", comment: "Bella is even cuter in person! Stitches are so uniform and tight. My daughter won't go to sleep without her." }
     ]
   },
   {
@@ -222,7 +222,7 @@ export const products: Product[] = [
     isNewArrival: true,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r7", name: "Lily H.", rating: 4, date: "2026-08-18", comment: "Really nice set! The scrunchies are thick and hold my thick hair up well. The flower clip is super adorable." }
+      { id: "r7", name: "Simran H.", rating: 4, date: "2026-08-18", comment: "Really nice set! The scrunchies are thick and hold my thick hair up well. The flower clip is super adorable." }
     ]
   },
   {
@@ -258,7 +258,7 @@ export const products: Product[] = [
     isNewArrival: true,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r8", name: "Megan T.", rating: 5, date: "2026-08-05", comment: "Gorgeous stitch work. It is very thick and feels like an expensive sweater for my throw pillows. I will buy another!" }
+      { id: "r8", name: "Neha T.", rating: 5, date: "2026-08-05", comment: "Gorgeous stitch work. It is very thick and feels like an expensive sweater for my throw pillows. I will buy another!" }
     ]
   },
   {
@@ -295,7 +295,7 @@ export const products: Product[] = [
     isNewArrival: true,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r9", name: "Rachel P.", rating: 5, date: "2026-08-25", comment: "Every piece is absolutely perfect. The bonnet is super soft and the deer rattle is adorable. The packaging was beautiful too!" }
+      { id: "r9", name: "Ishita P.", rating: 5, date: "2026-08-25", comment: "Every piece is absolutely perfect. The bonnet is super soft and the deer rattle is adorable. The packaging was beautiful too!" }
     ]
   },
   {
@@ -329,7 +329,7 @@ export const products: Product[] = [
     isNewArrival: true,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r10", name: "Brian D.", rating: 5, date: "2026-08-10", comment: "I am amazed by the resemblance! They captured my pug Waffles' cute little black ears and curly tail perfectly. Thank you!" }
+      { id: "r10", name: "Arjun D.", rating: 5, date: "2026-08-10", comment: "I am amazed by the resemblance! They captured my pug Waffles' cute little black ears and curly tail perfectly. Thank you!" }
     ]
   },
   {
@@ -365,7 +365,7 @@ export const products: Product[] = [
     isNewArrival: true,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r11", name: "Katie S.", rating: 5, date: "2026-08-14", comment: "Perfect crossbody bag for festivals and daily errands. The colors are beautiful and the strap is the perfect length." }
+      { id: "r11", name: "Diya S.", rating: 5, date: "2026-08-14", comment: "Perfect crossbody bag for festivals and daily errands. The colors are beautiful and the strap is the perfect length." }
     ]
   },
   {
@@ -401,7 +401,7 @@ export const products: Product[] = [
     isNewArrival: false,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r12", name: "Gabriella M.", rating: 5, date: "2026-08-20", comment: "I am absolutely in love with this lamp! It looks so dreamy on my desk at night. The glow is very soft and warm." }
+      { id: "r12", name: "Sanjana M.", rating: 5, date: "2026-08-20", comment: "I am absolutely in love with this lamp! It looks so dreamy on my desk at night. The glow is very soft and warm." }
     ]
   },
   {
@@ -432,7 +432,7 @@ export const products: Product[] = [
     isNewArrival: true,
     stockStatus: "in_stock",
     reviews: [
-      { id: "r13", name: "Nathan L.", rating: 5, date: "2026-08-24", comment: "Bought this for my workspace. It wraps around my monitor stand and makes me smile when I look at it!" }
+      { id: "r13", name: "Vedant L.", rating: 5, date: "2026-08-24", comment: "Bought this for my workspace. It wraps around my monitor stand and makes me smile when I look at it!" }
     ]
   },
   {
@@ -468,7 +468,7 @@ export const products: Product[] = [
     isNewArrival: true,
     stockStatus: "low_stock",
     reviews: [
-      { id: "r14", name: "Sofia T.", rating: 5, date: "2026-08-11", comment: "Absolutely beautiful work. It coordinates perfectly with our neutral nursery theme. Very delicate and gorgeous." }
+      { id: "r14", name: "Pooja T.", rating: 5, date: "2026-08-11", comment: "Absolutely beautiful work. It coordinates perfectly with our neutral nursery theme. Very delicate and gorgeous." }
     ]
   }
 ];
