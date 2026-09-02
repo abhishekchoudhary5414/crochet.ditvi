@@ -88,11 +88,6 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             <span className={`${styles.badge} ${styles.newBadge}`}>New</span>
           )}
 
-          <div className={styles.overlayActions}>
-            <button className={styles.overlayBtn} onClick={(e) => { e.preventDefault(); onQuickView(product); }} title="Quick View" aria-label="Quick View product">
-              <VisibilityIcon />
-            </button>
-          </div>
         </div>
       </Link>
 
