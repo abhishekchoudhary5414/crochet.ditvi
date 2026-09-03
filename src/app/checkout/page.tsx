@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import supabase from "@/lib/supabaseClient";
 import { useApp } from "@/context/AppContext";
@@ -9,18 +10,72 @@ import Button from "@/components/Button/Button";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import styles from './checkout.module.css';
+
+const indianStates = [
+  'Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar',
+  'Chandigarh', 'Chhattisgarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Goa',
+  'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka',
+  'Kerala', 'Ladakh', 'Lakshadweep', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+  'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
+];
+
+type CheckoutItem = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  color: string;
+  size: string;
+  quantity: number;
+};
+
+type AddressForm = {
+  full_name: string;
+  phone: string;
+  address_line_1: string;
+  address_line_2?: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country?: string;
+};
+
+const readBuyNowItem = (): CheckoutItem | null => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const saved = sessionStorage.getItem('ditvi_buy_now');
+    if (!saved) return null;
+
+    const parsed: unknown = JSON.parse(saved);
+    if (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      'id' in parsed &&
+      typeof (parsed as { id?: unknown }).id === 'string'
+    ) {
+      return parsed as CheckoutItem;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+};
 
 export default function CheckoutPage() {
   const { cart, clearCart, addToast, removeFromCart, updateQuantity } = useApp();
   const router = useRouter();
-  const [buyNowItem, setBuyNowItem] = useState<any>(null);
+  const [buyNowItem, setBuyNowItem] = useState<CheckoutItem | null>(readBuyNowItem);
 
   const [activeStep, setActiveStep] = useState(2);
-  const [user, setUser] = useState<any>(null);
-  const [addresses, setAddresses] = useState<any[]>([]);
+  const [user, setUser] = useState<{ id: string; email?: string | null } | null>(null);
+  const [addresses, setAddresses] = useState<Array<{ id: string; full_name: string; phone: string; address_line_1: string; address_line_2?: string; city: string; state: string; pincode: string; country?: string }>>([]);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [addingAddress, setAddingAddress] = useState(false);
-  const [newAddress, setNewAddress] = useState<any>({ full_name: '', phone: '', address_line_1: '', address_line_2: '', city: '', state: '', pincode: '' });
+  const [newAddress, setNewAddress] = useState<AddressForm>({ full_name: '', phone: '', address_line_1: '', address_line_2: '', city: '', state: '', pincode: '', country: 'India' });
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
 
@@ -40,11 +95,11 @@ export default function CheckoutPage() {
       const token = s?.data?.session?.access_token;
       if (!token || !s.data?.session?.user) {
         // Redirect to login if not authenticated
-        try { sessionStorage.setItem('pendingCheckout', 'true'); } catch (e) {}
+        try { sessionStorage.setItem('pendingCheckout', 'true'); } catch {}
         router.push('/login?redirect=/checkout');
         return;
       }
-      setUser(s.data.session.user);
+      setUser({ id: s.data.session.user.id, email: s.data.session.user.email ?? null });
 
       // Fetch addresses
       const res = await fetch('/api/account/addresses', { headers: { Authorization: `Bearer ${token}` } });
@@ -57,19 +112,15 @@ export default function CheckoutPage() {
       }
       setLoading(false);
     })();
-    // check buy now item in sessionStorage
-    try {
-      const b = sessionStorage.getItem('ditvi_buy_now');
-      if (b) {
-        const parsed = JSON.parse(b);
-        if (parsed && parsed.id) setBuyNowItem(parsed);
-      }
-    } catch (e) {}
   }, [router]);
 
   const handlePayment = async () => {
     if (!selectedAddressId) {
       addToast('Please select a delivery address', 'error');
+      return;
+    }
+    if (!user) {
+      addToast('Please sign in again to continue', 'error');
       return;
     }
 
@@ -92,7 +143,8 @@ export default function CheckoutPage() {
       setCurrentOrderId(order.id);
 
       await new Promise<void>((resolve, reject) => {
-        if ((window as any).Razorpay) return resolve();
+        const razorpayWindow = window as Window & { Razorpay?: { new (options: unknown): unknown } };
+        if (razorpayWindow.Razorpay) return resolve();
         const s = document.createElement('script');
         s.src = 'https://checkout.razorpay.com/v1/checkout.js';
         s.onload = () => resolve();
@@ -107,7 +159,7 @@ export default function CheckoutPage() {
         name: 'Ditvi Crochet',
         description: `Order ${order.order_number || order.id}`,
         order_id: razorpay.id,
-        handler: async function (response: any) {
+        handler: async function (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) {
           const v = await fetch('/api/payment/verify', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -127,15 +179,17 @@ export default function CheckoutPage() {
           setOrderId(order.order_number || order.id);
           setIsSuccess(true);
           // clear buy now flag or cart accordingly
-          try { sessionStorage.removeItem('ditvi_buy_now'); } catch (e) {}
+          try { sessionStorage.removeItem('ditvi_buy_now'); } catch {}
           if (!buyNowItem) clearCart();
         },
-        prefill: { email: user.email },
+        prefill: { email: user?.email ?? '' },
         theme: { color: '#F8BBD0' },
-      } as any;
+      } as Record<string, unknown>;
 
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', async function (response: any) {
+      const RazorpayCtor = (window as Window & { Razorpay?: new (options: Record<string, unknown>) => { open: () => void; on: (event: string, callback: (response: { error?: { description?: string } }) => Promise<void> | void) => void; } }).Razorpay;
+      if (!RazorpayCtor) throw new Error('Razorpay is not available');
+      const rzp = new RazorpayCtor(options);
+      rzp.on('payment.failed', async function (response: { error?: { description?: string } }) {
         setProcessing(false);
         const cancelledOrderId = currentOrderId || order.id;
 
@@ -159,8 +213,9 @@ export default function CheckoutPage() {
         addToast('Payment cancelled — order status updated', 'error');
       });
       rzp.open();
-    } catch (err: any) {
-      addToast(err?.message || 'Checkout failed', 'error');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Checkout failed';
+      addToast(message, 'error');
       setProcessing(false);
     }
   };
@@ -244,11 +299,11 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div style={{ background: '#f1f3f6', minHeight: 'calc(100vh - 80px)', padding: '30px 20px' }}>
-      <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+    <div className={styles.page}>
+      <div className={styles.container}>
         
         {/* Main Steps */}
-        <div style={{ flex: '1 1 600px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div className={styles.mainColumn}>
           
           {/* Step 1: Login */}
           <div style={{ background: '#fff', borderRadius: 2, boxShadow: '0 1px 2px 0 rgba(0,0,0,0.1)' }}>
@@ -285,7 +340,7 @@ export default function CheckoutPage() {
                 </div>
 
                 {addingAddress && (
-                  <form style={{ display: 'grid', gap: 8, marginBottom: 12 }} onSubmit={async (e) => {
+                  <form className={styles.addressForm} onSubmit={async (e) => {
                     e.preventDefault();
                     try {
                       const s = await supabase.auth.getSession();
@@ -296,24 +351,28 @@ export default function CheckoutPage() {
                       if (!res.ok) return addToast(data?.error || 'Failed to add address', 'error');
                       setAddresses((prev) => [data.address, ...prev]);
                       setSelectedAddressId(data.address.id);
-                      setNewAddress({ full_name: '', phone: '', address_line_1: '', address_line_2: '', city: '', state: '', pincode: '' });
+                      setNewAddress({ full_name: '', phone: '', address_line_1: '', address_line_2: '', city: '', state: '', pincode: '', country: 'India' });
                       setAddingAddress(false);
                       addToast('Address added', 'success');
-                    } catch (err: any) {
-                      addToast(err?.message || 'Failed to add address', 'error');
+                    } catch (err: unknown) {
+                      const message = err instanceof Error ? err.message : 'Failed to add address';
+                      addToast(message, 'error');
                     }
                   }}>
-                    <input placeholder="Full name" value={newAddress.full_name} onChange={(e) => setNewAddress({ ...newAddress, full_name: e.target.value })} required style={{ padding: 10, borderRadius: 8, border: '1px solid #eee' }} />
-                    <input placeholder="Phone" value={newAddress.phone} onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })} required style={{ padding: 10, borderRadius: 8, border: '1px solid #eee' }} />
-                    <input placeholder="Address line 1" value={newAddress.address_line_1} onChange={(e) => setNewAddress({ ...newAddress, address_line_1: e.target.value })} required style={{ padding: 10, borderRadius: 8, border: '1px solid #eee' }} />
-                    <input placeholder="Address line 2" value={newAddress.address_line_2} onChange={(e) => setNewAddress({ ...newAddress, address_line_2: e.target.value })} style={{ padding: 10, borderRadius: 8, border: '1px solid #eee' }} />
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <input placeholder="City" value={newAddress.city} onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })} required style={{ padding: 10, borderRadius: 8, border: '1px solid #eee', flex: 1 }} />
-                      <input placeholder="State" value={newAddress.state} onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })} required style={{ padding: 10, borderRadius: 8, border: '1px solid #eee', flex: 1 }} />
-                    </div>
-                    <input placeholder="PIN" value={newAddress.pincode} onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })} required style={{ padding: 10, borderRadius: 8, border: '1px solid #eee' }} />
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <Button type="submit" variant="primary" style={{ background: 'var(--primary)', borderColor: 'var(--primary)', color: 'var(--dark-text)' }}>Save Address</Button>
+                    <input className={styles.field} placeholder="Full name" value={newAddress.full_name} onChange={(e) => setNewAddress({ ...newAddress, full_name: e.target.value })} required />
+                    <input className={styles.field} placeholder="Phone" value={newAddress.phone} onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })} required />
+                    <input className={styles.field} placeholder="Flat No. / Building Name" value={newAddress.address_line_2 || ''} onChange={(e) => setNewAddress({ ...newAddress, address_line_2: e.target.value })} />
+                    <input className={styles.field} placeholder="City" value={newAddress.city} onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })} required />
+                    <input className={`${styles.field} ${styles.fieldWide}`} placeholder="Address (Area and Street)" value={newAddress.address_line_1} onChange={(e) => setNewAddress({ ...newAddress, address_line_1: e.target.value })} required />
+                    <select className={styles.selectField} value={newAddress.state} onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })} required>
+                      <option value="">Select State</option>
+                      {indianStates.map((state) => (
+                        <option key={state} value={state}>{state}</option>
+                      ))}
+                    </select>
+                    <input className={styles.field} placeholder="Pincode" value={newAddress.pincode} onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })} required />
+                    <div className={styles.formActions}>
+                      <Button type="submit" variant="primary" className={styles.primaryButton}>Save Address</Button>
                     </div>
                   </form>
                 )}
@@ -345,8 +404,9 @@ export default function CheckoutPage() {
                                   setAddresses((prev) => prev.filter((x) => x.id !== a.id));
                                   if (selectedAddressId === a.id) setSelectedAddressId('');
                                   addToast('Address removed', 'info');
-                                } catch (e) {
-                                  addToast('Failed to remove address', 'error');
+                                } catch (err: unknown) {
+                                  const message = err instanceof Error ? err.message : 'Failed to remove address';
+                                  addToast(message, 'error');
                                 }
                               }}>Remove</Button>
                             </div>
@@ -382,8 +442,8 @@ export default function CheckoutPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
                   {checkoutItems.map((item, idx) => (
                     <div key={idx} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: 8, borderRadius: 8, border: '1px solid #f0f0f0' }}>
-                      <div style={{ width: 64, height: 64, background: '#f5f5f5', borderRadius: 6, overflow: 'hidden', flexShrink: 0 }}>
-                        <img src={item.image} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <div style={{ width: 64, height: 64, background: '#f5f5f5', borderRadius: 6, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                        <Image src={item.image} alt={item.name} width={64} height={64} style={{ objectFit: 'cover' }} />
                       </div>
                       <div style={{ flex: 1 }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -454,23 +514,23 @@ export default function CheckoutPage() {
         </div>
 
         {/* Price Details */}
-        <div style={{ flex: '1 1 300px' }}>
-          <div style={{ background: '#fff', borderRadius: 2, boxShadow: '0 1px 2px 0 rgba(0,0,0,0.1)', position: 'sticky', top: 20 }}>
-            <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0f0f0', fontWeight: 500, color: '#878787', textTransform: 'uppercase' }}>
+        <div className={styles.summaryColumn}>
+          <div className={styles.summaryCard}>
+            <div className={styles.summaryHeader}>
               Price Details
             </div>
-            <div style={{ padding: 24 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontSize: 15 }}>
+            <div className={styles.summaryBody}>
+              <div className={styles.summaryRow}>
                 <span>Price ({cart.length} item{cart.length !== 1 ? 's' : ''})</span>
                 <span>₹{subtotal.toFixed(2)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, fontSize: 15 }}>
+              <div className={styles.summaryRow}>
                 <span>Delivery Charges</span>
                 <span style={{ color: shippingCost === 0 ? '#388e3c' : 'inherit' }}>
                   {shippingCost === 0 ? 'FREE Delivery' : `₹${shippingCost.toFixed(2)}`}
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24, paddingTop: 16, borderTop: '1px dashed #e0e0e0', fontSize: 18, fontWeight: 500 }}>
+              <div className={styles.summaryTotal}>
                 <span>Total Amount</span>
                 <span>₹{totalAmount.toFixed(2)}</span>
               </div>
