@@ -14,6 +14,7 @@ export default function AddressesPage() {
   const [isAdding, setIsAdding] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editForm, setEditForm] = useState<any>(null);
+  const [addressToDelete, setAddressToDelete] = useState<{ id: string; label: string } | null>(null);
   const { addToast } = useApp();
 
   useEffect(() => {
@@ -90,7 +91,6 @@ export default function AddressesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Delete this address?')) return;
     const s = await supabase.auth.getSession();
     const token = s?.data?.session?.access_token;
     if (!token) return addToast('Not authenticated', 'error');
@@ -99,6 +99,7 @@ export default function AddressesPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || 'Failed to delete');
       setAddresses((prev) => prev.filter((a) => a.id !== id));
+      setAddressToDelete(null);
       addToast('Address deleted', 'success');
     } catch (err: any) {
       addToast(err.message, 'error');
@@ -200,7 +201,7 @@ export default function AddressesPage() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
                     <button onClick={() => startEdit(a)} style={{ background: 'transparent', border: 'none', color: 'var(--accent)', cursor: 'pointer' }}>Edit</button>
-                    <button onClick={() => handleDelete(a.id)} style={{ background: 'transparent', border: 'none', color: '#fb641b', cursor: 'pointer' }}>Delete</button>
+                    <button onClick={() => setAddressToDelete({ id: a.id, label: `${a.full_name} • ${a.city}, ${a.state}` })} style={{ background: 'transparent', border: 'none', color: '#fb641b', cursor: 'pointer' }}>Delete</button>
                   </div>
                 </div>
               )}
@@ -208,6 +209,21 @@ export default function AddressesPage() {
           ))}
         </div>
       </div>
+
+      {addressToDelete && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1200 }} onClick={() => setAddressToDelete(null)}>
+          <div style={{ width: 'min(420px, calc(100vw - 32px))', background: '#fff', borderRadius: 12, padding: 24, boxShadow: '0 16px 40px rgba(0,0,0,0.18)' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: '#212121', marginBottom: 10 }}>Delete address?</div>
+            <div style={{ color: '#666', fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
+              This will remove {addressToDelete.label} from your saved addresses.
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 12 }}>
+              <button type="button" onClick={() => setAddressToDelete(null)} style={{ background: 'transparent', border: '1px solid #e0e0e0', color: '#212121', borderRadius: 6, padding: '10px 16px', cursor: 'pointer' }}>Cancel</button>
+              <button type="button" onClick={() => handleDelete(addressToDelete.id)} style={{ background: '#fb641b', border: 'none', color: '#fff', borderRadius: 6, padding: '10px 16px', cursor: 'pointer' }}>Delete</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

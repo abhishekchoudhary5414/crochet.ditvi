@@ -106,7 +106,7 @@ export default function VerifyOtpPage() {
       }
 
       addToast('Account created successfully.', 'success');
-      router.push('/account/profile');
+      router.push('/cart');
       router.refresh();
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Verification failed. Please try again.';

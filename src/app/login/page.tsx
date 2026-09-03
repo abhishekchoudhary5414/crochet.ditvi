@@ -17,7 +17,7 @@ const schema = z.object({
 
 export default function LoginPage() {
   const router = useRouter();
-  const [redirectUrl, setRedirectUrl] = useState('/account/profile');
+  const [redirectUrl, setRedirectUrl] = useState('/cart');
 
   useEffect(() => {
     try {
