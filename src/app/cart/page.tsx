@@ -10,6 +10,13 @@ import { useApp } from "@/context/AppContext";
 import Button from "@/components/Button/Button";
 import styles from "./cart.module.css";
 
+const cartSkeletonStyle = {
+  background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)',
+  backgroundSize: '200% 100%',
+  animation: 'cart-shimmer 1.4s ease infinite',
+  borderRadius: 6,
+};
+
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart, addToast } = useApp();
   const [couponInput, setCouponInput] = useState("");
@@ -48,6 +55,64 @@ export default function CartPage() {
   ) => {
     updateQuantity(id, color, size, newQty);
   };
+
+  const isCartLoading = cart === null || cart === undefined;
+
+  if (isCartLoading) {
+    return (
+      <div className={styles.container} style={{ paddingTop: 24, paddingBottom: 24 }}>
+        <h1 className={styles.title} style={{ visibility: 'hidden' }}>Shopping Cart</h1>
+
+        <div className={styles.layout}>
+          <div className={styles.cartList} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {[1, 2, 3].map((item) => (
+              <div key={item} style={{ display: 'flex', gap: 16, padding: 16, border: '1px solid #e8e8e8', borderRadius: 12, background: '#fff' }}>
+                <div style={{ width: 110, height: 110, ...cartSkeletonStyle }} />
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ width: '55%', height: 18, ...cartSkeletonStyle }} />
+                  <div style={{ width: '40%', height: 14, ...cartSkeletonStyle }} />
+                  <div style={{ width: '30%', height: 14, ...cartSkeletonStyle }} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 12, minWidth: 100 }}>
+                  <div style={{ width: 80, height: 18, ...cartSkeletonStyle }} />
+                  <div style={{ width: 120, height: 38, ...cartSkeletonStyle }} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className={styles.summaryCard} style={{ minWidth: 300 }}>
+            <div style={{ width: 150, height: 18, ...cartSkeletonStyle, marginBottom: 18 }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+              <div style={{ width: 100, height: 14, ...cartSkeletonStyle }} />
+              <div style={{ width: 70, height: 14, ...cartSkeletonStyle }} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+              <div style={{ width: 100, height: 14, ...cartSkeletonStyle }} />
+              <div style={{ width: 70, height: 14, ...cartSkeletonStyle }} />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 18 }}>
+              <div style={{ width: 100, height: 14, ...cartSkeletonStyle }} />
+              <div style={{ width: 70, height: 14, ...cartSkeletonStyle }} />
+            </div>
+            <div style={{ height: 1, background: '#efefef', margin: '14px 0' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 18 }}>
+              <div style={{ width: 80, height: 18, ...cartSkeletonStyle }} />
+              <div style={{ width: 90, height: 18, ...cartSkeletonStyle }} />
+            </div>
+            <div style={{ width: '100%', height: 48, ...cartSkeletonStyle }} />
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes cart-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   if (cart.length === 0) {
     return (

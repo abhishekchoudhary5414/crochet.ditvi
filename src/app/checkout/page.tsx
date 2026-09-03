@@ -165,7 +165,54 @@ export default function CheckoutPage() {
     }
   };
 
-  if (loading) return <div style={{ padding: 40, textAlign: 'center' }}>Preparing checkout...</div>;
+  if (loading) {
+    return (
+      <div style={{ background: '#f1f3f6', minHeight: 'calc(100vh - 80px)', padding: '30px 20px' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          <div style={{ flex: '1 1 600px', display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {[1, 2, 3, 4].map((item) => (
+              <div key={item} style={{ background: '#fff', borderRadius: 2, boxShadow: '0 1px 2px 0 rgba(0,0,0,0.1)', padding: '18px 24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                  <div style={{ width: 180, height: 18, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                </div>
+                <div style={{ marginTop: 18, display: 'grid', gap: 12 }}>
+                  <div style={{ width: '60%', height: 16, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                  <div style={{ width: '70%', height: 14, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                  <div style={{ width: '50%', height: 14, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ flex: '1 1 300px' }}>
+            <div style={{ background: '#fff', borderRadius: 2, boxShadow: '0 1px 2px 0 rgba(0,0,0,0.1)', padding: 24 }}>
+              <div style={{ width: 140, height: 18, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite', marginBottom: 20 }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+                <div style={{ width: 120, height: 14, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                <div style={{ width: 72, height: 14, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 14 }}>
+                <div style={{ width: 120, height: 14, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                <div style={{ width: 72, height: 14, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+              </div>
+              <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px dashed #e0e0e0', display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ width: 110, height: 18, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+                <div style={{ width: 84, height: 18, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'checkout-shimmer 1.4s ease infinite' }} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes checkout-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   if (checkoutItems.length === 0 && !isSuccess) {
     return (

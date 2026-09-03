@@ -127,7 +127,44 @@ export default function AddressesPage() {
     }
   };
 
-  if (loading) return <div style={{ padding: 24 }}>Loading addresses...</div>;
+  if (loading) {
+    return (
+      <div>
+        <div style={{ padding: '24px', borderBottom: '1px solid #f0f0f0' }}>
+          <div style={{ width: 180, height: 22, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s ease infinite' }} />
+        </div>
+
+        <div style={{ padding: '24px' }}>
+          <div style={{ height: 56, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s ease infinite', marginBottom: 24 }} />
+
+          {[1, 2, 3].map((item) => (
+            <div key={item} style={{ border: '1px solid #e0e0e0', borderRadius: '6px', padding: '18px 16px', marginBottom: 16 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ width: '100%' }}>
+                  <div style={{ display: 'flex', gap: 12, marginBottom: 12 }}>
+                    <div style={{ width: 120, height: 16, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s ease infinite' }} />
+                    <div style={{ width: 100, height: 16, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s ease infinite' }} />
+                  </div>
+                  <div style={{ width: '70%', height: 16, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s ease infinite' }} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-end' }}>
+                  <div style={{ width: 44, height: 16, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s ease infinite' }} />
+                  <div style={{ width: 52, height: 16, borderRadius: 6, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'shimmer 1.4s ease infinite' }} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div>

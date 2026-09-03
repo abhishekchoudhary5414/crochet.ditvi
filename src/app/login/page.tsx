@@ -35,6 +35,13 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const shimmerStyle = {
+    background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)',
+    backgroundSize: '200% 100%',
+    animation: 'login-shimmer 1.4s ease infinite',
+    borderRadius: 8,
+  } as const;
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors({});
@@ -61,6 +68,49 @@ export default function LoginPage() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (isSubmitting) {
+    return (
+      <div className={styles.pageWrapper}>
+        <div className={styles.container}>
+          <div className={styles.leftPane}>
+            <div style={{ width: 110, height: 26, ...shimmerStyle, marginBottom: 20 }} />
+            <div style={{ width: '85%', height: 26, ...shimmerStyle, marginBottom: 12 }} />
+            <div style={{ width: '72%', height: 16, ...shimmerStyle, marginBottom: 8 }} />
+            <div style={{ width: '90%', height: 16, ...shimmerStyle }} />
+          </div>
+
+          <div className={styles.rightPane}>
+            <div className={styles.formHeader}>
+              <div style={{ width: 80, height: 16, ...shimmerStyle, marginBottom: 10 }} />
+              <div style={{ width: 110, height: 30, ...shimmerStyle }} />
+            </div>
+
+            <div className={styles.form}>
+              <div className={styles.inputGroup}>
+                <div style={{ width: 120, height: 16, ...shimmerStyle, marginBottom: 10 }} />
+                <div style={{ width: '100%', height: 48, ...shimmerStyle }} />
+              </div>
+
+              <div className={styles.inputGroup}>
+                <div style={{ width: 120, height: 16, ...shimmerStyle, marginBottom: 10 }} />
+                <div style={{ width: '100%', height: 48, ...shimmerStyle }} />
+              </div>
+
+              <div style={{ width: '100%', height: 50, ...shimmerStyle, marginTop: 8 }} />
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes login-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   return (

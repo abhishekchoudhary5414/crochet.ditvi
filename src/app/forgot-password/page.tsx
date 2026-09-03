@@ -13,8 +13,10 @@ export default function ForgotPasswordPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ resolver: zodResolver(schema) });
   const [sent, setSent] = useState(false);
   const [Message, setMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function onSubmit(values: any) {
+    setIsLoading(true);
     try {
       const res = await fetch('/api/auth/forgot-password', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(values) });
       const data = await res.json();
@@ -23,7 +25,38 @@ export default function ForgotPasswordPage() {
       setMessage('If an account exists for this email, a password reset OTP or link has been sent.');
     } catch (err: any) {
       setMessage(err?.message || 'Request failed');
+    } finally {
+      setIsLoading(false);
     }
+  }
+
+  if (isLoading && !sent) {
+    return (
+      <div className={styles.pageWrapper}>
+        <div className={styles.container} style={{ maxWidth: 900 }}>
+          <div className={styles.leftPane}>
+            <div style={{ width: 180, height: 18, borderRadius: 8, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'forgot-shimmer 1.4s ease infinite', marginBottom: 16 }} />
+            <div style={{ width: '85%', height: 22, borderRadius: 8, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'forgot-shimmer 1.4s ease infinite', marginBottom: 12 }} />
+            <div style={{ width: '70%', height: 14, borderRadius: 8, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'forgot-shimmer 1.4s ease infinite' }} />
+          </div>
+
+          <div className={styles.rightPane}>
+            <div style={{ width: 170, height: 26, borderRadius: 8, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'forgot-shimmer 1.4s ease infinite', marginBottom: 18 }} />
+            <div style={{ display: 'grid', gap: 16 }}>
+              <div style={{ width: '100%', height: 46, borderRadius: 8, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'forgot-shimmer 1.4s ease infinite' }} />
+              <div style={{ width: 160, height: 42, borderRadius: 8, background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)', backgroundSize: '200% 100%', animation: 'forgot-shimmer 1.4s ease infinite' }} />
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes forgot-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   return (
