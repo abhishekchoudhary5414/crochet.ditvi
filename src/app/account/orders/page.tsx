@@ -1,10 +1,62 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image';
 import supabase from '@/lib/supabaseClient';
 import Link from 'next/link';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
+import { products, type Product } from '@/data/products';
+
+type CartSnapshotItem = {
+  productId?: string;
+  product_id?: string;
+  id?: string;
+  productName?: string;
+  image?: string;
+  productImage?: string;
+};
+
+type OrderRecord = {
+  id: string;
+  order_number?: string;
+  order_status?: string;
+  payment_status?: string;
+  latest_payment_status?: string;
+  total_amount?: number | string;
+  created_at?: string;
+  metadata?: {
+    cart_snapshot?: CartSnapshotItem[];
+  };
+};
+
+const getOrderThumbnail = (order?: Partial<OrderRecord> | null): string => {
+  const cartSnapshot = Array.isArray(order?.metadata?.cart_snapshot) ? order.metadata.cart_snapshot : [];
+
+  const firstItem = cartSnapshot[0] ?? {};
+  const productId = firstItem.productId || firstItem.product_id || firstItem.id;
+  const product: Product | undefined = products.find((p) => p.id === productId || p.slug === productId || p.name === firstItem.productName);
+
+  return firstItem.image || firstItem.productImage || product?.images?.[0] || '/logo/logo.png';
+};
+
+const formatOrderDate = (dateString?: string) => {
+  if (!dateString) return '—';
+
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return '—';
+
+  return date.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+};
+
+const formatOrderTotal = (totalAmount?: number | string) => {
+  if (typeof totalAmount === 'number') return totalAmount.toFixed(2);
+  if (typeof totalAmount === 'string') {
+    const parsed = Number(totalAmount);
+    if (!Number.isNaN(parsed)) return parsed.toFixed(2);
+  }
+  return '—';
+};
 
 const OrdersPageSkeleton = () => (
   <div>
@@ -44,14 +96,10 @@ const OrdersPageSkeleton = () => (
 );
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<OrderRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     setLoading(true);
     const s = await supabase.auth.getSession();
     const token = s?.data?.session?.access_token;
@@ -65,7 +113,15 @@ export default function OrdersPage() {
       setOrders(data.orders || []);
     }
     setLoading(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      void fetchOrders();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchOrders]);
 
   if (loading) return <OrdersPageSkeleton />;
 
@@ -106,16 +162,23 @@ export default function OrdersPage() {
                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fff'}>
                   
                   <div style={{ flex: 1, display: 'flex', gap: 24, alignItems: 'center' }}>
-                    <div style={{ width: 80, height: 80, background: '#f5f5f5', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <LocalMallOutlinedIcon style={{ color: '#bdbdbd' }} />
+                    <div style={{ width: 80, height: 80, background: '#f5f5f5', borderRadius: 4, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Image
+                        src={getOrderThumbnail(o)}
+                        alt={String(o.order_number || 'Order item')}
+                        width={80}
+                        height={80}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        unoptimized
+                      />
                     </div>
-                    
+
                     <div>
                       <div style={{ fontWeight: 500, fontSize: 16, color: '#212121', marginBottom: 4 }}>
                         Order #{o.order_number || o.id.slice(0,8).toUpperCase()}
                       </div>
                       <div style={{ fontSize: 14, color: '#878787', marginBottom: 8 }}>
-                        Placed on {new Date(o.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        Placed on {formatOrderDate(o.created_at)}
                       </div>
 
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
@@ -148,7 +211,7 @@ export default function OrdersPage() {
 
                   <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: 24 }}>
                     <div style={{ fontWeight: 500, fontSize: 16, color: '#212121' }}>
-                      ₹{o.total_amount?.toFixed?.(2) ?? '—'}
+                      ₹{formatOrderTotal(o.total_amount)}
                     </div>
                     <ChevronRightIcon style={{ color: '#878787' }} />
                   </div>
