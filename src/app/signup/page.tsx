@@ -19,6 +19,13 @@ export default function SignupPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const shimmerStyle = {
+    background: 'linear-gradient(90deg, #f1f1f1 25%, #e9e9e9 50%, #f1f1f1 75%)',
+    backgroundSize: '200% 100%',
+    animation: 'signup-shimmer 1.4s ease infinite',
+    borderRadius: 8,
+  } as const;
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErrors({});
@@ -57,6 +64,40 @@ export default function SignupPage() {
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (isSubmitting) {
+    return (
+      <div className={styles.pageWrapper}>
+        <div className={styles.container}>
+          <div className={styles.leftPane}>
+            <div style={{ width: '75%', height: 26, ...shimmerStyle, marginBottom: 18 }} />
+            <div style={{ width: '90%', height: 16, ...shimmerStyle, marginBottom: 10 }} />
+            <div style={{ width: '80%', height: 16, ...shimmerStyle }} />
+          </div>
+
+          <div className={styles.rightPane}>
+            <div style={{ width: 160, height: 28, ...shimmerStyle, marginBottom: 18 }} />
+
+            <div className={styles.form}>
+              <div className={styles.inputGroup}>
+                <div style={{ width: 120, height: 16, ...shimmerStyle, marginBottom: 10 }} />
+                <div style={{ width: '100%', height: 48, ...shimmerStyle }} />
+              </div>
+
+              <div style={{ width: '100%', height: 50, ...shimmerStyle, marginTop: 8 }} />
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes signup-shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+          }
+        `}</style>
+      </div>
+    );
   }
 
   return (
