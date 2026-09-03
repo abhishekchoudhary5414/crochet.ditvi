@@ -22,9 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = product ? `${product.name} - Ditvi Crochet` : "Product Details - Ditvi Crochet";
   const description = product ? product.description : "View details of this beautiful handmade crochet product.";
   const productImagePath = product?.images?.[0] || defaultProductImage;
-  const productImageUrl = productImagePath.startsWith("http")
-    ? productImagePath
-    : `${siteConfig.siteUrl}${productImagePath}`;
+  const productImageUrl = new URL(productImagePath, siteConfig.siteUrl).toString();
   const canonicalUrl = `${siteConfig.siteUrl}/shop/${product?.slug || id}`;
 
   return {

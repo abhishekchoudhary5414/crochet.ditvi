@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     siteName: "Ditvi Crochet",
     images: [
       {
-        url: "/logo/logo.png",
+        url: new URL("/logo/logo.png", siteConfig.siteUrl).toString(),
         width: 512,
         height: 512,
         alt: "Ditvi Crochet logo",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ditvi Crochet | Handmade Crochet Boutique",
     description: "Premium handmade crochet creations crafted with warmth, charm, and artistry.",
-    images: ["/logo/logo.png"],
+    images: [new URL("/logo/logo.png", siteConfig.siteUrl).toString()],
   },
   icons: {
     icon: "/favicon.ico",
