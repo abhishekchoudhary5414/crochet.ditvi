@@ -24,6 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const productImagePath = product?.images?.[0] || defaultProductImage;
   const productImageUrl = new URL(productImagePath, siteConfig.siteUrl).toString();
   const canonicalUrl = `${siteConfig.siteUrl}/shop/${product?.slug || id}`;
+  const ogAlt = product ? `${product.name} by Ditvi Crochet` : "Ditvi Crochet product image";
 
   return {
     title,
@@ -40,9 +41,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [
         {
           url: productImageUrl,
-          width: 512,
-          height: 512,
-          alt: product ? `${product.name} by Ditvi Crochet` : "Ditvi Crochet product image",
+          secureUrl: productImageUrl,
+          type: "image/png",
+          width: 1200,
+          height: 1200,
+          alt: ogAlt,
         },
       ],
     },
@@ -51,6 +54,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       images: [productImageUrl],
+    },
+    other: {
+      "og:image:secure_url": productImageUrl,
+      "og:image:type": "image/png",
+      "og:image:alt": ogAlt,
     },
   };
 }
