@@ -7,6 +7,27 @@ import { useApp } from '@/context/AppContext';
 import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
+const indianStates = [
+  'Andaman and Nicobar Islands', 'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar',
+  'Chandigarh', 'Chhattisgarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Goa',
+  'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka',
+  'Kerala', 'Ladakh', 'Lakshadweep', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+  'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
+  'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal'
+];
+
+const selectFieldStyle = {
+  padding: '12px 14px',
+  border: '1px solid #e0e0e0',
+  borderRadius: '8px',
+  outline: 'none',
+  background: '#fff',
+  color: '#212121',
+  fontSize: '14px',
+  lineHeight: 1.4,
+  boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+};
+
 export default function AddressesPage() {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [form, setForm] = useState<any>({ full_name: '', phone: '', address_line_1: '', city: '', state: '', pincode: '', country: 'India' });
@@ -158,11 +179,17 @@ export default function AddressesPage() {
                 value={form.city} onChange={e => setForm({...form, city: e.target.value})}
                 style={{ padding: '12px 14px', border: '1px solid #e0e0e0', borderRadius: '4px', outline: 'none' }}
               />
-              <input 
-                type="text" placeholder="State" required 
-                value={form.state} onChange={e => setForm({...form, state: e.target.value})}
-                style={{ padding: '12px 14px', border: '1px solid #e0e0e0', borderRadius: '4px', outline: 'none' }}
-              />
+              <select
+                required
+                value={form.state}
+                onChange={e => setForm({ ...form, state: e.target.value })}
+                style={selectFieldStyle}
+              >
+                <option value="">Select State</option>
+                {indianStates.map((state) => (
+                  <option key={state} value={state}>{state}</option>
+                ))}
+              </select>
               
               <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '16px', marginTop: '8px' }}>
                 <Button type="submit" variant="primary" style={{ padding: '12px 32px' }}>SAVE</Button>
@@ -182,7 +209,17 @@ export default function AddressesPage() {
                   <input value={editForm.pincode} onChange={(e) => setEditForm({ ...editForm, pincode: e.target.value })} style={{ padding: '10px', borderRadius: 4, border: '1px solid #e0e0e0' }} required />
                   <input value={editForm.city} onChange={(e) => setEditForm({ ...editForm, city: e.target.value })} style={{ padding: '10px', borderRadius: 4, border: '1px solid #e0e0e0' }} required />
                   <input value={editForm.address_line_1} onChange={(e) => setEditForm({ ...editForm, address_line_1: e.target.value })} style={{ gridColumn: '1 / -1', padding: '10px', borderRadius: 4, border: '1px solid #e0e0e0' }} required />
-                  <input value={editForm.state} onChange={(e) => setEditForm({ ...editForm, state: e.target.value })} style={{ padding: '10px', borderRadius: 4, border: '1px solid #e0e0e0' }} required />
+                  <select
+                    value={editForm.state || ''}
+                    onChange={(e) => setEditForm({ ...editForm, state: e.target.value })}
+                    style={{ ...selectFieldStyle, padding: '10px 12px' }}
+                    required
+                  >
+                    <option value="">Select State</option>
+                    {indianStates.map((state) => (
+                      <option key={state} value={state}>{state}</option>
+                    ))}
+                  </select>
                   <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 12 }}>
                     <Button type="submit" variant="primary">SAVE</Button>
                     <Button type="button" variant="text" onClick={cancelEdit}>CANCEL</Button>
