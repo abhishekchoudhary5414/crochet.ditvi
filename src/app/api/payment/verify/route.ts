@@ -4,6 +4,16 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { generateReceiptNumber } from '@/lib/ordersServer';
 import { sendOrderConfirmEmail } from '@/lib/emailServer';
 
+type CartSnapshotItem = {
+  productName?: string;
+  color?: string;
+  size?: string;
+  quantity?: number | string;
+  unitPrice?: number | string;
+  totalPrice?: number | string;
+  productId?: string | number;
+};
+
 export async function POST(req: NextRequest) {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = await req.json();
@@ -28,12 +38,12 @@ export async function POST(req: NextRequest) {
     if (!order) return NextResponse.json({ error: 'order not found' }, { status: 404 });
 
     const receiptNumber = generateReceiptNumber();
-    const cartSnapshotRaw = (order.metadata as any)?.cart_snapshot;
-    const cartSnapshot = Array.isArray(cartSnapshotRaw) ? (cartSnapshotRaw as any[]) : [];
+    const cartSnapshotRaw = (order.metadata as { cart_snapshot?: CartSnapshotItem[] } | null)?.cart_snapshot;
+    const cartSnapshot = Array.isArray(cartSnapshotRaw) ? cartSnapshotRaw : [];
 
     // Insert order items from cart snapshot
     if (cartSnapshot.length > 0) {
-      const orderItems = cartSnapshot.map((it) => ({
+      const orderItems = cartSnapshot.map((it: CartSnapshotItem) => ({
         order_id: orderId,
         product_id: null,
         product_name: [it.productName, it.color && `Color: ${it.color}`, it.size && `Size: ${it.size}`].filter(Boolean).join(' | '),
@@ -66,7 +76,7 @@ export async function POST(req: NextRequest) {
         payment_status: 'paid',
         payment_method: 'razorpay',
         razorpay_payment_id: razorpay_payment_id,
-        order_status: 'paid',
+        order_status: order.order_status || 'pending',
         receipt_number: receiptNumber,
       })
       .eq('id', orderId);
@@ -84,7 +94,7 @@ export async function POST(req: NextRequest) {
 
     if (customerEmail) {
       const itemsSummary = cartSnapshot.length > 0
-        ? cartSnapshot.map((it: any) => `${it.productName} x${it.quantity}`).join(', ')
+        ? cartSnapshot.map((it: CartSnapshotItem) => `${it.productName ?? 'Item'} x${it.quantity ?? 1}`).join(', ')
         : '';
 
       await sendOrderConfirmEmail({

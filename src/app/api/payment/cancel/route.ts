@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     const { data: updatedOrder, error: updateErr } = await supabaseAdmin
       .from('orders')
       .update({
-        order_status: 'payment canceled',
+        order_status: existingOrder.order_status || 'pending',
         payment_status: 'canceled',
         metadata: {
           ...(existingOrder.metadata || {}),
@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
         status: 'canceled',
         error_description: reason || 'Payment cancelled by user',
         metadata: {
-          order_status: 'payment canceled',
+          order_status: existingOrder.order_status || 'pending',
           cancelled_at: new Date().toISOString(),
         },
       },

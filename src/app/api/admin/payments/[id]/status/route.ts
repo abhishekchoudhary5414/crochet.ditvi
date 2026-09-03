@@ -29,11 +29,19 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (paymentErr) throw paymentErr;
 
     if (payment?.order_id) {
+      const { data: currentOrder, error: currentOrderErr } = await supabaseAdmin
+        .from('orders')
+        .select('order_status')
+        .eq('id', payment.order_id)
+        .single();
+
+      if (currentOrderErr && currentOrderErr.code !== 'PGRST116') throw currentOrderErr;
+
       await supabaseAdmin
         .from('orders')
         .update({
           payment_status: normalized,
-          order_status: normalized === 'paid' ? 'confirmed' : normalized === 'pending' ? 'pending' : 'cancelled',
+          order_status: currentOrder?.order_status || 'pending',
           updated_at: new Date().toISOString(),
         })
         .eq('id', payment.order_id);
