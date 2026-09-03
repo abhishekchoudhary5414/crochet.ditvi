@@ -191,7 +191,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
               </Button>
             </div>
 
-            <Link href={`/shop/${product.id}`} className={styles.viewDetailsLink} onClick={onClose}>
+            <Link href={`/shop/${product.slug || product.id}`} className={styles.viewDetailsLink} onClick={onClose}>
               View Full Product Details &rarr;
             </Link>
           </div>

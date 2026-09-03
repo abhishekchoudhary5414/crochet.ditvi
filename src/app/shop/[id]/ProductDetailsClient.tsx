@@ -25,8 +25,8 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
   const { addToCart } = useApp();
   const router = useRouter();
 
-  // Find product by id
-  const product = products.find((p) => p.id === id);
+  // Find product by slug or id, to support both URLs.
+  const product = products.find((p) => p.slug === id || p.id === id);
 
   // States
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -92,6 +92,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
     addToCart(
       {
         id: product.id,
+        slug: product.slug,
         name: product.name,
         price: product.price,
         image: displayedImages[0] || product.images?.[0] || "",
@@ -105,6 +106,7 @@ export default function ProductDetailsClient({ id }: ProductDetailsClientProps) 
   const handleBuyNow = () => {
     const item = {
       id: product.id,
+      slug: product.slug,
       name: product.name,
       price: product.price,
       image: displayedImages[0] || product.images?.[0] || "",

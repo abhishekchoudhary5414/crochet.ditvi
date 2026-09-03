@@ -24,7 +24,7 @@ export default function AboutPage() {
       <section className={styles.storyGrid}>
         <div className={styles.imageWrapper}>
           <img
-            src="https://images.unsplash.com/photo-1590736969955-71cb94801759?auto=format&fit=crop&w=800&q=80"
+            src="/products/flower/sunflower.png"
             alt="Beautiful pastel crochet work"
             className={styles.image}
           />
@@ -105,16 +105,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Call to action */}
-      <section className={styles.ctaBox}>
-        <h2 className={styles.ctaTitle}>Have something special in mind?</h2>
-        <p className={styles.ctaText}>
-          Let's crochet it together. Share your design idea, colors, and sizing preferences, and we will turn your vision into a gorgeous physical keepsake.
-        </p>
-        <Link href="/custom-orders">
-          <Button variant="primary">Submit a Custom Request</Button>
-        </Link>
-      </section>
+    
     </div>
   );
 }

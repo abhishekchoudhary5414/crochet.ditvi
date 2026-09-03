@@ -43,6 +43,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, onQuickView }: ProductCardProps) {
   const { addToCart, addToast } = useApp();
   const router = useRouter();
+  const productPath = product.slug || product.id;
 
   const handleOrderOnWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -62,19 +63,27 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
-    addToCart({ id: product.id, name: product.name, price: product.price, image: product.images?.[0] || '', color: product.colors?.[0]?.name || '', size: product.sizes?.[0] || '' });
+    addToCart({
+      id: product.id,
+      slug: product.slug,
+      name: product.name,
+      price: product.price,
+      image: product.images?.[0] || '',
+      color: product.colors?.[0]?.name || '',
+      size: product.sizes?.[0] || ''
+    });
   };
 
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
-    const item = { id: product.id, name: product.name, price: product.price, image: product.images?.[0] || '', color: product.colors?.[0]?.name || '', size: product.sizes?.[0] || '', quantity: 1 };
+    const item = { id: product.id, slug: product.slug, name: product.name, price: product.price, image: product.images?.[0] || '', color: product.colors?.[0]?.name || '', size: product.sizes?.[0] || '', quantity: 1 };
     try { sessionStorage.setItem('ditvi_buy_now', JSON.stringify(item)); } catch (e) {}
     router.push('/checkout');
   };
 
   return (
     <div className={styles.card}>
-      <Link href={`/shop/${product.id}`} className={styles.imageLink}>
+      <Link href={`/shop/${productPath}`} className={styles.imageLink}>
         <div className={styles.imageWrapper}>
           <img src={product.images?.[0] || '/logo/logo.png'} alt={product.name} className={styles.image} loading="lazy" />
 
@@ -93,7 +102,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
 
       <div className={styles.content}>
         <span className={styles.category}>{product.category.replace("-", " ")}</span>
-        <Link href={`/shop/${product.id}`} className={styles.titleLink}><h3 className={styles.title}>{product.name}</h3></Link>
+        <Link href={`/shop/${productPath}`} className={styles.titleLink}><h3 className={styles.title}>{product.name}</h3></Link>
 
         <div className={styles.ratingRow}>
           <span className={styles.stars}><StarIcon /> {product.rating?.toFixed?.(1) ?? '0.0'}</span>
@@ -107,7 +116,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           </div>
 
           <div className={styles.btn}>
-            <Link href={`/shop/${product.id}`} className={styles.viewDetailsBtn} aria-label={`View details for ${product.name}`}>View Details</Link>
+            <Link href={`/shop/${productPath}`} className={styles.viewDetailsBtn} aria-label={`View details for ${product.name}`}>View Details</Link>
 
             <div className={styles.actionGroup}>
               <button className={styles.addCartBtn} onClick={handleAddToCart} aria-label="Add to cart">Add to Cart</button>

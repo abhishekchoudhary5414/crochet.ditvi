@@ -145,7 +145,7 @@ export default function CartPage() {
                 <img src={item.image} alt={item.name} className={styles.itemImage} />
                 
                 <div className={styles.itemInfo}>
-                  <Link href={`/shop/${item.id}`}>
+                  <Link href={`/shop/${item.slug || item.id}`}>
                     <h3 className={styles.itemName}>{item.name}</h3>
                   </Link>
                   <span className={styles.itemMeta}>

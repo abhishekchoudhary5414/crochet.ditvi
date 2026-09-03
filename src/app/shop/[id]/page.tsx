@@ -12,22 +12,26 @@ const defaultProductImage = "/logo/logo.png";
 
 export async function generateStaticParams() {
   return products.map((product) => ({
-    id: product.id,
+    id: product.slug || product.id,
   }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const product = products.find((p) => p.id === id);
+  const product = products.find((p) => p.slug === id || p.id === id);
   const title = product ? `${product.name} - Ditvi Crochet` : "Product Details - Ditvi Crochet";
   const description = product ? product.description : "View details of this beautiful handmade crochet product.";
-  const canonicalUrl = `${siteConfig.siteUrl}/shop/${id}`;
+  const productImagePath = product?.images?.[0] || defaultProductImage;
+  const productImageUrl = productImagePath.startsWith("http")
+    ? productImagePath
+    : `${siteConfig.siteUrl}${productImagePath}`;
+  const canonicalUrl = `${siteConfig.siteUrl}/shop/${product?.slug || id}`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `/shop/${id}`,
+      canonical: `/shop/${product?.slug || id}`,
     },
     openGraph: {
       title,
@@ -37,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: "Ditvi Crochet",
       images: [
         {
-          url: defaultProductImage,
+          url: productImageUrl,
           width: 512,
           height: 512,
           alt: product ? `${product.name} by Ditvi Crochet` : "Ditvi Crochet product image",
@@ -48,7 +52,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
-      images: [defaultProductImage],
+      images: [productImageUrl],
     },
   };
 }

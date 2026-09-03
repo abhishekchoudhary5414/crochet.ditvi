@@ -338,7 +338,7 @@ export const products: Product[] = [
     reviewCount: 22,
     category: "crochet-bags",
     images: [
-      "https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?auto=format&fit=crop&w=600&q=80"
+      "/products/hand/balla.png"
     ],
     description: "Add a retro touch to your wardrobe with our vintage-inspired Granny Square Sling Bag. Hand-crocheted using earthy pastel shades, it is lightweight, comfortable, and perfect for carrying your phone, cards, lip balm, and keys.",
     details: [
